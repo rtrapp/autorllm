@@ -380,6 +380,11 @@ public async Task<List<ProjectDto>> GetProjects()
 ```
 src/
 ├── components/                 # Componentes React
+│   ├── ui/                     # Componentes shadcn/ui (NÃO EDITAR DIRETAMENTE SE POSSÍVEL)
+│   │   ├── button.tsx
+│   │   ├── input.tsx
+│   │   ├── dialog.tsx
+│   │   └── ...
 │   ├── editor/                 # Editor-related
 │   │   ├── TextEditor.tsx
 │   │   └── EditorToolbar.tsx
@@ -388,14 +393,17 @@ src/
 │   ├── characters/             # Character management
 │   │   ├── CharacterList.tsx
 │   │   └── CharacterForm.tsx
-│   └── common/                 # Reusable components
-│       ├── Button.tsx
-│       └── Modal.tsx
+│   └── common/                 # Componentes reutilizáveis (não-UI-kit)
+│       └── Layout.tsx
 │
 ├── hooks/                      # Custom hooks
+│   ├── use-mobile.tsx          # Hook gerado por shadcn
 │   ├── useProject.ts
 │   ├── useLLM.ts
 │   └── useSupabase.ts
+│
+├── lib/                        # Utilities e configurações de libraries
+│   └── utils.ts                # utilitário `cn` para merge de classes Tailwind
 │
 ├── services/                   # API clients
 │   ├── api.ts                  # Axios/Fetch config
@@ -410,19 +418,40 @@ src/
 │   ├── project.ts
 │   ├── character.ts
 │   └── api.ts
-│
-└── utils/                      # Utility functions
-    ├── formatting.ts
-    └── validation.ts
 ```
 
----
+### 2. UI & Styling (Tailwind + shadcn/ui)
 
-### 2. Component Patterns
+**Stack:**
+- **Tailwind CSS:** Framework de utilitários css
+- **shadcn/ui:** Biblioteca de componentes reusáveis (copiados para o código)
+- **Lucide React:** Ícones
+- **Class Variance Authority (CVA):** Variantes de componentes
+- **clsx + tailwind-merge:** Merge condicional de classes (função `cn` em `lib/utils.ts`)
+
+**Regras:**
+1.  **Use componentes `ui/`:** Sempre prefira usar os componentes base (`Button`, `Input`, `Card`) em `src/components/ui`.
+2.  **Customização via Props:** Use `className` para customizar estilos pontuais.
+    ```tsx
+    <Button className="bg-red-500 hover:bg-red-600">Delete</Button>
+    ```
+3.  **Não edite `components/ui`:** A menos que queira mudar o padrão global do componente.
+4.  **Função `cn`:** Use `cn()` para concatenar classes condicionais.
+    ```tsx
+    import { cn } from "@/lib/utils"
+    
+    <div className={cn("p-4", isActive && "bg-blue-100")}>
+    ```
+
+### 3. Component Patterns
 
 **Functional components + hooks:**
 ```tsx
 // ✅ BOM
+import { Button } from "@/components/ui/button"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { useCharacters } from "@/hooks/useCharacters"
+
 interface CharacterListProps {
   projectId: string;
   onSelect: (character: Character) => void;
@@ -434,16 +463,21 @@ export const CharacterList: React.FC<CharacterListProps> = ({
 }) => {
   const { characters, loading } = useCharacters(projectId);
 
-  if (loading) return <Spinner />;
+  if (loading) return <div>Loading...</div>; // TODO: Use Skeleton component
 
   return (
-    <ul>
+    <div className="grid gap-4">
       {characters.map(char => (
-        <li key={char.id} onClick={() => onSelect(char)}>
-          {char.name}
-        </li>
+        <Card key={char.id} className="cursor-pointer hover:bg-accent" onClick={() => onSelect(char)}>
+          <CardHeader>
+             <CardTitle>{char.name}</CardTitle>
+          </CardHeader>
+          <CardContent>
+             <p className="text-sm text-muted-foreground">{char.role}</p>
+          </CardContent>
+        </Card>
       ))}
-    </ul>
+    </div>
   );
 };
 ```

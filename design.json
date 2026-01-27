@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "projectName": "Neural Author",
+    "version": "1.0.0",
+    "description": "Design system for an AI-assisted structured writing environment."
+  },
+  "theme": {
+    "typography": {
+      "fonts": {
+        "sans": ["Inter", "system-ui", "sans-serif"],
+        "serif": ["Crimson Pro", "Merriweather", "serif"],
+        "mono": ["JetBrains Mono", "monospace"]
+      },
+      "usage": {
+        "ui": "sans",
+        "manuscript": "serif",
+        "codeblocks": "mono"
+      },
+      "scale": {
+        "h1": "2.5rem",
+        "h2": "2rem",
+        "h3": "1.75rem",
+        "body": "1rem",
+        "small": "0.875rem"
+      }
+    },
+    "radius": {
+      "default": "0.5rem",
+      "sm": "0.3rem",
+      "lg": "0.75rem",
+      "full": "9999px"
+    },
+    "colors": {
+      "light": {
+        "background": "#FDFDFC",
+        "foreground": "#0F172A",
+        "card": "#FFFFFF",
+        "cardForeground": "#0F172A",
+        "popover": "#FFFFFF",
+        "popoverForeground": "#0F172A",
+        "primary": "#4F46E5",
+        "primaryForeground": "#F8FAFC",
+        "secondary": "#F1F5F9",
+        "secondaryForeground": "#0F172A",
+        "muted": "#F1F5F9",
+        "mutedForeground": "#64748B",
+        "accent": "#F1F5F9",
+        "accentForeground": "#0F172A",
+        "destructive": "#EF4444",
+        "destructiveForeground": "#F8FAFC",
+        "border": "#E2E8F0",
+        "input": "#E2E8F0",
+        "ring": "#4F46E5",
+        "ai": {
+          "thinking": "#818CF8",
+          "suggestion": "#E0E7FF",
+          "highlight": "#C7D2FE"
+        }
+      },
+      "dark": {
+        "background": "#020617",
+        "foreground": "#F8FAFC",
+        "card": "#0F172A",
+        "cardForeground": "#F8FAFC",
+        "popover": "#0F172A",
+        "popoverForeground": "#F8FAFC",
+        "primary": "#6366F1",
+        "primaryForeground": "#F8FAFC",
+        "secondary": "#1E293B",
+        "secondaryForeground": "#F8FAFC",
+        "muted": "#1E293B",
+        "mutedForeground": "#94A3B8",
+        "accent": "#1E293B",
+        "accentForeground": "#F8FAFC",
+        "destructive": "#7F1D1D",
+        "destructiveForeground": "#F8FAFC",
+        "border": "#1E293B",
+        "input": "#1E293B",
+        "ring": "#6366F1",
+        "ai": {
+          "thinking": "#6366F1",
+          "suggestion": "#312E81",
+          "highlight": "#3730A3"
+        }
+      }
+    },
+    "semanticTokens": {
+      "plotlines": {
+        "mainArc": "var(--primary)",
+        "subPlotA": "#10B981", 
+        "subPlotB": "#F59E0B", 
+        "characterArc": "#EC4899"
+      },
+      "editor": {
+        "pageBackgroundLight": "#FFFFFF",
+        "pageBackgroundDark": "#18181B",
+        "selectionColor": "#C7D2FE"
+      }
+    }
+  }
+}

@@ -84,7 +84,7 @@
 | [US073](#us073) | Implementar streaming respostas LLM | UC021 | Concluída | 3 critérios |
 | [US074](#us074) | Tratar erros de comunicação Ollama | UC021 | Concluída | 3 critérios |
 | [US075](#us075) | Configurar modelo LLM via appsettings | UC021 | Concluída | 2 critérios |
-| [US076](#us076) | Criar aplicação React com TypeScript | UC022 | Planejado | 4 critérios |
+| [US076](#us076) | Criar aplicação React com TypeScript | UC022 | Concluída | 4 critérios |
 | [US077](#us077) | Configurar roteamento | UC022 | Planejado | 3 critérios |
 | [US078](#us078) | Criar client HTTP para API | UC022 | Planejado | 3 critérios |
 | [US079](#us079) | Implementar layout base | UC022 | Planejado | 4 critérios |

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neural Author Layout Concept</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Crimson Pro', 'serif'],
+          },
+          colors: {
+            border: "hsl(214.3 31.8% 91.4%)",
+            input: "hsl(214.3 31.8% 91.4%)",
+            ring: "hsl(243.4 75.4% 58.6%)",
+            background: "hsl(0 0% 100%)",
+            foreground: "hsl(222.2 47.4% 11.2%)",
+            primary: {
+              DEFAULT: "hsl(243.4 75.4% 58.6%)", // Indigo AI color
+              foreground: "hsl(210 40% 98%)",
+            },
+            secondary: {
+              DEFAULT: "hsl(210 40% 96.1%)",
+              foreground: "hsl(222.2 47.4% 11.2%)",
+            },
+            muted: {
+              DEFAULT: "hsl(210 40% 96.1%)",
+              foreground: "hsl(215.4 16.3% 46.9%)",
+            },
+            card: {
+              DEFAULT: "hsl(0 0% 100%)",
+              foreground: "hsl(222.2 47.4% 11.2%)",
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer base {
+      body {
+        @apply bg-background text-foreground font-sans;
+      }
+    }
+    @layer components {
+      /* Shadcn-like button utility */
+      .btn {
+        @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2;
+      }
+      .btn-ghost {
+        @apply hover:bg-secondary hover:text-secondary-foreground;
+      }
+      .btn-primary {
+        @apply bg-primary text-primary-foreground hover:bg-primary/90;
+      }
+      .btn-outline {
+        @apply border border-input bg-background hover:bg-secondary hover:text-secondary-foreground;
+      }
+      /* Shadcn-like input */
+      .input-field {
+        @apply flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50;
+      }
+    }
+    
+    /* Custom scrollbar for a cleaner look */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col overflow-hidden bg-secondary/30">
+
+  <header class="h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-4 shrink-0 z-10">
+    <div class="flex items-center gap-4">
+      <div class="font-semibold text-lg flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+        Projeto: Crônicas de Aethel
+      </div>
+      <span class="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full font-medium">Rascunho 1.2</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button class="btn btn-ghost text-muted-foreground gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        Exportar PDF
+      </button>
+      <div class="h-6 w-px bg-border mx-2"></div> <button class="btn btn-outline gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Salvar
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-1 flex overflow-hidden relative">
+
+    <aside class="w-72 bg-background border-r flex flex-col shrink-0">
+      <div class="flex items-center border-b p-1 bg-secondary/40">
+        <button class="flex-1 text-sm font-medium px-3 py-1.5 rounded-sm bg-background shadow text-foreground">Manuscrito</button>
+        <button class="flex-1 text-sm font-medium px-3 py-1.5 rounded-sm text-muted-foreground hover:bg-background/50 hover:text-foreground transition-all">Mundo</button>
+      </div>
+      
+      <div class="flex-1 overflow-y-auto p-4">
+        <div class="text-sm font-medium text-muted-foreground mb-3">Estrutura do Livro</div>
+        
+        <div class="group">
+          <div class="flex items-center gap-2 py-1.5 px-2 hover:bg-secondary rounded cursor-pointer text-sm font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+            Ato 1: O Despertar
+          </div>
+          <div class="ml-4 pl-2 border-l border-border space-y-1 mt-1">
+            <div class="flex items-center gap-2 py-1.5 px-2 bg-secondary text-primary rounded cursor-pointer text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+              Cap 1: A Vila Silenciosa
+            </div>
+             <div class="flex justify-between items-center gap-2 py-1.5 px-2 hover:bg-secondary rounded cursor-pointer text-sm group/item">
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+                 Cap 2: O Chamado
+              </div>
+              <span class="h-2 w-2 rounded-full bg-emerald-500" title="Plot Principal Ativo"></span>
+            </div>
+          </div>
+        </div>
+         <div class="group mt-2">
+          <div class="flex items-center gap-2 py-1.5 px-2 hover:bg-secondary rounded cursor-pointer text-sm font-medium text-muted-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground opacity-70"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+            Ato 2: A Jornada
+          </div>
+        </div>
+
+      </div>
+       <div class="p-4 border-t mt-auto">
+          <button class="btn btn-outline w-full text-xs gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+            Novo Capítulo
+          </button>
+       </div>
+    </aside>
+
+    <section class="flex-1 overflow-y-auto relative bg-secondary/30 flex justify-center">
+      
+      <div class="w-full max-w-[850px] bg-background shadow-sm border my-8 min-h-[1100px] p-16 relative">
+        
+        <div class="mb-12 border-b pb-4">
+             <h1 class="text-3xl font-bold font-sans tracking-tight text-foreground">Capítulo 1: A Vila Silenciosa</h1>
+             <div class="flex items-center gap-4 mt-4 text-sm text-muted-foreground font-sans">
+                <div class="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  Personagens: Elara, Kael
+                </div>
+                <div class="flex items-center gap-1">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+                  Arco: Introdução do Conflito
+                </div>
+             </div>
+        </div>
+
+        <div class="font-serif text-lg leading-relaxed space-y-6 text-foreground/90 outline-none max-w-none" contenteditable="true">
+          <p>O vento uivava entre as frestas das janelas de madeira, um lamento constante que Elara aprendera a ignorar. A vila de Oakhaven estava envolta em uma névoa perpétua naquela manhã, o tipo de névoa que se agarra à pele e gela os ossos. Ela ajustou o xale sobre os ombros, seus dedos roçando o tecido áspero enquanto observava a rua deserta lá fora.</p>
+          
+          <p>"Eles não virão hoje," disse Kael, sua voz rouca quebrando o silêncio da pequena cabana. Ele estava sentado à mesa, polindo uma adaga com um pedaço de couro desgastado. O movimento era rítmico, hipnótico.</p>
+
+          <p>Elara se virou, a tensão evidente na linha rígida de seus ombros. "Eles têm que vir. O pacto foi selado na última lua cheia. Se os mercadores de ferro não trouxerem os suprimentos, não sobreviveremos ao inverno."</p>
+
+          <p>Kael parou de polir. O metal brilhou à luz fraca da lareira. Ele levantou os olhos, e Elara viu o medo que ele tentava esconder atrás da máscara de indiferença. <span class="bg-primary/10 text-primary/80 border-b-2 border-primary/30 px-1 rounded">"Talvez o pacto não valha tanto quanto pensávamos," ele murmurou, embainhando a adaga com um clique seco que ecoou como um tiro na sala pequena.</span></p>
+          
+          <p>Ela odiava quando ele estava certo. O silêncio que se seguiu foi pesado, carregado com as palavras não ditas sobre a escassez de comida e as histórias crescentes sobre as sombras que se moviam nas florestas ao redor. O inverno estava chegando, e com ele, algo mais antigo que o frio.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <aside class="w-96 bg-background border-l flex flex-col shrink-0 relative">
+      
+      <div class="h-14 border-b flex items-center justify-between px-4 shrink-0 bg-background">
+         <div class="font-medium flex items-center gap-2 text-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+          Assistente Neural
+         </div>
+         <button class="btn btn-ghost btn-sm px-2 text-muted-foreground">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="15" x2="15" y1="3" y2="21"/></svg>
+         </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-4 space-y-6 bg-secondary/20">
+
+        <div class="rounded-lg border bg-card p-4 shadow-sm">
+          <h3 class="text-sm font-semibold flex items-center gap-2 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+            Análise da Cena Atual
+          </h3>
+          
+          <div class="space-y-3 text-sm">
+            <div>
+              <span class="text-muted-foreground">Tom Detectado:</span>
+              <span class="font-medium ml-2 inline-flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-blue-400"></span> Melancólico, Tenso</span>
+            </div>
+             <div>
+              <span class="text-muted-foreground">Progresso do Plot:</span>
+              <div class="w-full h-2 bg-secondary rounded-full mt-1 overflow-hidden">
+                <div class="h-full bg-emerald-500 w-1/4 rounded-full"></div>
+              </div>
+              <div class="flex justify-between text-xs text-muted-foreground mt-1">
+                <span>Incidente Incitante</span>
+                <span>25%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+           <div class="text-sm font-semibold">Chat com a Obra</div>
+           
+           <div class="flex justify-end">
+             <div class="bg-primary text-primary-foreground px-4 py-2 rounded-2xl rounded-tr-sm max-w-[85%] text-sm">
+               Gostaria de deixar o diálogo do Kael mais pessimista no final.
+             </div>
+           </div>
+
+           <div class="flex items-start gap-3">
+             <div class="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary animate-pulse"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+             </div>
+             <div class="bg-card border px-4 py-2 rounded-2xl rounded-tl-sm max-w-[90%] text-sm shadow-sm">
+               <p class="mb-2">Entendido. Aqui está uma sugestão para a fala final dele, focando na desesperança:</p>
+               <div class="bg-secondary/50 p-3 rounded-md border-l-2 border-primary font-serif italic text-foreground/90">
+                 "O pacto..." Kael soltou uma risada curta e sem humor, o som morrendo rapidamente no ar frio. Ele embainhou a adaga com um clique definitivo. "Papel e tinta, Elara. Apenas papel e tinta contra o inverno que se aproxima. Eles já nos esqueceram."
+               </div>
+               <div class="mt-3 flex gap-2">
+                 <button class="btn btn-outline btn-sm h-7 text-xs">Inserir no Texto</button>
+                 <button class="btn btn-ghost btn-sm h-7 text-xs text-muted-foreground">Tentar novamente</button>
+               </div>
+             </div>
+           </div>
+
+        </div>
+
+      </div>
+
+      <div class="p-4 border-t bg-background mt-auto">
+        <div class="relative">
+          <textarea class="input-field min-h-[80px] py-2 resize-none pr-10 font-sans" placeholder="Peça sugestões, análise de personagens, ou reescrita..."></textarea>
+          <button class="absolute bottom-2 right-2 btn btn-primary h-8 w-8 p-0 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" x2="11" y1="2" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="text-xs text-muted-foreground mt-2 text-center flex items-center justify-center gap-1">
+           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-500"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+           LLM Local (Mistral-7B) Pronto
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+</body>
+</html>
