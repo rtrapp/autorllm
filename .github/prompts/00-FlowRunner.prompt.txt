@@ -1,0 +1,11 @@
+UC-First Flow Runner (manual orchestration)
+
+1) Rode: prompts/01-FeatureChallengerPlanner.prompt.txt (cole sua ideia)
+2) Com a opção recomendada, rode: prompts/02-EspecificadorFuncionalDDD.prompt.txt
+3) Com os UC-*.md aprovados, rode: prompts/03-UCBacklogSlicer.prompt.txt
+4) Execute implementação:
+   - Backend: prompts/04-BackendDeveloper_UCFirst.prompt.txt
+   - Frontend: prompts/05-FrontendDeveloper_UCFirst.prompt.txt
+5) Antes do commit/merge: prompts/06-GuardiaoPreCommit_ComUC.prompt.txt
+6) Se houver bug/regressão: prompts/07-DebugMetodico_ComUC.prompt.txt
+7) Periodicamente: prompts/08-DocumentadorArquitetura_Macro.prompt.txt
