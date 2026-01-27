@@ -80,10 +80,10 @@
 | [US069](#us069) | Implementar handlers CQRS para Plots | UC020 | Concluída | 6 critérios |
 | [US070](#us070) | Implementar handlers CQRS para Chapters | UC020 | Concluída | 6 critérios |
 | [US071](#us071) | Implementar SignalR Hub streaming LLM | UC020 | Concluída | 4 critérios |
-| [US072](#us072) | Conectar backend ao Ollama | UC021 | Planejado | 3 critérios |
-| [US073](#us073) | Implementar streaming respostas LLM | UC021 | Planejado | 3 critérios |
-| [US074](#us074) | Tratar erros de comunicação Ollama | UC021 | Planejado | 3 critérios |
-| [US075](#us075) | Configurar modelo LLM via appsettings | UC021 | Planejado | 2 critérios |
+| [US072](#us072) | Conectar backend ao Ollama | UC021 | Concluída | 3 critérios |
+| [US073](#us073) | Implementar streaming respostas LLM | UC021 | Concluída | 3 critérios |
+| [US074](#us074) | Tratar erros de comunicação Ollama | UC021 | Concluída | 3 critérios |
+| [US075](#us075) | Configurar modelo LLM via appsettings | UC021 | Concluída | 2 critérios |
 | [US076](#us076) | Criar aplicação React com TypeScript | UC022 | Planejado | 4 critérios |
 | [US077](#us077) | Configurar roteamento | UC022 | Planejado | 3 critérios |
 | [US078](#us078) | Criar client HTTP para API | UC022 | Planejado | 3 critérios |

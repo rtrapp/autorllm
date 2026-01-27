@@ -40,10 +40,10 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 | 21 | US070 | Implementar handlers CQRS para Chapters | Sprint 0 | � Concluída |
 | 22 | US090 | Implementar handlers CQRS para PlotPoints | Sprint 0 | 🟢 Concluída |
 | 23 | US071 | Implementar SignalR Hub streaming LLM | Sprint 0 | 🟢 Concluída |
-| 24 | US072 | Conectar backend ao Ollama | Sprint 0 | 🔴 Pendente |
-| 25 | US073 | Implementar streaming respostas LLM | Sprint 0 | 🔴 Pendente |
-| 26 | US074 | Tratar erros de comunicação Ollama | Sprint 0 | 🔴 Pendente |
-| 27 | US075 | Configurar modelo LLM via appsettings | Sprint 0 | 🔴 Pendente |
+| 24 | US072 | Conectar backend ao Ollama | Sprint 0 | � Concluída |
+| 25 | US073 | Implementar streaming respostas LLM | Sprint 0 | � Concluída |
+| 26 | US074 | Tratar erros de comunicação Ollama | Sprint 0 | � Concluída |
+| 27 | US075 | Configurar modelo LLM via appsettings | Sprint 0 | � Concluída |
 | 28 | US076 | Criar aplicação React com TypeScript | Sprint 0 | 🔴 Pendente |
 | 29 | US077 | Configurar roteamento | Sprint 0 | 🔴 Pendente |
 | 30 | US078 | Criar client HTTP para API | Sprint 0 | 🔴 Pendente |
@@ -113,7 +113,7 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 - 🟡 Em Progresso - Sendo desenvolvida
 - 🟢 Concluída - Implementada e testada
 
-**Próxima Story:** US072 - Conectar backend ao Ollama
+**Próxima Story:** US076 - Criar aplicação React com TypeScript
 
 ---
 
@@ -172,11 +172,11 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 - **Microsoft Agents Framework**
 - **NÃO usar HttpClient direto** - usar abstrações do Semantic Kernel
 
-- 🔴 UC021: Integrar Ollama com Backend
-  - US072: Conectar backend ao Ollama
-  - US073: Implementar streaming respostas LLM
-  - US074: Tratar erros de comunicação Ollama
-  - US075: Configurar modelo LLM via appsettings
+- ✅ UC021: Integrar Ollama com Backend
+  - ✅ US072: Conectar backend ao Ollama
+  - ✅ US073: Implementar streaming respostas LLM
+  - ✅ US074: Tratar erros de comunicação Ollama
+  - ✅ US075: Configurar modelo LLM via appsettings
 
 #### Feature F012: Frontend Base (React)
 - ✅ UC022: Implementar Frontend Base

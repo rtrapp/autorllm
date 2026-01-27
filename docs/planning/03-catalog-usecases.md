@@ -29,7 +29,7 @@
 | [UC018](#uc018-configurar-supabase-local) | Configurar Supabase Local | F009 | Concluída | 3 |
 | [UC019](#uc019-criar-schemas-e-migrations) | Criar Schemas e Migrations | F009 | Concluída | 4 |
 | [UC020](#uc020-implementar-application-layer-com-cqrs) | Implementar Application Layer com CQRS | F010 | Concluída | 7 |
-| [UC021](#uc021-integrar-ollama-com-backend) | Integrar Ollama com Backend | F011 | Planejado | 4 |
+| [UC021](#uc021-integrar-ollama-com-backend) | Integrar Ollama com Backend | F011 | Concluída | 4 |
 | [UC022](#uc022-implementar-frontend-base) | Implementar Frontend Base | F012 | Planejado | 5 |
 | [UC023](#uc023-implementar-cqrs-pattern) | Implementar CQRS Pattern | F010 | Concluída | 4 |
 | [UC024](#uc024-implementar-domain-entities-ddd) | Implementar Domain Entities (DDD) | F010 | Concluída | 5 |

@@ -37,12 +37,22 @@ public class LLMHub : Hub
 
             await foreach (var token in _agentService.StreamCompletionAsync(prompt, Context.ConnectionAborted))
             {
-                await Clients.Caller.SendAsync("OnTokenReceived", token);
+                await Clients.Caller.SendAsync("OnTokenReceived", token, Context.ConnectionAborted);
             }
 
-            await Clients.Caller.SendAsync("OnComplete");
+            await Clients.Caller.SendAsync("OnComplete", Context.ConnectionAborted);
             
             _logger.LogInformation("Rewrite request completed for chapter {ChapterId}", chapterId);
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.LogWarning("Rewrite request cancelled by client for chapter {ChapterId}", chapterId);
+            await Clients.Caller.SendAsync("OnCancelled", "Request was cancelled");
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("LLM service is unavailable"))
+        {
+            _logger.LogError(ex, "LLM service unavailable for chapter {ChapterId}", chapterId);
+            await Clients.Caller.SendAsync("OnError", "LLM não disponível. Verifique se o Ollama está rodando.");
         }
         catch (Exception ex)
         {

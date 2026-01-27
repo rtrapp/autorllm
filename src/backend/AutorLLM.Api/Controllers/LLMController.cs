@@ -1,4 +1,5 @@
 using AutorLLM.Application.Services;
+using AutorLLM.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutorLLM.Api.Controllers;
@@ -36,10 +37,22 @@ public class LLMController : ControllerBase
                 timestamp = DateTime.UtcNow
             });
         }
+        catch (OllamaConnectionException ex)
+        {
+            _logger.LogError(ex, "Ollama connection failed during health check");
+            return StatusCode(503, new 
+            { 
+                status = "error",
+                message = "LLM não disponível. Verifique se o Ollama está rodando.",
+                endpoint = ex.Endpoint,
+                model = ex.Model,
+                retryAttempts = ex.RetryAttempts
+            });
+        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Health check failed");
-            return StatusCode(500, new { status = "error", message = ex.Message });
+            _logger.LogError(ex, "Health check failed with unexpected error");
+            return StatusCode(500, new { status = "error", message = "Erro interno ao verificar saúde do LLM" });
         }
     }
 
@@ -54,10 +67,29 @@ public class LLMController : ControllerBase
             var response = await _agentService.CompleteAsync(request.Prompt, cancellationToken);
             return Ok(new { response, timestamp = DateTime.UtcNow });
         }
+        catch (OllamaConnectionException ex)
+        {
+            _logger.LogError(ex, "Ollama connection failed during completion");
+            return StatusCode(503, new 
+            { 
+                error = "LLM não disponível. Verifique se o Ollama está rodando.",
+                details = new 
+                {
+                    endpoint = ex.Endpoint,
+                    model = ex.Model,
+                    retryAttempts = ex.RetryAttempts
+                }
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.LogInformation("Completion cancelled by user");
+            return StatusCode(499, new { error = "Requisição cancelada pelo usuário" });
+        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Completion failed");
-            return StatusCode(500, new { error = ex.Message });
+            _logger.LogError(ex, "Completion failed with unexpected error");
+            return StatusCode(500, new { error = "Erro interno ao processar completion" });
         }
     }
 
@@ -82,10 +114,27 @@ public class LLMController : ControllerBase
             await Response.WriteAsync("data: [DONE]\n\n");
             await Response.Body.FlushAsync(cancellationToken);
         }
+        catch (OllamaConnectionException ex)
+        {
+            _logger.LogError(ex, "Ollama connection failed during streaming");
+            var errorData = System.Text.Json.JsonSerializer.Serialize(new 
+            { 
+                error = "LLM não disponível. Verifique se o Ollama está rodando.",
+                endpoint = ex.Endpoint,
+                model = ex.Model,
+                retryAttempts = ex.RetryAttempts
+            });
+            await Response.WriteAsync($"data: {errorData}\n\n");
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.LogInformation("Streaming cancelled by user");
+            await Response.WriteAsync("data: {\"error\": \"Streaming cancelado pelo usuário\"}\n\n");
+        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Streaming failed");
-            await Response.WriteAsync($"data: {{\"error\": \"{ex.Message}\"}}\n\n");
+            _logger.LogError(ex, "Streaming failed with unexpected error");
+            await Response.WriteAsync($"data: {{\"error\": \"Erro interno ao processar streaming\"}}\n\n");
         }
     }
 }

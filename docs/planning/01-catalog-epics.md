@@ -95,8 +95,8 @@ Sem infraestrutura, nada funciona. Esta epic não entrega valor direto ao usuár
 
 **Features Relacionadas:**
 - F009: Setup de Banco de Dados (Concluída - UC018 Concluída, UC019 Concluída)
-- F010: API Backend (.NET) (Em Implementação - UC023 Concluída, UC024 Concluída, UC020 Planejado)
-- F011: Integração LLM Local (Ollama) (Planejado)
+- F010: API Backend (.NET) (Concluída - UC023 Concluída, UC024 Concluída, UC020 Concluída)
+- F011: Integração LLM Local (Ollama) (Concluída - UC021 Concluída)
 - F012: Frontend Base (React) (Planejado)
 
 **Critérios de Sucesso:**

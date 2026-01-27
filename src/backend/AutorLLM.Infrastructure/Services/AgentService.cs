@@ -1,5 +1,6 @@
 using AutorLLM.Application.Services;
 using AutorLLM.Infrastructure.Configuration;
+using AutorLLM.Infrastructure.Exceptions;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -39,15 +40,28 @@ public class AgentService : IAgentService
 
         _logger.LogInformation("Streaming completion for prompt length: {Length}", prompt.Length);
 
+        await foreach (var token in StreamInternalAsync(prompt, cancellationToken))
+        {
+            yield return token;
+        }
+    }
+
+    private async IAsyncEnumerable<string> StreamInternalAsync(
+        string prompt,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var tokenCount = 0;
+
         await foreach (var update in _agent.RunStreamingAsync(prompt, cancellationToken: cancellationToken))
         {
             if (!string.IsNullOrEmpty(update.Text))
             {
+                tokenCount++;
                 yield return update.Text;
             }
         }
 
-        _logger.LogInformation("Streaming completion finished");
+        _logger.LogInformation("Streaming completion finished. Tokens streamed: {TokenCount}", tokenCount);
     }
 
     public async Task<string> CompleteAsync(
@@ -58,12 +72,39 @@ public class AgentService : IAgentService
 
         _logger.LogInformation("Running completion for prompt length: {Length}", prompt.Length);
 
-        var response = await _agent.RunAsync(prompt, cancellationToken: cancellationToken);
-        var result = response.Text ?? string.Empty;
+        try
+        {
+            var response = await _agent.RunAsync(prompt, cancellationToken: cancellationToken);
+            var result = response.Text ?? string.Empty;
 
-        _logger.LogInformation("Completion finished. Result length: {Length}", result.Length);
+            _logger.LogInformation("Completion finished. Result length: {Length}", result.Length);
 
-        return result;
+            return result;
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.LogWarning("Completion cancelled by user");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Completion failed. Endpoint: {Endpoint}, Model: {Model}",
+                _options.Ollama.Endpoint,
+                _options.Ollama.Model
+            );
+
+            throw new OllamaConnectionException(
+                "LLM não disponível. Verifique se o Ollama está rodando.",
+                ex
+            )
+            {
+                Endpoint = _options.Ollama.Endpoint,
+                Model = _options.Ollama.Model,
+                RetryAttempts = 0
+            };
+        }
     }
 
     public async Task<bool> HealthCheckAsync(CancellationToken cancellationToken = default)
