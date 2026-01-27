@@ -17,10 +17,10 @@
 | [F006](#f006-gerenciamento-de-contexto-automático) | Gerenciamento de Contexto Automático | E002 | MVP | Planejado | 2 |
 | [F007](#f007-geração-de-pdf) | Geração de PDF | E003 | MVP | Planejado | 1 |
 | [F008](#f008-preview-do-livro) | Preview do Livro | E003 | MVP | Planejado | 1 |
-| [F009](#f009-setup-de-banco-de-dados) | Setup de Banco de Dados | E004 | Fase 0 | Parcial | 2 |
-| [F010](#f010-api-backend-net) | API Backend (.NET) | E004 | Fase 0 | Em Implementação | 3 |
-| [F011](#f011-integração-llm-local-ollama) | Integração LLM Local (Ollama) | E004 | Fase 0 | Planejado | 1 |
-| [F012](#f012-frontend-base-react) | Frontend Base (React) | E004 | Fase 0 | Planejado | 1 |
+| [F009](#f009-setup-de-banco-de-dados) | Setup de Banco de Dados | E004 | Fase 0 | Completo | 2 |
+| [F010](#f010-api-backend-net) | API Backend (.NET) | E004 | Fase 0 | Completo | 3 |
+| [F011](#f011-integração-llm-local-ollama) | Integração LLM Local (Ollama) | E004 | Fase 0 | Completo | 1 |
+| [F012](#f012-frontend-base-react) | Frontend Base (React) | E004 | Fase 0 | Parcial | 1 |
 
 ---
 

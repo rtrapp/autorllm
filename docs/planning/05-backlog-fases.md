@@ -45,7 +45,7 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 | 26 | US074 | Tratar erros de comunicação Ollama | Sprint 0 | � Concluída |
 | 27 | US075 | Configurar modelo LLM via appsettings | Sprint 0 | � Concluída |
 | 28 | US076 | Criar aplicação React com TypeScript | Sprint 0 | � Concluída |
-| 29 | US077 | Configurar roteamento | Sprint 0 | 🔴 Pendente |
+| 29 | US077 | Configurar roteamento | Sprint 0 | � Concluída |
 | 30 | US078 | Criar client HTTP para API | Sprint 0 | 🔴 Pendente |
 | 31 | US079 | Implementar layout base | Sprint 0 | 🔴 Pendente |
 | 32 | US080 | Configurar SignalR client | Sprint 0 | 🔴 Pendente |
