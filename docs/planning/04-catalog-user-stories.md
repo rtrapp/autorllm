@@ -85,8 +85,8 @@
 | [US074](#us074) | Tratar erros de comunicação Ollama | UC021 | Concluída | 3 critérios |
 | [US075](#us075) | Configurar modelo LLM via appsettings | UC021 | Concluída | 2 critérios |
 | [US076](#us076) | Criar aplicação React com TypeScript | UC022 | Concluída | 4 critérios |
-| [US077](#us077) | Configurar roteamento | UC022 | Planejado | 3 critérios |
-| [US078](#us078) | Criar client HTTP para API | UC022 | Planejado | 3 critérios |
+| [US077](#us077) | Configurar roteamento | UC022 | Concluída | 3 critérios |
+| [US078](#us078) | Criar client HTTP para API | UC022 | Concluída | 3 critérios |
 | [US079](#us079) | Implementar layout base | UC022 | Planejado | 4 critérios |
 | [US080](#us080) | Configurar SignalR client | UC022 | Planejado | 3 critérios |
 | [US081](#us081) | Implementar estrutura de Commands | UC023 | Concluída | 4 critérios |
@@ -1121,7 +1121,7 @@
 
 **Critérios de Aceitação:**
 1. Axios instalado e configurado
-2. Base URL: `http://localhost:5000/api`
+2. Base URL: `http://localhost:5011/api`
 3. Interceptors para tratamento de erros globais
 
 ---
