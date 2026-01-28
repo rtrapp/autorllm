@@ -1,16 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Plus, Sparkles, MoreVertical } from "lucide-react";
+import { Plus, Sparkles, MoreVertical, Settings, Trash2, Eye } from "lucide-react";
 import { useState } from "react";
 import { NewProjectDialog } from "@/features/projects/components/NewProjectDialog";
-import { useProjects } from "@/features/projects/hooks/useProjects";
+import { EditProjectDialog } from "@/features/projects/components/EditProjectDialog";
+import { useProjects, type Project } from "@/features/projects/hooks/useProjects";
 import { Spinner } from "@/components/ui/spinner";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function ProjectsList() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { projects, isLoading, error } = useProjects();
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const { projects, isLoading, error, refetch } = useProjects();
 
   if (isLoading) {
     return (
@@ -99,9 +108,45 @@ export default function ProjectsList() {
                       <Sparkles className="h-3 w-3" />
                       {genreBadge.label}
                     </div>
-                    <button className="text-muted-foreground hover:text-foreground p-1 rounded -mr-2">
-                      <MoreVertical className="h-5 w-5" />
-                    </button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button 
+                          className="text-muted-foreground hover:text-foreground p-1 rounded -mr-2 hover:bg-accent transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <MoreVertical className="h-5 w-5" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingProject(project);
+                          }}
+                        >
+                          <Settings className="h-4 w-4 mr-2" />
+                          Editar Projeto
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to={`/projects/${project.id}`} className="cursor-pointer">
+                            <Eye className="h-4 w-4 mr-2" />
+                            Abrir Projeto
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          className="text-destructive focus:text-destructive"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // TODO: Implementar delete (US094)
+                            console.log('Delete project:', project.id);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Deletar Projeto
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
 
                   <Link to={`/projects/${project.id}`} className="flex-1">
@@ -152,6 +197,18 @@ export default function ProjectsList() {
       )}
 
       <NewProjectDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      
+      {editingProject && (
+        <EditProjectDialog
+          open={!!editingProject}
+          onOpenChange={(open) => !open && setEditingProject(null)}
+          project={editingProject}
+          onSuccess={() => {
+            refetch();
+            setEditingProject(null);
+          }}
+        />
+      )}
     </main>
   );
 }
@@ -168,11 +225,18 @@ function normalizeString(str: string): string {
 function getGenreColor(genre?: string): string {
   const colors: Record<string, string> = {
     fantasia: "from-emerald-500/20 to-teal-500/20",
-    scifi: "from-indigo-500/20 to-purple-500/20",
+    ficcaocientifica: "from-indigo-500/20 to-purple-500/20",
     romance: "from-pink-500/20 to-rose-500/20",
     misterio: "from-slate-500/20 to-gray-500/20",
-    terror: "from-red-500/20 to-orange-500/20",
-    ficcaocientifica: "from-indigo-500/20 to-purple-500/20",
+    thriller: "from-orange-500/20 to-red-500/20",
+    horror: "from-red-500/20 to-rose-500/20",
+    aventura: "from-amber-500/20 to-yellow-500/20",
+    drama: "from-blue-500/20 to-cyan-500/20",
+    historico: "from-stone-500/20 to-neutral-500/20",
+    biografia: "from-violet-500/20 to-purple-500/20",
+    naoficcao: "from-zinc-500/20 to-slate-500/20",
+    poesia: "from-fuchsia-500/20 to-pink-500/20",
+    outro: "from-gray-500/20 to-slate-500/20",
   };
 
   const key = genre ? normalizeString(genre) : "";
@@ -184,12 +248,7 @@ function getGenreBadgeStyle(genre?: string): { text: string; bg: string; label: 
     fantasia: { 
       text: "text-emerald-600", 
       bg: "bg-emerald-50", 
-      label: "Fantasia Épica" 
-    },
-    scifi: { 
-      text: "text-indigo-600", 
-      bg: "bg-indigo-50", 
-      label: "Sci-Fi Noir" 
+      label: "Fantasia" 
     },
     ficcaocientifica: { 
       text: "text-indigo-600", 
@@ -206,10 +265,50 @@ function getGenreBadgeStyle(genre?: string): { text: string; bg: string; label: 
       bg: "bg-slate-50", 
       label: "Mistério" 
     },
-    terror: { 
+    thriller: { 
+      text: "text-orange-600", 
+      bg: "bg-orange-50", 
+      label: "Thriller" 
+    },
+    horror: { 
       text: "text-red-600", 
       bg: "bg-red-50", 
-      label: "Terror" 
+      label: "Horror" 
+    },
+    aventura: { 
+      text: "text-amber-600", 
+      bg: "bg-amber-50", 
+      label: "Aventura" 
+    },
+    drama: { 
+      text: "text-blue-600", 
+      bg: "bg-blue-50", 
+      label: "Drama" 
+    },
+    historico: { 
+      text: "text-stone-600", 
+      bg: "bg-stone-50", 
+      label: "Histórico" 
+    },
+    biografia: { 
+      text: "text-violet-600", 
+      bg: "bg-violet-50", 
+      label: "Biografia" 
+    },
+    naoficcao: { 
+      text: "text-zinc-600", 
+      bg: "bg-zinc-50", 
+      label: "Não Ficção" 
+    },
+    poesia: { 
+      text: "text-fuchsia-600", 
+      bg: "bg-fuchsia-50", 
+      label: "Poesia" 
+    },
+    outro: { 
+      text: "text-gray-600", 
+      bg: "bg-gray-50", 
+      label: "Outro" 
     },
   };
 

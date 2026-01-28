@@ -84,7 +84,7 @@ public class ProjectRepository : IProjectRepository
             SELECT id, title, author, synopsis, genre, target_word_count AS targetwordcount,
                    current_word_count AS currentwordcount, created_at AS createdat, updated_at AS updatedat
             FROM projects
-            ORDER BY created_at DESC";
+            ORDER BY updated_at DESC";
 
         var results = await _connection.QueryAsync(
             new CommandDefinition(sql, cancellationToken: cancellationToken));
