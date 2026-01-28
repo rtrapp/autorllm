@@ -27,7 +27,8 @@ public class Plot : EntityBase
         Guid projectId,
         string title,
         string description,
-        PlotType type)
+        PlotType type,
+        string? resolution = null)
     {
         if (projectId == Guid.Empty)
             throw new ArgumentException("ProjectId cannot be empty.", nameof(projectId));
@@ -41,12 +42,16 @@ public class Plot : EntityBase
         if (description.Length > 2000)
             throw new ArgumentException("Plot description cannot exceed 2000 characters.", nameof(description));
 
+        if (resolution != null && resolution.Length > 2000)
+            throw new ArgumentException("Resolution cannot exceed 2000 characters.", nameof(resolution));
+
         var plot = new Plot
         {
             ProjectId = projectId,
             Title = title.Trim(),
             Description = description.Trim(),
-            Type = type
+            Type = type,
+            Resolution = resolution?.Trim()
         };
 
         return plot;

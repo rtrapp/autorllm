@@ -52,7 +52,8 @@ public class CreatePlotCommandHandler
         var plot = project.AddPlot(
             command.Title,
             command.Description,
-            plotType);
+            plotType,
+            command.Resolution);
 
         // Persist through repository
         await _projectRepository.UpdateAsync(project, cancellationToken);

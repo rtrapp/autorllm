@@ -399,7 +399,7 @@ public class ProjectRepository : IProjectRepository
     {
         const string sql = @"
             INSERT INTO plots (id, project_id, title, description, type, resolution, is_active, created_at, updated_at)
-            VALUES (@Id, @ProjectId, @Title, @Description, @Type, @Resolution, @IsActive, @CreatedAt, @UpdatedAt)";
+            VALUES (@Id, @ProjectId, @Title, @Description, @Type::plot_type, @Resolution, @IsActive, @CreatedAt, @UpdatedAt)";
 
         foreach (var plot in project.Plots)
         {

@@ -57,14 +57,14 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 | 38 | US007 | Visualizar lista de personagens | Sprint 1 | 🟢 Concluída |
 | 39 | US008 | Editar personagem existente | Sprint 1 | 🟢 Concluída |
 | 40 | US009 | Deletar personagem com confirmação | Sprint 1 | 🟢 Concluída |
-| 41 | US010 | Criar novo local | Sprint 1 | 🔴 Pendente |
-| 42 | US011 | Visualizar lista de locais | Sprint 1 | 🔴 Pendente |
-| 43 | US012 | Editar local existente | Sprint 1 | 🔴 Pendente |
-| 44 | US013 | Deletar local | Sprint 1 | 🔴 Pendente |
-| 45 | US014 | Criar novo plot | Sprint 1 | 🔴 Pendente |
-| 46 | US015 | Visualizar lista de plots | Sprint 1 | 🔴 Pendente |
-| 47 | US016 | Editar plot existente | Sprint 1 | 🔴 Pendente |
-| 48 | US017 | Deletar plot com warning | Sprint 1 | 🔴 Pendente |
+| 41 | US010 | Criar novo local | Sprint 1 | � Concluída |
+| 42 | US011 | Visualizar lista de locais | Sprint 1 | 🟢 Concluída |
+| 43 | US012 | Editar local existente | Sprint 1 | 🟢 Concluída |
+| 44 | US013 | Deletar local | Sprint 1 | 🟢 Concluída |
+| 45 | US014 | Criar novo plot | Sprint 1 | � Concluída |
+| 46 | US015 | Visualizar lista de plots | Sprint 1 | 🟢 Concluída |
+| 47 | US016 | Editar plot existente | Sprint 1 | 🟢 Concluída |
+| 48 | US017 | Deletar plot com warning | Sprint 1 | 🟢 Concluída |
 | 49 | US018 | Criar novo capítulo | Sprint 1 | 🔴 Pendente |
 | 50 | US019 | Visualizar lista de capítulos | Sprint 1 | 🔴 Pendente |
 | 51 | US020 | Reordenar capítulos | Sprint 1 | 🔴 Pendente |
@@ -117,7 +117,7 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 - 🟡 Em Progresso - Sendo desenvolvida
 - 🟢 Concluída - Implementada e testada
 
-**Próxima Story:** US010 - Criar novo local
+**Próxima Story:** US018 - Criar novo capítulo
 
 ---
 

@@ -11,4 +11,5 @@ public record CreatePlotCommand : IRequest<CreatePlotResult>
     public string Title { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public string Type { get; init; } = string.Empty;
+    public string? Resolution { get; init; }
 }

@@ -22,5 +22,8 @@ public class CreatePlotCommandValidator : AbstractValidator<CreatePlotCommand>
         RuleFor(x => x.Type)
             .NotEmpty().WithMessage("Type is required")
             .MaximumLength(50).WithMessage("Type must be under 50 characters");
+
+        RuleFor(x => x.Resolution)
+            .MaximumLength(2000).WithMessage("Resolution must be under 2000 characters");
     }
 }

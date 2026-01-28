@@ -21,7 +21,10 @@ import { useLocations } from "@/features/locations/hooks/useLocations";
 import { LocationFormDialog } from "@/features/locations/components/LocationFormDialog";
 import { DeleteLocationDialog } from "@/features/locations/components/DeleteLocationDialog";
 import type { Location } from "@/features/locations/types/location";
-import { PlotDialog } from "@/features/plots/components/PlotDialog";
+import { usePlots } from "@/features/plots/hooks/usePlots";
+import { PlotFormDialog } from "@/features/plots/components/PlotFormDialog";
+import { DeletePlotDialog } from "@/features/plots/components/DeletePlotDialog";
+import type { Plot } from "@/features/plots/types/plot";
 
 export function AppSidebar() {
   const [activeTab, setActiveTab] = useState<'manuscript' | 'world'>('manuscript');
@@ -37,6 +40,12 @@ export function AppSidebar() {
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
   const [deletingLocation, setDeletingLocation] = useState<Location | null>(null);
   const [isSavingLocation, setIsSavingLocation] = useState(false);
+  
+  const { plots, isLoading: isLoadingPlots, createPlot, updatePlot, deletePlot } = usePlots(projectId);
+  const [isCreatePlotDialogOpen, setIsCreatePlotDialogOpen] = useState(false);
+  const [editingPlot, setEditingPlot] = useState<Plot | null>(null);
+  const [deletingPlot, setDeletingPlot] = useState<Plot | null>(null);
+  const [isSavingPlot, setIsSavingPlot] = useState(false);
   
   // Estados para controlar seções e grupos expandidos
   const [expandedSections, setExpandedSections] = useState({
@@ -92,6 +101,38 @@ export function AppSidebar() {
       setDeletingLocation(null);
     } finally {
       setIsSavingLocation(false);
+    }
+  };
+
+  // Handlers para Plots
+  const handleCreatePlot = async (data: any) => {
+    setIsSavingPlot(true);
+    try {
+      await createPlot(data);
+      setIsCreatePlotDialogOpen(false);
+    } finally {
+      setIsSavingPlot(false);
+    }
+  };
+
+  const handleUpdatePlot = async (data: any) => {
+    setIsSavingPlot(true);
+    try {
+      await updatePlot(data);
+      setEditingPlot(null);
+    } finally {
+      setIsSavingPlot(false);
+    }
+  };
+
+  const handleDeletePlot = async () => {
+    if (!deletingPlot) return;
+    setIsSavingPlot(true);
+    try {
+      await deletePlot(deletingPlot.id);
+      setDeletingPlot(null);
+    } finally {
+      setIsSavingPlot(false);
     }
   };
 
@@ -388,19 +429,77 @@ export function AppSidebar() {
                             )}
                             <BookOpen className="h-4 w-4" /> Plots
                         </span>
-                        <PlotDialog />
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 w-6 p-0"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsCreatePlotDialogOpen(true);
+                          }}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
                     </div>
                     {expandedSections.plots && (
-                      <div className="space-y-1">
-                          {['A Praga de Cristal', 'O Passado de Kael'].map(plot => (
-                               <PlotDialog key={plot} mode="edit" trigger={
-                                  <div className="flex items-center justify-between py-1.5 px-2 hover:bg-secondary rounded cursor-pointer text-sm group">
-                                      <span>{plot}</span>
-                                      <span className="h-2 w-2 rounded-full bg-emerald-500" title="Ativo"></span>
-                                  </div>
-                               } />
-                          ))}
-                      </div>
+                      <>
+                        {isLoadingPlots ? (
+                          <div className="flex items-center justify-center py-4">
+                            <Spinner className="size-4" />
+                          </div>
+                        ) : plots && plots.length === 0 ? (
+                          <p className="text-xs text-muted-foreground px-2 py-1">Nenhum plot ainda</p>
+                        ) : (
+                          <div className="space-y-1">
+                            {plots?.sort((a: Plot, b: Plot) => {
+                              // Main plots primeiro
+                              if (a.type === 'Main' && b.type !== 'Main') return -1;
+                              if (a.type !== 'Main' && b.type === 'Main') return 1;
+                              // Depois alfabeticamente
+                              return a.title.localeCompare(b.title, 'pt-BR');
+                            }).map((plot: Plot) => (
+                              <div
+                                key={plot.id}
+                                className={`flex items-center justify-between py-1.5 pl-3 pr-2 hover:bg-secondary rounded text-sm group border-l-4 ${getPlotTypeBorderColor(plot.type)}`}
+                              >
+                                <div 
+                                  className="flex-1 min-w-0 truncate cursor-pointer"
+                                  onClick={() => setEditingPlot(plot)}
+                                >
+                                  <span className={plot.type === 'Main' ? 'font-semibold' : ''}>
+                                    {plot.title}
+                                  </span>
+                                  <span className="ml-2 text-xs text-muted-foreground">
+                                    ({getPlotTypeLabel(plot.type)})
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setEditingPlot(plot);
+                                    }}
+                                    className="p-1 hover:bg-primary/10 rounded"
+                                    title="Editar plot"
+                                  >
+                                    <Pencil className="h-3 w-3 text-muted-foreground" />
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setDeletingPlot(plot);
+                                    }}
+                                    className="p-1 hover:bg-destructive/10 rounded"
+                                    title="Deletar plot"
+                                  >
+                                    <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </>
                     )}
                  </div>
              </div>
@@ -420,6 +519,7 @@ export function AppSidebar() {
             />
 
             <CharacterFormDialog
+              key={editingCharacter?.id || 'edit-character'}
               open={!!editingCharacter}
               onOpenChange={(open) => !open && setEditingCharacter(null)}
               mode="edit"
@@ -453,7 +553,7 @@ export function AppSidebar() {
             />
 
             <LocationFormDialog
-              key={editingLocation?.id || 'edit'}
+              key={editingLocation?.id || 'edit-location'}
               open={!!editingLocation}
               onOpenChange={(open) => !open && setEditingLocation(null)}
               mode="edit"
@@ -471,6 +571,36 @@ export function AppSidebar() {
               onDelete={handleDeleteLocation}
               isLoading={isSavingLocation}
             />
+
+            <PlotFormDialog
+              open={isCreatePlotDialogOpen}
+              onOpenChange={setIsCreatePlotDialogOpen}
+              mode="create"
+              projectId={projectId}
+              onSuccess={() => setIsCreatePlotDialogOpen(false)}
+              onSubmit={handleCreatePlot}
+              isLoading={isSavingPlot}
+            />
+
+            <PlotFormDialog
+              key={editingPlot?.id || 'edit-plot'}
+              open={!!editingPlot}
+              onOpenChange={(open) => !open && setEditingPlot(null)}
+              mode="edit"
+              projectId={projectId}
+              plot={editingPlot || undefined}
+              onSuccess={() => setEditingPlot(null)}
+              onSubmit={handleUpdatePlot}
+              isLoading={isSavingPlot}
+            />
+
+            <DeletePlotDialog
+              open={!!deletingPlot}
+              onOpenChange={(open) => !open && setDeletingPlot(null)}
+              plot={deletingPlot}
+              onConfirm={handleDeletePlot}
+              isLoading={isSavingPlot}
+            />
           </>
         )}
      </aside>
@@ -486,4 +616,28 @@ function getRoleBorderColor(role: string): string {
     'Minor': 'border-gray-400',
   };
   return colors[role] || 'border-gray-400';
+}
+
+// Função auxiliar para obter cor do plot type (borda lateral)
+function getPlotTypeBorderColor(type: string): string {
+  const colors: Record<string, string> = {
+    'Main': 'border-purple-500',
+    'Subplot': 'border-indigo-400',
+    'Character Arc': 'border-cyan-500',
+    'Romance': 'border-pink-500',
+    'Mystery': 'border-orange-500',
+  };
+  return colors[type] || 'border-gray-400';
+}
+
+// Função auxiliar para obter label do plot type
+function getPlotTypeLabel(type: string): string {
+  const labels: Record<string, string> = {
+    'Main': 'Principal',
+    'Subplot': 'Subplot',
+    'Character Arc': 'Arco de Personagem',
+    'Romance': 'Romance',
+    'Mystery': 'Mistério',
+  };
+  return labels[type] || type;
 }

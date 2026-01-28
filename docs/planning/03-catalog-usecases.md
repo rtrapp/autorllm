@@ -12,8 +12,8 @@
 | [UC001](#uc001-gerar-outline-inicial-com-assistência-llm) | Gerar Outline Inicial com Assistência LLM | F001 | Planejado | 5 |
 | [UC002](#uc002-gerenciar-personagens) | Gerenciar Personagens | F002 | Concluída | 4 |
 | [UC025](#uc025-gerenciar-projetos) | Gerenciar Projetos | F013 | Concluída | 4 |
-| [UC003](#uc003-gerenciar-locais) | Gerenciar Locais | F002 | Planejado | 4 |
-| [UC004](#uc004-gerenciar-plots) | Gerenciar Plots | F002 | Planejado | 4 |
+| [UC003](#uc003-gerenciar-locais) | Gerenciar Locais | F002 | Concluída | 4 |
+| [UC004](#uc004-gerenciar-plots) | Gerenciar Plots | F002 | Concluída | 4 |
 | [UC005](#uc005-gerenciar-capítulos) | Gerenciar Capítulos | F002 | Planejado | 5 |
 | [UC006](#uc006-visualizar-timeline-de-arcos) | Visualizar Timeline de Arcos | F003 | Planejado | 3 |
 | [UC007](#uc007-marcar-pontos-chave-em-arcos) | Marcar Pontos-Chave em Arcos | F003 | Planejado | 3 |
@@ -139,6 +139,8 @@
 **Feature:** F002  
 **Objetivo:** Criar, visualizar, editar e deletar locais/cenários do livro.
 
+**Status:** 🟢 Concluída
+
 **Atores:** Autor
 
 **Fluxo Resumido:**
@@ -152,10 +154,10 @@
 - Descrição opcional
 
 **User Stories:**
-- US010: Como autor, quero criar novo local informando nome e descrição
-- US011: Como autor, quero visualizar lista de locais
-- US012: Como autor, quero editar local existente
-- US013: Como autor, quero deletar local
+- US010: Como autor, quero criar novo local informando nome e descrição ✅
+- US011: Como autor, quero visualizar lista de locais ✅
+- US012: Como autor, quero editar local existente ✅
+- US013: Como autor, quero deletar local ✅
 
 ---
 
@@ -163,6 +165,8 @@
 
 **Feature:** F002  
 **Objetivo:** Criar, visualizar, editar e deletar plots (arcos narrativos).
+
+**Status:** 🟢 Concluída
 
 **Atores:** Autor
 
@@ -177,10 +181,10 @@
 - Nome e tipo são obrigatórios
 
 **User Stories:**
-- US014: Como autor, quero criar novo plot definindo nome, tipo e descrição
-- US015: Como autor, quero visualizar lista de plots
-- US016: Como autor, quero editar plot existente
-- US017: Como autor, quero deletar plot (com warning se houver pontos marcados)
+- US014: Como autor, quero criar novo plot definindo nome, tipo e descrição ✅
+- US015: Como autor, quero visualizar lista de plots ✅
+- US016: Como autor, quero editar plot existente ✅
+- US017: Como autor, quero deletar plot (com warning se houver pontos marcados) ✅
 
 ---
 

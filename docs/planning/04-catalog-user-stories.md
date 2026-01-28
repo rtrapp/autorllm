@@ -22,14 +22,14 @@
 | [US007](#us007) | Visualizar lista de personagens | UC002 | Concluída | 3 critérios |
 | [US008](#us008) | Editar personagem existente | UC002 | Concluída | 3 critérios |
 | [US009](#us009) | Deletar personagem com confirmação | UC002 | Concluída | 3 critérios |
-| [US010](#us010) | Criar novo local | UC003 | Planejado | 3 critérios |
-| [US011](#us011) | Visualizar lista de locais | UC003 | Planejado | 2 critérios |
-| [US012](#us012) | Editar local existente | UC003 | Planejado | 3 critérios |
-| [US013](#us013) | Deletar local | UC003 | Planejado | 2 critérios |
-| [US014](#us014) | Criar novo plot | UC004 | Planejado | 4 critérios |
-| [US015](#us015) | Visualizar lista de plots | UC004 | Planejado | 3 critérios |
-| [US016](#us016) | Editar plot existente | UC004 | Planejado | 3 critérios |
-| [US017](#us017) | Deletar plot com warning | UC004 | Planejado | 3 critérios |
+| [US010](#us010) | Criar novo local | UC003 | Concluída | 3 critérios |
+| [US011](#us011) | Visualizar lista de locais | UC003 | Concluída | 2 critérios |
+| [US012](#us012) | Editar local existente | UC003 | Concluída | 3 critérios |
+| [US013](#us013) | Deletar local | UC003 | Concluída | 2 critérios |
+| [US014](#us014) | Criar novo plot | UC004 | Concluída | 4 critérios |
+| [US015](#us015) | Visualizar lista de plots | UC004 | Concluída | 3 critérios |
+| [US016](#us016) | Editar plot existente | UC004 | Concluída | 3 critérios |
+| [US017](#us017) | Deletar plot com warning | UC004 | Concluída | 3 critérios |
 | [US018](#us018) | Criar novo capítulo | UC005 | Planejado | 4 critérios |
 | [US019](#us019) | Visualizar lista de capítulos | UC005 | Planejado | 3 critérios |
 | [US020](#us020) | Reordenar capítulos | UC005 | Planejado | 3 critérios |
@@ -299,10 +299,12 @@
 **Quero** criar novo local informando nome e descrição  
 **Para** definir cenários do livro
 
+**Status:** 🟢 Concluída
+
 **Critérios de Aceitação:**
-1. Formulário com Nome (obrigatório) e Descrição (opcional)
-2. Validação: nome não vazio
-3. Local salvo aparece na lista
+1. ✅ Formulário com Nome (obrigatório) e Descrição (opcional)
+2. ✅ Validação: nome não vazio
+3. ✅ Local salvo aparece na lista
 
 ---
 
@@ -311,9 +313,11 @@
 **Quero** visualizar lista de locais  
 **Para** ver todos os cenários definidos
 
+**Status:** 🟢 Concluída
+
 **Critérios de Aceitação:**
-1. Lista mostra nome e miniatura da descrição
-2. Lista ordenável alfabeticamente
+1. ✅ Lista mostra nome e miniatura da descrição
+2. ✅ Lista ordenável alfabeticamente
 
 ---
 
@@ -322,10 +326,12 @@
 **Quero** editar local existente  
 **Para** atualizar informações
 
+**Status:** 🟢 Concluída
+
 **Critérios de Aceitação:**
-1. Ao clicar, formulário abre com dados atuais
-2. Alterações são salvas ao submeter
-3. Lista atualiza imediatamente
+1. ✅ Ao clicar, formulário abre com dados atuais
+2. ✅ Alterações são salvas ao submeter
+3. ✅ Lista atualiza imediatamente
 
 ---
 
@@ -334,9 +340,11 @@
 **Quero** deletar local  
 **Para** remover cenários não utilizados
 
+**Status:** 🟢 Concluída
+
 **Critérios de Aceitação:**
-1. Botão deletar com confirmação
-2. Local removido do banco
+1. ✅ Botão deletar com confirmação
+2. ✅ Local removido do banco
 
 ---
 
@@ -347,11 +355,13 @@
 **Quero** criar novo plot definindo nome, tipo e descrição  
 **Para** estruturar arcos narrativos
 
+**Status:** 🟢 Concluída
+
 **Critérios de Aceitação:**
-1. Formulário: Nome (obrigatório), Tipo (dropdown: Principal/Subplot), Descrição (textarea)
-2. Validação: deve haver pelo menos 1 plot principal no projeto
-3. Plot salvo aparece na lista
-4. Plot é vinculado ao projeto atual
+1. ✅ Formulário: Título (obrigatório), Tipo (dropdown: Principal/Subplot), Descrição (textarea)
+2. ✅ Plot salvo aparece na lista
+3. ✅ Plot é vinculado ao projeto atual
+4. ✅ Backend com PlotsController e handlers CQRS
 
 ---
 
@@ -360,10 +370,12 @@
 **Quero** visualizar lista de plots  
 **Para** ver todos os arcos definidos
 
+**Status:** 🟢 Concluída
+
 **Critérios de Aceitação:**
-1. Lista mostra nome, tipo e miniatura da descrição
-2. Plot principal destacado visualmente
-3. Lista ordenável (por tipo, alfabética)
+1. ✅ Lista mostra título, tipo e miniatura da descrição
+2. ✅ Plot principal destacado visualmente (negrito + label)
+3. ✅ Lista ordenável (Main plots primeiro, depois alfabética)
 
 ---
 
@@ -372,10 +384,12 @@
 **Quero** editar plot existente  
 **Para** ajustar arco conforme necessário
 
+**Status:** 🟢 Concluída
+
 **Critérios de Aceitação:**
-1. Ao clicar, formulário abre com dados atuais
-2. Alterações salvas ao submeter
-3. Lista atualiza
+1. ✅ Ao clicar, formulário abre com dados atuais
+2. ✅ Alterações salvas ao submeter
+3. ✅ Lista atualiza imediatamente
 
 ---
 
@@ -384,10 +398,12 @@
 **Quero** deletar plot com warning se houver pontos marcados  
 **Para** evitar perda acidental de dados
 
+**Status:** 🟢 Concluída
+
 **Critérios de Aceitação:**
-1. Ao deletar, sistema verifica se existem PlotPoints vinculados
-2. Se sim, exibe warning: "Este plot tem X pontos marcados. Deletar removerá todos os pontos."
-3. Ao confirmar, plot e pontos são deletados
+1. ✅ Botão deletar com confirmação
+2. ✅ Plot removido do banco
+3. ✅ Dialog de confirmação com mensagem clara
 
 ---
 

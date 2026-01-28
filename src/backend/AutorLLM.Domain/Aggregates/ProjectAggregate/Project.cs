@@ -300,9 +300,10 @@ public class Project : EntityBase
     public Entities.Plot AddPlot(
         string title,
         string description,
-        PlotType type)
+        PlotType type,
+        string? resolution = null)
     {
-        var plot = Entities.Plot.Create(Id, title, description, type);
+        var plot = Entities.Plot.Create(Id, title, description, type, resolution);
         _plots.Add(plot);
         Touch();
 
