@@ -1,6 +1,6 @@
 # Backlog por Fases - MVP First
 
-**Última atualização:** 2026-01-27  
+**Última atualização:** 2026-01-28  
 **Status:** 🟢 Definido
 
 ---
@@ -13,7 +13,7 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 
 ## Ordem de Implementação das User Stories
 
-**Total:** 90 User Stories organizadas por sprint
+**Total:** 94 User Stories organizadas por sprint
 
 | # | Story ID | Descrição | Sprint | Status |
 |---|---|---|---|---|
@@ -48,72 +48,76 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 | 29 | US077 | Configurar roteamento | Sprint 0 | � Concluída |
 | 30 | US078 | Criar client HTTP para API | Sprint 0 | 🟢 Concluída |
 | 31 | US079 | Implementar layout base | Sprint 0 | � Concluída |
-| 32 | US080 | Configurar SignalR client | Sprint 0 | 🔴 Pendente |
-| 33 | US006 | Criar novo personagem | Sprint 1 | 🔴 Pendente |
-| 34 | US007 | Visualizar lista de personagens | Sprint 1 | 🔴 Pendente |
-| 35 | US008 | Editar personagem existente | Sprint 1 | 🔴 Pendente |
-| 36 | US009 | Deletar personagem com confirmação | Sprint 1 | 🔴 Pendente |
-| 37 | US010 | Criar novo local | Sprint 1 | 🔴 Pendente |
-| 38 | US011 | Visualizar lista de locais | Sprint 1 | 🔴 Pendente |
-| 39 | US012 | Editar local existente | Sprint 1 | 🔴 Pendente |
-| 40 | US013 | Deletar local | Sprint 1 | 🔴 Pendente |
-| 41 | US014 | Criar novo plot | Sprint 1 | 🔴 Pendente |
-| 42 | US015 | Visualizar lista de plots | Sprint 1 | 🔴 Pendente |
-| 43 | US016 | Editar plot existente | Sprint 1 | 🔴 Pendente |
-| 44 | US017 | Deletar plot com warning | Sprint 1 | 🔴 Pendente |
-| 45 | US018 | Criar novo capítulo | Sprint 1 | 🔴 Pendente |
-| 46 | US019 | Visualizar lista de capítulos | Sprint 1 | 🔴 Pendente |
-| 47 | US020 | Reordenar capítulos | Sprint 1 | 🔴 Pendente |
-| 48 | US021 | Editar título e resumo de capítulo | Sprint 1 | 🔴 Pendente |
-| 49 | US022 | Deletar capítulo | Sprint 1 | 🔴 Pendente |
-| 50 | US001 | Descrever ideia de livro para LLM | Sprint 1 | 🔴 Pendente |
-| 51 | US002 | Receber perguntas da LLM para expandir ideia | Sprint 1 | 🔴 Pendente |
-| 52 | US003 | Receber outline estruturado gerado pela LLM | Sprint 1 | 🔴 Pendente |
-| 53 | US004 | Revisar e editar outline gerado | Sprint 1 | 🔴 Pendente |
-| 54 | US005 | Salvar projeto com estrutura inicial | Sprint 1 | 🔴 Pendente |
-| 55 | US023 | Ver gráfico de arcos narrativos | Sprint 2 | 🔴 Pendente |
-| 56 | US024 | Filtrar timeline por plot | Sprint 2 | 🔴 Pendente |
-| 57 | US025 | Clicar em ponto e ir para capítulo | Sprint 2 | 🔴 Pendente |
-| 58 | US026 | Marcar ponto de intensidade em capítulo | Sprint 2 | 🔴 Pendente |
-| 59 | US027 | Editar intensidade de ponto | Sprint 2 | 🔴 Pendente |
-| 60 | US028 | Remover ponto de plot | Sprint 2 | 🔴 Pendente |
-| 61 | US029 | Escrever texto no editor | Sprint 2 | 🔴 Pendente |
-| 62 | US030 | Formatar texto (negrito, itálico) | Sprint 2 | 🔴 Pendente |
-| 63 | US031 | Ver contador de palavras em tempo real | Sprint 2 | 🔴 Pendente |
-| 64 | US032 | Autosave automático | Sprint 2 | 🔴 Pendente |
-| 65 | US033 | Navegar entre capítulos | Sprint 2 | 🔴 Pendente |
-| 66 | US034 | Sistema salvar antes de trocar capítulo | Sprint 2 | 🔴 Pendente |
-| 67 | US035 | Sistema salvar automaticamente | Sprint 2 | 🔴 Pendente |
-| 68 | US036 | Ver indicador de status de salvamento | Sprint 2 | 🔴 Pendente |
-| 69 | US047 | Sistema identificar personagens relevantes | Sprint 3 | 🔴 Pendente |
-| 70 | US048 | Sistema buscar plots ativos | Sprint 3 | 🔴 Pendente |
-| 71 | US049 | Sistema montar prompt contextualizado | Sprint 3 | 🔴 Pendente |
-| 72 | US050 | Sistema gerar embeddings de entidades | Sprint 3 | 🔴 Pendente |
-| 73 | US051 | Sistema buscar entidades por similaridade | Sprint 3 | 🔴 Pendente |
-| 74 | US052 | Sistema atualizar embeddings ao editar | Sprint 3 | 🔴 Pendente |
-| 75 | US037 | Selecionar texto e pedir reescrita | Sprint 3 | 🔴 Pendente |
-| 76 | US038 | Ver resposta LLM em streaming | Sprint 3 | 🔴 Pendente |
-| 77 | US039 | Aceitar sugestão da LLM | Sprint 3 | 🔴 Pendente |
-| 78 | US040 | Rejeitar sugestão da LLM | Sprint 3 | 🔴 Pendente |
-| 79 | US041 | Ajustar tom do texto selecionado | Sprint 3 | 🔴 Pendente |
-| 80 | US042 | Digitar comando customizado | Sprint 3 | 🔴 Pendente |
-| 81 | US043 | LLM manter coerência com contexto | Sprint 3 | 🔴 Pendente |
-| 82 | US044 | Expandir trecho adicionando detalhes | Sprint 3 | 🔴 Pendente |
-| 83 | US045 | Resumir trecho mantendo essência | Sprint 3 | 🔴 Pendente |
-| 84 | US046 | Controlar nível de expansão/resumo | Sprint 3 | 🔴 Pendente |
-| 85 | US053 | Exportar livro para PDF | Sprint 4 | 🔴 Pendente |
-| 86 | US054 | Escolher local de salvamento PDF | Sprint 4 | 🔴 Pendente |
-| 87 | US055 | PDF com formatação profissional | Sprint 4 | 🔴 Pendente |
-| 88 | US056 | Sumário clicável no PDF | Sprint 4 | 🔴 Pendente |
-| 89 | US057 | Visualizar preview do livro | Sprint 4 | 🔴 Pendente |
-| 90 | US058 | Navegar páginas do preview | Sprint 4 | 🔴 Pendente |
+| 32 | US080 | Configurar SignalR client | Sprint 0 | 🟢 Concluída |
+| 33 | US091 | Criar novo projeto manualmente | Sprint 1 | � Concluída |
+| 34 | US092 | Visualizar lista de projetos | Sprint 1 | 🔴 Pendente |
+| 35 | US093 | Editar informações do projeto | Sprint 1 | 🔴 Pendente |
+| 36 | US094 | Deletar projeto com confirmação | Sprint 1 | 🔴 Pendente |
+| 37 | US006 | Criar novo personagem | Sprint 1 | 🔴 Pendente |
+| 38 | US007 | Visualizar lista de personagens | Sprint 1 | 🔴 Pendente |
+| 39 | US008 | Editar personagem existente | Sprint 1 | 🔴 Pendente |
+| 40 | US009 | Deletar personagem com confirmação | Sprint 1 | 🔴 Pendente |
+| 41 | US010 | Criar novo local | Sprint 1 | 🔴 Pendente |
+| 42 | US011 | Visualizar lista de locais | Sprint 1 | 🔴 Pendente |
+| 43 | US012 | Editar local existente | Sprint 1 | 🔴 Pendente |
+| 44 | US013 | Deletar local | Sprint 1 | 🔴 Pendente |
+| 45 | US014 | Criar novo plot | Sprint 1 | 🔴 Pendente |
+| 46 | US015 | Visualizar lista de plots | Sprint 1 | 🔴 Pendente |
+| 47 | US016 | Editar plot existente | Sprint 1 | 🔴 Pendente |
+| 48 | US017 | Deletar plot com warning | Sprint 1 | 🔴 Pendente |
+| 49 | US018 | Criar novo capítulo | Sprint 1 | 🔴 Pendente |
+| 50 | US019 | Visualizar lista de capítulos | Sprint 1 | 🔴 Pendente |
+| 51 | US020 | Reordenar capítulos | Sprint 1 | 🔴 Pendente |
+| 52 | US021 | Editar título e resumo de capítulo | Sprint 1 | 🔴 Pendente |
+| 53 | US022 | Deletar capítulo | Sprint 1 | 🔴 Pendente |
+| 54 | US001 | Descrever ideia de livro para LLM | Sprint 1 | 🔴 Pendente |
+| 55 | US002 | Receber perguntas da LLM para expandir ideia | Sprint 1 | 🔴 Pendente |
+| 56 | US003 | Receber outline estruturado gerado pela LLM | Sprint 1 | 🔴 Pendente |
+| 57 | US004 | Revisar e editar outline gerado | Sprint 1 | 🔴 Pendente |
+| 58 | US005 | Salvar projeto com estrutura inicial | Sprint 1 | 🔴 Pendente |
+| 59 | US023 | Ver gráfico de arcos narrativos | Sprint 2 | 🔴 Pendente |
+| 60 | US024 | Filtrar timeline por plot | Sprint 2 | 🔴 Pendente |
+| 61 | US025 | Clicar em ponto e ir para capítulo | Sprint 2 | 🔴 Pendente |
+| 62 | US026 | Marcar ponto de intensidade em capítulo | Sprint 2 | 🔴 Pendente |
+| 63 | US027 | Editar intensidade de ponto | Sprint 2 | 🔴 Pendente |
+| 64 | US028 | Remover ponto de plot | Sprint 2 | 🔴 Pendente |
+| 65 | US029 | Escrever texto no editor | Sprint 2 | 🔴 Pendente |
+| 66 | US030 | Formatar texto (negrito, itálico) | Sprint 2 | 🔴 Pendente |
+| 67 | US031 | Ver contador de palavras em tempo real | Sprint 2 | 🔴 Pendente |
+| 68 | US032 | Autosave automático | Sprint 2 | 🔴 Pendente |
+| 69 | US033 | Navegar entre capítulos | Sprint 2 | 🔴 Pendente |
+| 70 | US034 | Sistema salvar antes de trocar capítulo | Sprint 2 | 🔴 Pendente |
+| 71 | US035 | Sistema salvar automaticamente | Sprint 2 | 🔴 Pendente |
+| 72 | US036 | Ver indicador de status de salvamento | Sprint 2 | 🔴 Pendente |
+| 73 | US047 | Sistema identificar personagens relevantes | Sprint 3 | 🔴 Pendente |
+| 74 | US048 | Sistema buscar plots ativos | Sprint 3 | 🔴 Pendente |
+| 75 | US049 | Sistema montar prompt contextualizado | Sprint 3 | 🔴 Pendente |
+| 76 | US050 | Sistema gerar embeddings de entidades | Sprint 3 | 🔴 Pendente |
+| 77 | US051 | Sistema buscar entidades por similaridade | Sprint 3 | 🔴 Pendente |
+| 78 | US052 | Sistema atualizar embeddings ao editar | Sprint 3 | 🔴 Pendente |
+| 79 | US037 | Selecionar texto e pedir reescrita | Sprint 3 | 🔴 Pendente |
+| 80 | US038 | Ver resposta LLM em streaming | Sprint 3 | 🔴 Pendente |
+| 81 | US039 | Aceitar sugestão da LLM | Sprint 3 | 🔴 Pendente |
+| 82 | US040 | Rejeitar sugestão da LLM | Sprint 3 | 🔴 Pendente |
+| 83 | US041 | Ajustar tom do texto selecionado | Sprint 3 | 🔴 Pendente |
+| 84 | US042 | Digitar comando customizado | Sprint 3 | 🔴 Pendente |
+| 85 | US043 | LLM manter coerência com contexto | Sprint 3 | 🔴 Pendente |
+| 86 | US044 | Expandir trecho adicionando detalhes | Sprint 3 | 🔴 Pendente |
+| 87 | US045 | Resumir trecho mantendo essência | Sprint 3 | 🔴 Pendente |
+| 88 | US046 | Controlar nível de expansão/resumo | Sprint 3 | 🔴 Pendente |
+| 89 | US053 | Exportar livro para PDF | Sprint 4 | 🔴 Pendente |
+| 90 | US054 | Escolher local de salvamento PDF | Sprint 4 | 🔴 Pendente |
+| 91 | US055 | PDF com formatação profissional | Sprint 4 | 🔴 Pendente |
+| 92 | US056 | Sumário clicável no PDF | Sprint 4 | 🔴 Pendente |
+| 93 | US057 | Visualizar preview do livro | Sprint 4 | 🔴 Pendente |
+| 94 | US058 | Navegar páginas do preview | Sprint 4 | 🔴 Pendente |
 
 **Legenda de Status:**
 - 🔴 Pendente - Aguardando implementação
 - 🟡 Em Progresso - Sendo desenvolvida
 - 🟢 Concluída - Implementada e testada
 
-**Próxima Story:** US076 - Criar aplicação React com TypeScript
+**Próxima Story:** US092 - Visualizar lista de projetos
 
 ---
 
@@ -204,6 +208,21 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 ---
 
 ### Epic E001: Estruturação Narrativa Base
+
+#### Feature F013: Gestão de Projetos
+**Prioridade:** CRÍTICA (pré-requisito para todas outras features)
+
+- ✅ UC025: Gerenciar Projetos
+  - US091: Criar novo projeto manualmente
+  - US092: Visualizar lista de projetos
+  - US093: Editar informações do projeto
+  - US094: Deletar projeto com confirmação
+
+**Valor:** Sem projeto criado, nenhuma outra funcionalidade pode ser usada. É o ponto de partida obrigatório.
+
+**Nota:** Este UC representa criação manual de projeto. UC001 (brainstorming com LLM) é uma forma alternativa/avançada de criar projeto.
+
+---
 
 #### Feature F001: Brainstorming Inicial com LLM
 **Prioridade:** ALTA (diferencial competitivo)
@@ -360,9 +379,9 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 ---
 
 **Total Fase 1 (MVP):**
-- 8 Features
-- 16 Use Cases
-- 58 User Stories
+- 9 Features (adicionada F013: Gestão de Projetos)
+- 17 Use Cases (adicionado UC025: Gerenciar Projetos)
+- 62 User Stories (adicionadas US091-094)
 
 ---
 
@@ -379,10 +398,11 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 ---
 
 ### Sprint 1: Estruturação Base
-1. F002: Gestão de Entidades Narrativas (CRUD completo)
-2. F001: Brainstorming Inicial com LLM
+1. **F013: Gestão de Projetos** (CRUD básico - OBRIGATÓRIO PRIMEIRO)
+2. F002: Gestão de Entidades Narrativas (CRUD completo)
+3. F001: Brainstorming Inicial com LLM (alternativa avançada)
 
-**Checkpoint:** Autor consegue criar projeto estruturado
+**Checkpoint:** Autor consegue criar projeto (manual ou via LLM) e estruturar entidades
 
 ---
 
@@ -454,7 +474,7 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 ## Validação de Consistência
 
 ### ✅ Rastreabilidade Completa
-- 4 Epics → 12 Features → 24 Use Cases → 89 User Stories
+- 4 Epics → 13 Features → 25 Use Cases → 94 User Stories
 - Todas as stories vinculadas a use cases
 - Todos os use cases vinculados a features
 - Todas as features vinculadas a epics

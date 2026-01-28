@@ -67,7 +67,8 @@ public class Project : EntityBase
     public static Project Create(
         string title,
         string author,
-        string synopsis)
+        string synopsis,
+        string? genre = null)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Project title cannot be empty.", nameof(title));
@@ -84,11 +85,15 @@ public class Project : EntityBase
         if (synopsis.Length > 5000)
             throw new ArgumentException("Synopsis cannot exceed 5000 characters.", nameof(synopsis));
 
+        if (genre != null && genre.Length > 50)
+            throw new ArgumentException("Genre cannot exceed 50 characters.", nameof(genre));
+
         var project = new Project
         {
             Title = title.Trim(),
             Author = author.Trim(),
             Synopsis = synopsis.Trim(),
+            Genre = genre?.Trim(),
             TargetWordCount = 50000, // Default target
             CurrentWordCount = 0
         };

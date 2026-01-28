@@ -11,6 +11,7 @@
 |---|---|---|---|---|
 | [UC001](#uc001-gerar-outline-inicial-com-assistência-llm) | Gerar Outline Inicial com Assistência LLM | F001 | Planejado | 5 |
 | [UC002](#uc002-gerenciar-personagens) | Gerenciar Personagens | F002 | Planejado | 4 |
+| [UC025](#uc025-gerenciar-projetos) | Gerenciar Projetos | F013 | Em Implementacao | 4 |
 | [UC003](#uc003-gerenciar-locais) | Gerenciar Locais | F002 | Planejado | 4 |
 | [UC004](#uc004-gerenciar-plots) | Gerenciar Plots | F002 | Planejado | 4 |
 | [UC005](#uc005-gerenciar-capítulos) | Gerenciar Capítulos | F002 | Planejado | 5 |
@@ -30,9 +31,44 @@
 | [UC019](#uc019-criar-schemas-e-migrations) | Criar Schemas e Migrations | F009 | Concluída | 4 |
 | [UC020](#uc020-implementar-application-layer-com-cqrs) | Implementar Application Layer com CQRS | F010 | Concluída | 7 |
 | [UC021](#uc021-integrar-ollama-com-backend) | Integrar Ollama com Backend | F011 | Concluída | 4 |
-| [UC022](#uc022-implementar-frontend-base) | Implementar Frontend Base | F012 | Em Implementacao | 5 |
+| [UC022](#uc022-implementar-frontend-base) | Implementar Frontend Base | F012 | Concluída | 5 |
 | [UC023](#uc023-implementar-cqrs-pattern) | Implementar CQRS Pattern | F010 | Concluída | 4 |
 | [UC024](#uc024-implementar-domain-entities-ddd) | Implementar Domain Entities (DDD) | F010 | Concluída | 5 |
+
+---
+
+## Feature F013: Gestão de Projetos
+
+### UC025: Gerenciar Projetos
+
+**Feature:** F013  
+**Objetivo:** Criar, visualizar, editar e deletar projetos de livros (criação manual, sem LLM).
+
+**Atores:** Autor
+
+**Fluxo Resumido:**
+1. Autor acessa tela inicial (dashboard ou lista de projetos)
+2. Clica em "Novo Projeto"
+3. Preenche formulário: Título (obrigatório), Descrição (opcional), Gênero (opcional), Idioma (opcional)
+4. Salva projeto
+5. Projeto é criado no banco e aparece na lista
+6. Autor pode selecionar projeto para trabalhar
+7. Autor pode editar informações básicas do projeto
+8. Autor pode deletar projeto (com confirmação e warning se houver conteúdo)
+
+**Regras de Negócio:**
+- Título é obrigatório e único por usuário
+- Ao deletar projeto, todos os dados relacionados (personagens, capítulos, etc) são deletados em cascata
+- Deve haver confirmação explícita antes de deletar
+- Um projeto vazio (sem capítulos/personagens) pode ser deletado sem warning adicional
+
+**User Stories:**
+- US091: Como autor, quero criar novo projeto manualmente informando título e descrição
+- US092: Como autor, quero visualizar lista de todos os meus projetos
+- US093: Como autor, quero editar informações básicas de um projeto existente
+- US094: Como autor, quero deletar projeto com confirmação
+
+**Nota:** Este UC representa o ponto de partida OBRIGATÓRIO. Sem projeto criado, não é possível criar personagens, capítulos, etc. UC001 (brainstorming LLM) é uma forma alternativa/avançada de criar projeto.
 
 ---
 

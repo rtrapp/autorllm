@@ -52,6 +52,32 @@ public class ProjectRepository : IProjectRepository
         return project;
     }
 
+    public async Task<Project?> GetByTitleAsync(string title, CancellationToken cancellationToken = default)
+    {
+        const string sql = @"
+            SELECT id, title, author, synopsis, genre, target_word_count AS targetwordcount, 
+                   current_word_count AS currentwordcount, created_at AS createdat, updated_at AS updatedat
+            FROM projects
+            WHERE LOWER(title) = LOWER(@Title)
+            LIMIT 1";
+
+        var projectData = await _connection.QuerySingleOrDefaultAsync(
+            new CommandDefinition(sql, new { Title = title }, cancellationToken: cancellationToken));
+
+        if (projectData == null)
+            return null;
+
+        var project = MapToEntity(projectData);
+
+        // Load child entities
+        await LoadCharactersAsync(project, cancellationToken);
+        await LoadLocationsAsync(project, cancellationToken);
+        await LoadPlotsAsync(project, cancellationToken);
+        await LoadChaptersAsync(project, cancellationToken);
+
+        return project;
+    }
+
     public async Task<IEnumerable<Project>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         const string sql = @"

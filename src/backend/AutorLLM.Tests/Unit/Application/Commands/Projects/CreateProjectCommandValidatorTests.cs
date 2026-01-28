@@ -1,19 +1,30 @@
 using FluentAssertions;
 using AutorLLM.Application.Commands.Projects.CreateProject;
+using AutorLLM.Domain.Interfaces;
+using Moq;
+using AutorLLM.Domain.Aggregates.ProjectAggregate;
 
 namespace AutorLLM.Tests.Unit.Application.Commands.Projects;
 
 public class CreateProjectCommandValidatorTests
 {
     private readonly CreateProjectCommandValidator _validator;
+    private readonly Mock<IProjectRepository> _mockRepository;
 
     public CreateProjectCommandValidatorTests()
     {
-        _validator = new CreateProjectCommandValidator();
+        _mockRepository = new Mock<IProjectRepository>();
+        
+        // Setup default behavior: no duplicate titles
+        _mockRepository
+            .Setup(x => x.GetByTitleAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Project?)null);
+        
+        _validator = new CreateProjectCommandValidator(_mockRepository.Object);
     }
 
     [Fact]
-    public void Should_Pass_When_Command_Is_Valid()
+    public async Task Should_Pass_When_Command_Is_Valid()
     {
         // Arrange
         var command = new CreateProjectCommand
@@ -24,7 +35,7 @@ public class CreateProjectCommandValidatorTests
         };
 
         // Act
-        var result = _validator.Validate(command);
+        var result = await _validator.ValidateAsync(command);
 
         // Assert
         result.IsValid.Should().BeTrue();
@@ -32,7 +43,7 @@ public class CreateProjectCommandValidatorTests
     }
 
     [Fact]
-    public void Should_Fail_When_Title_Is_Empty()
+    public async Task Should_Fail_When_Title_Is_Empty()
     {
         // Arrange
         var command = new CreateProjectCommand
@@ -43,7 +54,7 @@ public class CreateProjectCommandValidatorTests
         };
 
         // Act
-        var result = _validator.Validate(command);
+        var result = await _validator.ValidateAsync(command);
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -51,7 +62,7 @@ public class CreateProjectCommandValidatorTests
     }
 
     [Fact]
-    public void Should_Fail_When_Title_Exceeds_Maximum_Length()
+    public async Task Should_Fail_When_Title_Exceeds_Maximum_Length()
     {
         // Arrange
         var command = new CreateProjectCommand
@@ -62,7 +73,7 @@ public class CreateProjectCommandValidatorTests
         };
 
         // Act
-        var result = _validator.Validate(command);
+        var result = await _validator.ValidateAsync(command);
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -70,7 +81,7 @@ public class CreateProjectCommandValidatorTests
     }
 
     [Fact]
-    public void Should_Fail_When_Author_Is_Empty()
+    public async Task Should_Fail_When_Author_Is_Empty()
     {
         // Arrange
         var command = new CreateProjectCommand
@@ -81,7 +92,7 @@ public class CreateProjectCommandValidatorTests
         };
 
         // Act
-        var result = _validator.Validate(command);
+        var result = await _validator.ValidateAsync(command);
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -89,7 +100,7 @@ public class CreateProjectCommandValidatorTests
     }
 
     [Fact]
-    public void Should_Fail_When_Author_Exceeds_Maximum_Length()
+    public async Task Should_Fail_When_Author_Exceeds_Maximum_Length()
     {
         // Arrange
         var command = new CreateProjectCommand
@@ -100,7 +111,7 @@ public class CreateProjectCommandValidatorTests
         };
 
         // Act
-        var result = _validator.Validate(command);
+        var result = await _validator.ValidateAsync(command);
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -108,7 +119,7 @@ public class CreateProjectCommandValidatorTests
     }
 
     [Fact]
-    public void Should_Fail_When_Synopsis_Exceeds_Maximum_Length()
+    public async Task Should_Fail_When_Synopsis_Exceeds_Maximum_Length()
     {
         // Arrange
         var command = new CreateProjectCommand
@@ -119,7 +130,7 @@ public class CreateProjectCommandValidatorTests
         };
 
         // Act
-        var result = _validator.Validate(command);
+        var result = await _validator.ValidateAsync(command);
 
         // Assert
         result.IsValid.Should().BeFalse();
@@ -127,7 +138,7 @@ public class CreateProjectCommandValidatorTests
     }
 
     [Fact]
-    public void Should_Pass_When_Synopsis_Is_Empty()
+    public async Task Should_Pass_When_Synopsis_Is_Empty()
     {
         // Arrange
         var command = new CreateProjectCommand
@@ -138,9 +149,36 @@ public class CreateProjectCommandValidatorTests
         };
 
         // Act
-        var result = _validator.Validate(command);
+        var result = await _validator.ValidateAsync(command);
 
         // Assert
         result.IsValid.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Should_Fail_When_Title_Already_Exists()
+    {
+        // Arrange
+        var existingProject = Project.Create("Duplicate Title", "Jane Doe", "Existing synopsis");
+        
+        _mockRepository
+            .Setup(x => x.GetByTitleAsync("Duplicate Title", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(existingProject);
+
+        var command = new CreateProjectCommand
+        {
+            Title = "Duplicate Title",
+            Author = "John Doe",
+            Synopsis = "New synopsis"
+        };
+
+        // Act
+        var result = await _validator.ValidateAsync(command);
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => 
+            e.PropertyName == "Title" && 
+            e.ErrorMessage == "A project with this title already exists");
     }
 }

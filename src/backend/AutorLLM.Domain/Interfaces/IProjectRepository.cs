@@ -9,6 +9,7 @@ namespace AutorLLM.Domain.Interfaces;
 public interface IProjectRepository
 {
     Task<Project?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Project?> GetByTitleAsync(string title, CancellationToken cancellationToken = default);
     Task<IEnumerable<Project>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<Project> AddAsync(Project project, CancellationToken cancellationToken = default);
     Task UpdateAsync(Project project, CancellationToken cancellationToken = default);

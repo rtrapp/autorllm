@@ -1,6 +1,6 @@
 # Catálogo de User Stories
 
-**Última atualização:** 2026-01-27  
+**Última atualização:** 2026-01-28  
 **Status:** 🟢 Definido
 
 ---
@@ -11,6 +11,10 @@
 |---|---|---|---|---|
 | [US001](#us001) | Descrever ideia de livro para LLM | UC001 | Planejado | 3 critérios |
 | [US002](#us002) | Receber perguntas da LLM para expandir ideia | UC001 | Planejado | 3 critérios |
+| [US091](#us091) | Criar novo projeto manualmente | UC025 | Concluída | 5 critérios |
+| [US092](#us092) | Visualizar lista de projetos | UC025 | Planejado | 3 critérios |
+| [US093](#us093) | Editar informações do projeto | UC025 | Planejado | 3 critérios |
+| [US094](#us094) | Deletar projeto com confirmação | UC025 | Planejado | 4 critérios |
 | [US003](#us003) | Receber outline estruturado gerado pela LLM | UC001 | Planejado | 5 critérios |
 | [US004](#us004) | Revisar e editar outline gerado | UC001 | Planejado | 3 critérios |
 | [US005](#us005) | Salvar projeto com estrutura inicial | UC001 | Planejado | 4 critérios |
@@ -88,7 +92,7 @@
 | [US077](#us077) | Configurar roteamento | UC022 | Concluída | 3 critérios |
 | [US078](#us078) | Criar client HTTP para API | UC022 | Concluída | 3 critérios |
 | [US079](#us079) | Implementar layout base | UC022 | Concluída | 4 critérios |
-| [US080](#us080) | Configurar SignalR client | UC022 | Planejado | 3 critérios |
+| [US080](#us080) | Configurar SignalR client | UC022 | Concluída | 3 critérios |
 | [US081](#us081) | Implementar estrutura de Commands | UC023 | Concluída | 4 critérios |
 | [US082](#us082) | Implementar estrutura de Queries | UC023 | Concluída | 4 critérios |
 | [US083](#us083) | Integrar MediatR para CQRS | UC023 | Concluída | 3 critérios |
@@ -103,6 +107,74 @@
 ---
 
 ## Detalhamento das User Stories
+
+### UC025: Gerenciar Projetos
+
+#### US091
+**Como** autor  
+**Quero** criar novo projeto manualmente informando título e descrição básica  
+**Para** começar a estruturar meu livro
+
+**Status:** 🟢 Concluída
+
+**Critérios de Aceitação:**
+1. ✅ Tela inicial tem botão "Novo Projeto" visível (card "+" na grid + botão no header mobile)
+2. ✅ Formulário tem campos: Título (obrigatório, max 200 chars), Descrição (opcional, textarea), Gênero (opcional, dropdown), Idioma (opcional)
+3. ✅ Validação: título não pode ser vazio e não pode duplicar nome de projeto existente (validação assíncrona no backend)
+4. ✅ Ao salvar, projeto é persistido no banco com `created_at` e `updated_at`
+5. ✅ Após criação, usuário é redirecionado para tela do projeto (dashboard ou editor)
+
+**Implementação:**
+- Frontend: [ProjectsList.tsx](../../src/frontend/src/pages/ProjectsList.tsx) com layout baseado em protótipo
+- Frontend: [NewProjectDialog.tsx](../../src/frontend/src/features/projects/components/NewProjectDialog.tsx)
+- Backend: Validator atualizado com validação assíncrona de título duplicado
+- Backend: Método `GetByTitleAsync` adicionado ao repository
+
+---
+
+#### US092
+**Como** autor  
+**Quero** visualizar lista de todos os meus projetos  
+**Para** escolher em qual trabalhar
+
+**Critérios de Aceitação:**
+1. Tela inicial/dashboard mostra lista de projetos (cards ou tabela)
+2. Cada projeto exibe: título, descrição resumida (primeiras 100 chars), data de última modificação
+3. Lista é ordenada por última modificação (mais recente primeiro)
+4. Clicar em projeto abre a tela de trabalho do projeto
+5. Lista vazia mostra mensagem "Nenhum projeto ainda" com botão para criar
+
+---
+
+#### US093
+**Como** autor  
+**Quero** editar informações básicas de um projeto existente  
+**Para** atualizar título ou descrição conforme evolui
+
+**Critérios de Aceitação:**
+1. Na tela do projeto, existe opção "Configurações" ou "Editar Projeto" (menu/ícone)
+2. Abre mesmo formulário de criação, pré-preenchido
+3. Validações são aplicadas (título obrigatório, sem duplicatas)
+4. Ao salvar, `updated_at` é atualizado
+5. Mudanças são persistidas imediatamente
+
+---
+
+#### US094
+**Como** autor  
+**Quero** deletar projeto com confirmação  
+**Para** remover projetos abandonados ou testes
+
+**Critérios de Aceitação:**
+1. Na tela de configurações do projeto, existe botão "Deletar Projeto" (vermelho, destaque negativo)
+2. Ao clicar, modal de confirmação aparece:
+   - Se projeto tem conteúdo (capítulos, personagens): warning explícito "Todos os dados serão perdidos permanentemente"
+   - Se projeto vazio: confirmação simples
+3. Confirmação requer ação explícita (ex: digitar nome do projeto ou clicar "Confirmar Exclusão")
+4. Ao confirmar, projeto e TODOS os dados relacionados (capítulos, personagens, plots, locations) são deletados em cascata
+5. Usuário é redirecionado para lista de projetos com mensagem de sucesso
+
+---
 
 ### UC001: Gerar Outline Inicial com Assistência LLM
 

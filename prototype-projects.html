@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-secondary/20">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meus Projetos - Neural Author</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <script>
+    // Mesma configuração do design system anterior
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        container: {
+          center: true,
+          padding: "2rem",
+          screens: {
+            "2xl": "1200px",
+          },
+        },
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Crimson Pro', 'serif'],
+          },
+          colors: {
+            border: "hsl(214.3 31.8% 91.4%)",
+            input: "hsl(214.3 31.8% 91.4%)",
+            ring: "hsl(243.4 75.4% 58.6%)",
+            background: "hsl(0 0% 100%)",
+            foreground: "hsl(222.2 47.4% 11.2%)",
+            primary: {
+              DEFAULT: "hsl(243.4 75.4% 58.6%)", // Indigo AI color
+              foreground: "hsl(210 40% 98%)",
+            },
+            secondary: {
+              DEFAULT: "hsl(210 40% 96.1%)",
+              foreground: "hsl(222.2 47.4% 11.2%)",
+            },
+            muted: {
+              DEFAULT: "hsl(210 40% 96.1%)",
+              foreground: "hsl(215.4 16.3% 46.9%)",
+            },
+            card: {
+              DEFAULT: "hsl(0 0% 100%)",
+              foreground: "hsl(222.2 47.4% 11.2%)",
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer base {
+      body {
+        @apply bg-background text-foreground font-sans;
+      }
+    }
+    @layer components {
+      .btn {
+        @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 px-4 py-2;
+      }
+      .btn-ghost {
+        @apply hover:bg-secondary hover:text-secondary-foreground;
+      }
+      .btn-primary {
+        @apply bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm;
+      }
+      .btn-outline {
+        @apply border border-input bg-background hover:bg-secondary hover:text-secondary-foreground;
+      }
+      .card-hover {
+        @apply transition-all duration-200 hover:shadow-md hover:-translate-y-1 border-border/60;
+      }
+      /* Progress Bar Style */
+      .progress-bar {
+        @apply h-2 w-full bg-secondary rounded-full overflow-hidden;
+      }
+      .progress-fill {
+        @apply h-full bg-primary transition-all duration-500;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-full pb-12">
+
+  <header class="h-16 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div class="container h-full flex items-center justify-between">
+      <div class="flex items-center gap-6">
+        <div class="font-bold text-xl flex items-center gap-2 tracking-tight">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+          Neural Author
+        </div>
+        <nav class="hidden md:flex items-center gap-1">
+          <a href="#" class="text-sm font-medium px-3 py-2 rounded-md bg-secondary text-foreground">Projetos</a>
+          <a href="#" class="text-sm font-medium px-3 py-2 rounded-md text-muted-foreground hover:bg-secondary/50">Ideias & Rascunhos</a>
+        </nav>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="hidden md:flex relative items-center bg-secondary/50 rounded-md px-3 h-9 text-sm text-muted-foreground w-64 border border-transparent focus-within:border-primary/30 transition-all">
+           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="16.65"/></svg>
+           <span>Buscar projetos...</span>
+        </div>
+        
+        <button class="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+          AM
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container pt-10">
+    
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+      <div>
+        <h1 class="text-3xl font-bold tracking-tight text-foreground sans-serif">Meus Projetos</h1>
+        <p class="text-muted-foreground mt-1">Gerencie suas obras e continue escrevendo de onde parou.</p>
+      </div>
+      <button class="btn btn-primary md:hidden w-full gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+        Novo Livro
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <div class="group relative flex flex-col items-center justify-center gap-4 p-8 rounded-xl border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 bg-secondary/10 hover:bg-secondary/30 transition-all cursor-pointer h-[280px]">
+        <div class="h-14 w-14 rounded-full bg-background border shadow-sm group-hover:shadow-md flex items-center justify-center text-primary transition-all group-hover:scale-110 group-hover:text-primary">
+           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+        </div>
+        <div class="text-center">
+          <h3 class="text-lg font-semibold text-foreground">Criar Novo Livro</h3>
+          <p class="text-sm text-muted-foreground mt-1">Comece do zero ou use a IA para estruturar uma ideia.</p>
+        </div>
+      </div>
+
+      <div class="bg-card rounded-xl border shadow-sm flex flex-col h-[280px] card-hover relative overflow-hidden group">
+        <div class="h-3 bg-gradient-to-r from-emerald-500/20 to-teal-500/20"></div>
+        
+        <div class="p-6 flex flex-col flex-1">
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex items-center gap-2 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-3-4 3-6-7z"/></svg>
+              Fantasia Épica
+            </div>
+             <button class="text-muted-foreground hover:text-foreground p-1 rounded -mr-2">
+               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </button>
+          </div>
+
+          <h2 class="font-serif text-2xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">As Crônicas de Aethel</h2>
+          <p class="text-muted-foreground text-sm line-clamp-2 mb-6">O segundo livro da trilogia, focando na jornada de Kael pelas terras sombrias do norte.</p>
+          
+          <div class="mt-auto space-y-3">
+            <div class="flex items-center justify-between text-sm mb-1">
+              <span class="font-medium">75% Concluído</span>
+              <span class="text-muted-foreground">65.2k palavras</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill w-3/4"></div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-muted-foreground pt-2">
+              <span>Editado há 2 horas</span>
+              <span class="flex items-center gap-1 text-primary/70" title="Assistência Neural Moderada">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                Neural: Médio
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-card rounded-xl border shadow-sm flex flex-col h-[280px] card-hover relative overflow-hidden group">
+         <div class="h-3 bg-gradient-to-r from-indigo-500/20 to-purple-500/20"></div>
+         
+        <div class="p-6 flex flex-col flex-1">
+           <div class="flex justify-between items-start mb-4">
+            <div class="flex items-center gap-2 text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Sci-Fi Noir
+            </div>
+             <button class="text-muted-foreground hover:text-foreground p-1 rounded -mr-2">
+               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </button>
+          </div>
+
+          <h2 class="font-serif text-2xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">Projeto: Neon Dust</h2>
+          <p class="text-muted-foreground text-sm line-clamp-2 mb-6">Um detetive em uma Neo-Toquio que investiga o roubo de memórias sintéticas.</p>
+          
+          <div class="mt-auto space-y-3">
+             <div class="flex items-center justify-between text-sm mb-1">
+              <span class="font-medium">Rascunho Inicial</span>
+              <span class="text-muted-foreground">4.1k palavras</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill w-[15%] bg-indigo-500"></div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-muted-foreground pt-2">
+              <span>Editado ontem</span>
+              <span class="flex items-center gap-1 text-primary" title="Assistência Neural Alta">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                Neural: Alto
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+       <div class="bg-card rounded-xl border shadow-sm flex flex-col h-[280px] card-hover relative overflow-hidden group opacity-70 hover:opacity-100 transition-opacity">
+        <div class="h-3 bg-secondary"></div>
+        <div class="p-6 flex flex-col flex-1">
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex items-center gap-2 text-xs font-medium text-muted-foreground bg-secondary px-2 py-1 rounded-full">
+              Sem gênero definido
+            </div>
+          </div>
+          <h2 class="font-serif text-2xl font-bold text-foreground mb-2">Ideia do Conto de Inverno</h2>
+          <p class="text-muted-foreground text-sm line-clamp-2 mb-6">Apenas algumas anotações soltas sobre a premissa do chalé isolado.</p>
+          
+          <div class="mt-auto space-y-3">
+            <div class="flex items-center justify-between text-sm mb-1">
+              <span class="font-medium">Planejamento</span>
+              <span class="text-muted-foreground">800 palavras</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill w-[5%] bg-muted-foreground"></div>
+            </div>
+            <div class="flex items-center justify-between text-xs text-muted-foreground pt-2">
+              <span>Editado semana passada</span>
+              <span class="flex items-center gap-1 text-muted-foreground" title="Sem uso de IA">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                Neural: Nenhum
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>

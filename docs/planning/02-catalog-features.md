@@ -11,6 +11,7 @@
 |---|---|---|---|---|---|
 | [F001](#f001-brainstorming-inicial-com-llm) | Brainstorming Inicial com LLM | E001 | MVP | Planejado | 1 |
 | [F002](#f002-gestão-de-entidades-narrativas) | Gestão de Entidades Narrativas | E001 | MVP | Planejado | 4 |
+| [F013](#f013-gestão-de-projetos) | Gestão de Projetos | E001 | MVP | Parcial | 1 |
 | [F003](#f003-visualização-de-arcos-narrativos) | Visualização de Arcos Narrativos | E001 | MVP | Planejado | 2 |
 | [F004](#f004-editor-de-capítulos) | Editor de Capítulos | E002 | MVP | Planejado | 3 |
 | [F005](#f005-comandos-llm-contextuais) | Comandos LLM Contextuais | E002 | MVP | Planejado | 3 |
@@ -20,11 +21,34 @@
 | [F009](#f009-setup-de-banco-de-dados) | Setup de Banco de Dados | E004 | Fase 0 | Completo | 2 |
 | [F010](#f010-api-backend-net) | API Backend (.NET) | E004 | Fase 0 | Completo | 3 |
 | [F011](#f011-integração-llm-local-ollama) | Integração LLM Local (Ollama) | E004 | Fase 0 | Completo | 1 |
-| [F012](#f012-frontend-base-react) | Frontend Base (React) | E004 | Fase 0 | Parcial | 1 |
+| [F012](#f012-frontend-base-react) | Frontend Base (React) | E004 | Fase 0 | Completo | 1 |
 
 ---
 
 ## Epic E001: Estruturação Narrativa Base
+
+### F013: Gestão de Projetos
+**Epic:** E001  
+**Fase:** MVP (Fase 1)  
+**Status:** Planejado
+
+**Descrição:**  
+CRUD básico para projetos de livros. Permite criar projeto manualmente (informando título, descrição, gênero), listar todos os projetos, editar informações e deletar projetos.
+
+**Objetivo:**  
+Fornecer ponto de entrada obrigatório - sem projeto criado, nenhuma outra funcionalidade (personagens, capítulos, etc) pode ser usada.
+
+**Use Cases:**
+- UC025: Gerenciar Projetos
+
+**Dependências:**  
+- F009 (Setup de Banco de Dados)
+- F010 (API Backend)
+- F012 (Frontend Base)
+
+**Nota:** Esta é a feature CRÍTICA que deve ser implementada primeiro no Sprint 1, antes de F002 (entidades narrativas).
+
+---
 
 ### F001: Brainstorming Inicial com LLM
 **Epic:** E001  
@@ -35,12 +59,13 @@
 Interface conversacional onde o autor descreve sua ideia e a LLM faz perguntas para expandir, sugerindo plots, personagens, estrutura de capítulos.
 
 **Objetivo:**  
-Transformar ideia bruta em outline estruturado rapidamente.
+Transformar ideia bruta em outline estruturado rapidamente. Forma alternativa/avançada de criar projeto (comparado com F013).
 
 **Use Cases:**
 - UC001: Gerar Outline Inicial com Assistência LLM
 
 **Dependências:**  
+- F013 (Gestão de Projetos - ou integra criação manual)
 - F011 (Integração LLM Local)
 - F010 (API Backend)
 - F012 (Frontend Base)

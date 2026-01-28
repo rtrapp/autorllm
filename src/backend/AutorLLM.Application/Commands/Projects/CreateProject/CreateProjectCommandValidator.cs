@@ -1,3 +1,4 @@
+using AutorLLM.Domain.Interfaces;
 using FluentValidation;
 
 namespace AutorLLM.Application.Commands.Projects.CreateProject;
@@ -7,11 +8,17 @@ namespace AutorLLM.Application.Commands.Projects.CreateProject;
 /// </summary>
 public class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand>
 {
-    public CreateProjectCommandValidator()
+    private readonly IProjectRepository _projectRepository;
+
+    public CreateProjectCommandValidator(IProjectRepository projectRepository)
     {
+        _projectRepository = projectRepository;
+
         RuleFor(x => x.Title)
             .NotEmpty().WithMessage("Title is required")
-            .MaximumLength(200).WithMessage("Title must be under 200 characters");
+            .MaximumLength(200).WithMessage("Title must be under 200 characters")
+            .MustAsync(BeUniqueTitle)
+                .WithMessage("A project with this title already exists");
 
         RuleFor(x => x.Author)
             .NotEmpty().WithMessage("Author is required")
@@ -19,5 +26,11 @@ public class CreateProjectCommandValidator : AbstractValidator<CreateProjectComm
 
         RuleFor(x => x.Synopsis)
             .MaximumLength(2000).WithMessage("Synopsis must be under 2000 characters");
+    }
+
+    private async Task<bool> BeUniqueTitle(string title, CancellationToken cancellationToken)
+    {
+        var existingProject = await _projectRepository.GetByTitleAsync(title, cancellationToken);
+        return existingProject == null;
     }
 }

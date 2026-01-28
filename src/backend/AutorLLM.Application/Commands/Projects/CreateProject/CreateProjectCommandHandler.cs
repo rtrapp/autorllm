@@ -39,7 +39,8 @@ public class CreateProjectCommandHandler
         var project = Project.Create(
             command.Title,
             command.Author,
-            command.Synopsis);
+            command.Synopsis,
+            command.Genre);
 
         // Persist through repository
         await _projectRepository.AddAsync(project, cancellationToken);

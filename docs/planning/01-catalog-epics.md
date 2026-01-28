@@ -9,10 +9,10 @@
 
 | ID | Nome | Fase | Status | Features |
 |---|---|---|---|---|
-| [E001](#e001-estruturação-narrativa-base) | Estruturação Narrativa Base | MVP (Fase 1) | Planejado | 3 features |
+| [E001](#e001-estruturação-narrativa-base) | Estruturação Narrativa Base | MVP (Fase 1) | Parcial | 3 features |
 | [E002](#e002-editor-de-texto-assistido) | Editor de Texto Assistido | MVP (Fase 1) | Planejado | 3 features |
 | [E003](#e003-geração-de-produto-final) | Geração de Produto Final | MVP (Fase 1) | Planejado | 2 features |
-| [E004](#e004-infraestrutura-e-persistência) | Infraestrutura e Persistência | Fase 0 (Fundacional) | Parcial | 4 features |
+| [E004](#e004-infraestrutura-e-persistência) | Infraestrutura e Persistência | Fase 0 (Fundacional) | Completo | 4 features |
 
 ---
 
