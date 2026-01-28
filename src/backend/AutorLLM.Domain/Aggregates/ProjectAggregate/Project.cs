@@ -345,9 +345,12 @@ public class Project : EntityBase
 
     public Entities.Location AddLocation(
         string name,
-        string description)
+        string description,
+        string? geography = null,
+        string? culture = null,
+        string? significance = null)
     {
-        var location = Entities.Location.Create(Id, name, description);
+        var location = Entities.Location.Create(Id, name, description, geography, culture, significance);
         _locations.Add(location);
         Touch();
 

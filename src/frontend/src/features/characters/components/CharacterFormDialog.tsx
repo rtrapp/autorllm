@@ -19,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import { Trash2 } from "lucide-react";
 import { useCreateCharacter } from "../hooks/useCreateCharacter";
 import { useUpdateCharacter } from "../hooks/useUpdateCharacter";
 import { CHARACTER_ROLES, type Character, type CharacterRole } from "../types";
@@ -31,7 +30,6 @@ interface CharacterFormDialogProps {
   projectId: string;
   character?: Character;
   onSuccess?: () => void;
-  onDelete?: () => void;
 }
 
 export function CharacterFormDialog({
@@ -41,7 +39,6 @@ export function CharacterFormDialog({
   projectId,
   character,
   onSuccess,
-  onDelete,
 }: CharacterFormDialogProps) {
   const { createCharacter, isLoading: isCreating, error: createError } = useCreateCharacter();
   const { updateCharacter, isLoading: isUpdating, error: updateError } = useUpdateCharacter();
@@ -151,12 +148,6 @@ export function CharacterFormDialog({
         });
       }
       onOpenChange(false);
-    }
-  };
-
-  const handleDelete = () => {
-    if (onDelete) {
-      onDelete();
     }
   };
 
@@ -296,18 +287,7 @@ export function CharacterFormDialog({
             )}
           </div>
 
-          <DialogFooter className={mode === "edit" ? "justify-between" : ""}>
-            {mode === "edit" && character && onDelete && (
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={handleDelete}
-                disabled={isLoading}
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Deletar
-              </Button>
-            )}
+          <DialogFooter>
             <div className="flex gap-2 ml-auto">
               <Button
                 type="button"

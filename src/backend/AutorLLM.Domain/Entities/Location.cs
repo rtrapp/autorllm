@@ -52,7 +52,10 @@ public class Location : EntityBase
     public static Location Create(
         Guid projectId,
         string name,
-        string description)
+        string description,
+        string? geography = null,
+        string? culture = null,
+        string? significance = null)
     {
         if (projectId == Guid.Empty)
             throw new ArgumentException("ProjectId cannot be empty.", nameof(projectId));
@@ -66,11 +69,23 @@ public class Location : EntityBase
         if (description.Length > 1000)
             throw new ArgumentException("Location description cannot exceed 1000 characters.", nameof(description));
 
+        if (geography != null && geography.Length > 2000)
+            throw new ArgumentException("Geography cannot exceed 2000 characters.", nameof(geography));
+
+        if (culture != null && culture.Length > 2000)
+            throw new ArgumentException("Culture cannot exceed 2000 characters.", nameof(culture));
+
+        if (significance != null && significance.Length > 1000)
+            throw new ArgumentException("Significance cannot exceed 1000 characters.", nameof(significance));
+
         var location = new Location
         {
             ProjectId = projectId,
             Name = name.Trim(),
-            Description = description.Trim()
+            Description = description.Trim(),
+            Geography = geography?.Trim(),
+            Culture = culture?.Trim(),
+            Significance = significance?.Trim()
         };
 
         return location;

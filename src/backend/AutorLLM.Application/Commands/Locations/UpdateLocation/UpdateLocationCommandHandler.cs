@@ -48,15 +48,9 @@ public class UpdateLocationCommandHandler : IRequestHandler<UpdateLocationComman
 
         // Update through domain methods (encapsulated business logic)
         location.UpdateDetails(command.Name, command.Description);
-        
-        if (command.Geography != null)
-            location.UpdateGeography(command.Geography);
-        
-        if (command.Culture != null)
-            location.UpdateCulture(command.Culture);
-        
-        if (command.Significance != null)
-            location.UpdateSignificance(command.Significance);
+        location.UpdateGeography(command.Geography);
+        location.UpdateCulture(command.Culture);
+        location.UpdateSignificance(command.Significance);
 
         // Persist through repository
         await _projectRepository.UpdateAsync(project, cancellationToken);

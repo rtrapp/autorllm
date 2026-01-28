@@ -6,7 +6,8 @@ import {
   Users,
   Map,
   BookOpen,
-  Pencil
+  Pencil,
+  Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -16,8 +17,11 @@ import { useCharacters } from "@/features/characters/hooks/useCharacters";
 import { CharacterFormDialog } from "@/features/characters/components/CharacterFormDialog";
 import { DeleteCharacterDialog } from "@/features/characters/components/DeleteCharacterDialog";
 import { CHARACTER_ROLES, type Character } from "@/features/characters/types";
-import { LocationDialog } from "@/features/world/components/LocationDialog";
-import { PlotDialog } from "@/features/world/components/PlotDialog";
+import { useLocations } from "@/features/locations/hooks/useLocations";
+import { LocationFormDialog } from "@/features/locations/components/LocationFormDialog";
+import { DeleteLocationDialog } from "@/features/locations/components/DeleteLocationDialog";
+import type { Location } from "@/features/locations/types/location";
+import { PlotDialog } from "@/features/plots/components/PlotDialog";
 
 export function AppSidebar() {
   const [activeTab, setActiveTab] = useState<'manuscript' | 'world'>('manuscript');
@@ -27,6 +31,12 @@ export function AppSidebar() {
   const [isCreateCharacterDialogOpen, setIsCreateCharacterDialogOpen] = useState(false);
   const [editingCharacter, setEditingCharacter] = useState<Character | null>(null);
   const [deletingCharacter, setDeletingCharacter] = useState<Character | null>(null);
+  
+  const { locations, isLoading: isLoadingLocations, createLocation, updateLocation, deleteLocation } = useLocations(projectId);
+  const [isCreateLocationDialogOpen, setIsCreateLocationDialogOpen] = useState(false);
+  const [editingLocation, setEditingLocation] = useState<Location | null>(null);
+  const [deletingLocation, setDeletingLocation] = useState<Location | null>(null);
+  const [isSavingLocation, setIsSavingLocation] = useState(false);
   
   // Estados para controlar seções e grupos expandidos
   const [expandedSections, setExpandedSections] = useState({
@@ -51,6 +61,38 @@ export function AppSidebar() {
 
   const toggleCharacterGroup = (role: string) => {
     setExpandedCharacterGroups(prev => ({ ...prev, [role]: !prev[role] }));
+  };
+
+  // Handlers para Locations
+  const handleCreateLocation = async (data: any) => {
+    setIsSavingLocation(true);
+    try {
+      await createLocation(data);
+      setIsCreateLocationDialogOpen(false);
+    } finally {
+      setIsSavingLocation(false);
+    }
+  };
+
+  const handleUpdateLocation = async (data: any) => {
+    setIsSavingLocation(true);
+    try {
+      await updateLocation(data);
+      setEditingLocation(null);
+    } finally {
+      setIsSavingLocation(false);
+    }
+  };
+
+  const handleDeleteLocation = async () => {
+    if (!deletingLocation) return;
+    setIsSavingLocation(true);
+    try {
+      await deleteLocation(deletingLocation.id);
+      setDeletingLocation(null);
+    } finally {
+      setIsSavingLocation(false);
+    }
   };
 
   // Agrupar e ordenar personagens
@@ -210,13 +252,36 @@ export function AppSidebar() {
                                     {group.characters.map(char => (
                                       <div 
                                         key={char.id}
-                                        className={`flex items-center justify-between py-1.5 pl-3 pr-2 hover:bg-secondary rounded cursor-pointer text-sm group border-l-4 ${group.color}`}
-                                        onClick={() => setEditingCharacter(char)}
+                                        className={`flex items-center justify-between py-1.5 pl-3 pr-2 hover:bg-secondary rounded text-sm group border-l-4 ${group.color}`}
                                       >
-                                        <div className="flex-1 min-w-0 truncate">
+                                        <div 
+                                          className="flex-1 min-w-0 truncate cursor-pointer"
+                                          onClick={() => setEditingCharacter(char)}
+                                        >
                                           {char.name}
                                         </div>
-                                        <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-100 text-muted-foreground flex-shrink-0" />
+                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+                                          <button
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setEditingCharacter(char);
+                                            }}
+                                            className="p-1 hover:bg-primary/10 rounded"
+                                            title="Editar personagem"
+                                          >
+                                            <Pencil className="h-3 w-3 text-muted-foreground" />
+                                          </button>
+                                          <button
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setDeletingCharacter(char);
+                                            }}
+                                            className="p-1 hover:bg-destructive/10 rounded"
+                                            title="Deletar personagem"
+                                          >
+                                            <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+                                          </button>
+                                        </div>
                                       </div>
                                     ))}
                                   </div>
@@ -243,19 +308,69 @@ export function AppSidebar() {
                             )}
                             <Map className="h-4 w-4" /> Locais
                         </span>
-                        <LocationDialog />
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-6 w-6"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsCreateLocationDialogOpen(true);
+                          }}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
                     </div>
+                    
                     {expandedSections.locations && (
-                      <div className="space-y-1">
-                          {['Vila Oakhaven', 'Floresta dos Sussurros'].map(loc => (
-                              <LocationDialog key={loc} mode="edit" trigger={
-                                  <div className="flex items-center justify-between py-1.5 px-2 hover:bg-secondary rounded cursor-pointer text-sm group">
-                                      <span>{loc}</span>
-                                      <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-100 text-muted-foreground" />
-                                  </div>
-                              } />
-                          ))}
-                      </div>
+                      <>
+                        {isLoadingLocations ? (
+                          <div className="flex justify-center py-4">
+                            <Spinner className="h-5 w-5" />
+                          </div>
+                        ) : locations.length === 0 ? (
+                          <div className="text-xs text-muted-foreground text-center py-2">
+                            Nenhum local criado
+                          </div>
+                        ) : (
+                          <div className="space-y-0.5">
+                            {locations.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR')).map(location => (
+                              <div 
+                                key={location.id}
+                                className="flex items-center justify-between py-1.5 pl-3 pr-2 hover:bg-secondary rounded text-sm group border-l-4 border-amber-500"
+                              >
+                                <div 
+                                  className="flex-1 min-w-0 truncate cursor-pointer"
+                                  onClick={() => setEditingLocation(location)}
+                                >
+                                  {location.name}
+                                </div>
+                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setEditingLocation(location);
+                                    }}
+                                    className="p-1 hover:bg-primary/10 rounded"
+                                    title="Editar local"
+                                  >
+                                    <Pencil className="h-3 w-3 text-muted-foreground" />
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setDeletingLocation(location);
+                                    }}
+                                    className="p-1 hover:bg-destructive/10 rounded"
+                                    title="Deletar local"
+                                  >
+                                    <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </>
                     )}
                  </div>
 
@@ -314,10 +429,6 @@ export function AppSidebar() {
                 refetchCharacters();
                 setEditingCharacter(null);
               }}
-              onDelete={() => {
-                setDeletingCharacter(editingCharacter);
-                setEditingCharacter(null);
-              }}
             />
 
             <DeleteCharacterDialog
@@ -329,6 +440,36 @@ export function AppSidebar() {
                 refetchCharacters();
                 setDeletingCharacter(null);
               }}
+            />
+
+            <LocationFormDialog
+              open={isCreateLocationDialogOpen}
+              onOpenChange={setIsCreateLocationDialogOpen}
+              mode="create"
+              projectId={projectId}
+              onSuccess={() => setIsCreateLocationDialogOpen(false)}
+              onSubmit={handleCreateLocation}
+              isLoading={isSavingLocation}
+            />
+
+            <LocationFormDialog
+              key={editingLocation?.id || 'edit'}
+              open={!!editingLocation}
+              onOpenChange={(open) => !open && setEditingLocation(null)}
+              mode="edit"
+              projectId={projectId}
+              location={editingLocation || undefined}
+              onSuccess={() => setEditingLocation(null)}
+              onSubmit={handleUpdateLocation}
+              isLoading={isSavingLocation}
+            />
+
+            <DeleteLocationDialog
+              open={!!deletingLocation}
+              onOpenChange={(open) => !open && setDeletingLocation(null)}
+              location={deletingLocation}
+              onDelete={handleDeleteLocation}
+              isLoading={isSavingLocation}
             />
           </>
         )}

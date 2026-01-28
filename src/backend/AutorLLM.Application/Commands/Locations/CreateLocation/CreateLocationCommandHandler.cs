@@ -47,7 +47,10 @@ public class CreateLocationCommandHandler
         // Add location through aggregate root (encapsulated business logic)
         var location = project.AddLocation(
             command.Name,
-            command.Description);
+            command.Description,
+            command.Geography,
+            command.Culture,
+            command.Significance);
 
         // Persist through repository
         await _projectRepository.UpdateAsync(project, cancellationToken);
