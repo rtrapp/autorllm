@@ -9,4 +9,5 @@ public record CreateChapterCommand : IRequest<CreateChapterResult>
 {
     public Guid ProjectId { get; init; }
     public string Title { get; init; } = string.Empty;
+    public string? Summary { get; init; }
 }

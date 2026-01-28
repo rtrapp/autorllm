@@ -65,8 +65,8 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 | 46 | US015 | Visualizar lista de plots | Sprint 1 | 🟢 Concluída |
 | 47 | US016 | Editar plot existente | Sprint 1 | 🟢 Concluída |
 | 48 | US017 | Deletar plot com warning | Sprint 1 | 🟢 Concluída |
-| 49 | US018 | Criar novo capítulo | Sprint 1 | 🔴 Pendente |
-| 50 | US019 | Visualizar lista de capítulos | Sprint 1 | 🔴 Pendente |
+| 49 | US018 | Criar novo capítulo | Sprint 1 | � Concluída |
+| 50 | US019 | Visualizar lista de capítulos | Sprint 1 | 🟢 Concluída |
 | 51 | US020 | Reordenar capítulos | Sprint 1 | 🔴 Pendente |
 | 52 | US021 | Editar título e resumo de capítulo | Sprint 1 | 🔴 Pendente |
 | 53 | US022 | Deletar capítulo | Sprint 1 | 🔴 Pendente |

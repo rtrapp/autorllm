@@ -14,7 +14,7 @@
 | [UC025](#uc025-gerenciar-projetos) | Gerenciar Projetos | F013 | Concluída | 4 |
 | [UC003](#uc003-gerenciar-locais) | Gerenciar Locais | F002 | Concluída | 4 |
 | [UC004](#uc004-gerenciar-plots) | Gerenciar Plots | F002 | Concluída | 4 |
-| [UC005](#uc005-gerenciar-capítulos) | Gerenciar Capítulos | F002 | Planejado | 5 |
+| [UC005](#uc005-gerenciar-capítulos) | Gerenciar Capítulos | F002 | Em Implementação | 5 |
 | [UC006](#uc006-visualizar-timeline-de-arcos) | Visualizar Timeline de Arcos | F003 | Planejado | 3 |
 | [UC007](#uc007-marcar-pontos-chave-em-arcos) | Marcar Pontos-Chave em Arcos | F003 | Planejado | 3 |
 | [UC008](#uc008-escrever-conteúdo-de-capítulo) | Escrever Conteúdo de Capítulo | F004 | Planejado | 4 |

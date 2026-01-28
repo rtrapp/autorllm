@@ -30,8 +30,8 @@
 | [US015](#us015) | Visualizar lista de plots | UC004 | Concluída | 3 critérios |
 | [US016](#us016) | Editar plot existente | UC004 | Concluída | 3 critérios |
 | [US017](#us017) | Deletar plot com warning | UC004 | Concluída | 3 critérios |
-| [US018](#us018) | Criar novo capítulo | UC005 | Planejado | 4 critérios |
-| [US019](#us019) | Visualizar lista de capítulos | UC005 | Planejado | 3 critérios |
+| [US018](#us018) | Criar novo capítulo | UC005 | Concluída | 4 critérios |
+| [US019](#us019) | Visualizar lista de capítulos | UC005 | Concluída | 3 critérios |
 | [US020](#us020) | Reordenar capítulos | UC005 | Planejado | 3 critérios |
 | [US021](#us021) | Editar título e resumo de capítulo | UC005 | Planejado | 3 critérios |
 | [US022](#us022) | Deletar capítulo | UC005 | Planejado | 3 critérios |

@@ -218,13 +218,13 @@ public class Project : EntityBase
 
     #region Chapter Operations
 
-    public Entities.Chapter AddChapter(string title)
+    public Entities.Chapter AddChapter(string title, string? summary = null)
     {
         var nextOrder = _chapters.Any() 
             ? _chapters.Max(c => c.Order.Value) + 1 
             : 1;
 
-        var chapter = Entities.Chapter.Create(Id, title, nextOrder);
+        var chapter = Entities.Chapter.Create(Id, title, nextOrder, summary);
         _chapters.Add(chapter);
         Touch();
 

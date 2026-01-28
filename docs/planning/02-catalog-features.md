@@ -85,9 +85,9 @@ Permitir que autor crie, edite, visualize e delete elementos narrativos essencia
 
 **Use Cases:**
 - UC002: Gerenciar Personagens ✅
-- UC003: Gerenciar Locais
-- UC004: Gerenciar Plots
-- UC005: Gerenciar Capítulos
+- UC003: Gerenciar Locais ✅
+- UC004: Gerenciar Plots ✅
+- UC005: Gerenciar Capítulos 🔄
 
 **Dependências:**  
 - F009 (Setup de Banco de Dados)

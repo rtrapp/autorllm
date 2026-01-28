@@ -25,10 +25,15 @@ import { usePlots } from "@/features/plots/hooks/usePlots";
 import { PlotFormDialog } from "@/features/plots/components/PlotFormDialog";
 import { DeletePlotDialog } from "@/features/plots/components/DeletePlotDialog";
 import type { Plot } from "@/features/plots/types/plot";
+import { useChapters } from "@/features/chapters/hooks";
+import { ChapterFormDialog, DeleteChapterDialog } from "@/features/chapters/components";
+import type { Chapter } from "@/features/chapters/types/chapter";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 export function AppSidebar() {
   const [activeTab, setActiveTab] = useState<'manuscript' | 'world'>('manuscript');
   const { id: projectId } = useParams<{ id: string }>();
+  const { selectedChapter, setSelectedChapter } = useWorkspace();
   
   const { characters, isLoading: isLoadingCharacters, refetch: refetchCharacters } = useCharacters(projectId);
   const [isCreateCharacterDialogOpen, setIsCreateCharacterDialogOpen] = useState(false);
@@ -46,6 +51,12 @@ export function AppSidebar() {
   const [editingPlot, setEditingPlot] = useState<Plot | null>(null);
   const [deletingPlot, setDeletingPlot] = useState<Plot | null>(null);
   const [isSavingPlot, setIsSavingPlot] = useState(false);
+  
+  const { chapters, isLoading: isLoadingChapters, createChapter, updateChapter, deleteChapter } = useChapters(projectId);
+  const [isCreateChapterDialogOpen, setIsCreateChapterDialogOpen] = useState(false);
+  const [editingChapter, setEditingChapter] = useState<Chapter | null>(null);
+  const [deletingChapter, setDeletingChapter] = useState<Chapter | null>(null);
+  const [isSavingChapter, setIsSavingChapter] = useState(false);
   
   // Estados para controlar seções e grupos expandidos
   const [expandedSections, setExpandedSections] = useState({
@@ -101,6 +112,37 @@ export function AppSidebar() {
       setDeletingLocation(null);
     } finally {
       setIsSavingLocation(false);
+    }
+  };
+
+  // Handlers para Chapters
+  const handleCreateChapter = async (data: any) => {
+    setIsSavingChapter(true);
+    try {
+      await createChapter(data);
+      setIsCreateChapterDialogOpen(false);
+    } finally {
+      setIsSavingChapter(false);
+    }
+  };
+
+  const handleUpdateChapter = async (data: any) => {
+    setIsSavingChapter(true);
+    try {
+      await updateChapter(data);
+      setEditingChapter(null);
+    } finally {
+      setIsSavingChapter(false);
+    }
+  };
+
+  const handleDeleteChapter = async (chapterId: string) => {
+    setIsSavingChapter(true);
+    try {
+      await deleteChapter(chapterId);
+      setDeletingChapter(null);
+    } finally {
+      setIsSavingChapter(false);
     }
   };
 
@@ -190,43 +232,61 @@ export function AppSidebar() {
         <div className="flex-1 overflow-y-auto p-4">
            {activeTab === 'manuscript' ? (
              <>
-               <div className="text-sm font-medium text-muted-foreground mb-3">Estrutura do Livro</div>
+               <div className="text-sm font-medium text-muted-foreground mb-3">Capítulos</div>
                
-               {/* Act 1 */}
-               <div className="group">
-                  <div className="flex items-center gap-2 py-1.5 px-2 hover:bg-secondary rounded cursor-pointer text-sm font-medium">
-                     <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                     Ato 1: O Despertar
-                  </div>
-                  <div className="ml-4 pl-2 border-l border-border space-y-1 mt-1">
-                     <div className="flex items-center gap-2 py-1.5 px-2 bg-secondary text-primary rounded cursor-pointer text-sm">
-                        <FileText className="h-3.5 w-3.5" />
-                        Cap 1: A Vila Silenciosa
+               {isLoadingChapters ? (
+                 <div className="flex justify-center py-4">
+                   <Spinner className="h-5 w-5" />
+                 </div>
+               ) : chapters.length === 0 ? (
+                 <div className="text-xs text-muted-foreground text-center py-4">
+                   Nenhum capítulo criado ainda
+                 </div>
+               ) : (
+                 <div className="space-y-0.5">
+                   {chapters.map((chapter) => (
+                     <div
+                       key={chapter.id}
+                       className={`group flex items-center justify-between py-1.5 pl-3 pr-2 hover:bg-secondary rounded text-sm cursor-pointer ${
+                         selectedChapter?.id === chapter.id ? 'bg-secondary border-l-2 border-primary' : ''
+                       }`}
+                       onClick={() => setSelectedChapter(chapter)}
+                     >
+                       <div className="flex items-center gap-2 flex-1 min-w-0">
+                         <FileText className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                         <span className="truncate">
+                           Cap {chapter.order}: {chapter.title}
+                         </span>
+                         {chapter.wordCount > 0 && (
+                           <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" title={`${chapter.wordCount} palavras`}></span>
+                         )}
+                       </div>
+                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+                         <button
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             setEditingChapter(chapter);
+                           }}
+                           className="p-1 hover:bg-primary/10 rounded"
+                           title="Editar capítulo"
+                         >
+                           <Pencil className="h-3 w-3 text-muted-foreground" />
+                         </button>
+                         <button
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             setDeletingChapter(chapter);
+                           }}
+                           className="p-1 hover:bg-destructive/10 rounded"
+                           title="Deletar capítulo"
+                         >
+                           <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+                         </button>
+                       </div>
                      </div>
-                     <div className="flex justify-between items-center gap-2 py-1.5 px-2 hover:bg-secondary rounded cursor-pointer text-sm group/item">
-                        <div className="flex items-center gap-2">
-                           <FileText className="h-3.5 w-3.5 text-muted-foreground" />
-                           Cap 2: O Chamado
-                        </div>
-                        <span className="h-2 w-2 rounded-full bg-emerald-500" title="Plot Principal Ativo"></span>
-                     </div>
-                  </div>
-               </div>
-
-               {/* Act 2 */}
-               <div className="group mt-2">
-                  <div className="flex items-center gap-2 py-1.5 px-2 hover:bg-secondary rounded cursor-pointer text-sm font-medium text-muted-foreground">
-                     <ChevronRight className="h-4 w-4 text-muted-foreground/70" />
-                     Ato 2: A Jornada
-                  </div>
-               </div>
-
-                <div className="p-4 border-t mt-auto">
-                    <Button variant="outline" className="w-full justify-start gap-2 h-9">
-                    <Plus className="h-4 w-4" />
-                    Novo Capítulo
-                    </Button>
-                </div>
+                   ))}
+                 </div>
+               )}
              </>
            ) : (
              <div className="space-y-6">
@@ -507,6 +567,20 @@ export function AppSidebar() {
 
         </div>
 
+        {/* Botão Novo Capítulo - Fixo na parte inferior quando tab Manuscrito */}
+        {activeTab === 'manuscript' && (
+          <div className="p-4 border-t mt-auto bg-background">
+            <Button 
+              variant="outline" 
+              className="w-full justify-start gap-2 h-9"
+              onClick={() => setIsCreateChapterDialogOpen(true)}
+            >
+              <Plus className="h-4 w-4" />
+              Novo Capítulo
+            </Button>
+          </div>
+        )}
+
         {/* Dialogs */}
         {projectId && (
           <>
@@ -600,6 +674,32 @@ export function AppSidebar() {
               plot={deletingPlot}
               onConfirm={handleDeletePlot}
               isLoading={isSavingPlot}
+            />
+
+            <ChapterFormDialog
+              open={isCreateChapterDialogOpen}
+              onOpenChange={setIsCreateChapterDialogOpen}
+              mode="create"
+              onSubmit={handleCreateChapter}
+              isLoading={isSavingChapter}
+            />
+
+            <ChapterFormDialog
+              key={editingChapter?.id || 'edit-chapter'}
+              open={!!editingChapter}
+              onOpenChange={(open) => !open && setEditingChapter(null)}
+              mode="edit"
+              chapter={editingChapter || undefined}
+              onSubmit={handleUpdateChapter}
+              isLoading={isSavingChapter}
+            />
+
+            <DeleteChapterDialog
+              open={!!deletingChapter}
+              onOpenChange={(open) => !open && setDeletingChapter(null)}
+              chapter={deletingChapter}
+              onDelete={handleDeleteChapter}
+              isLoading={isSavingChapter}
             />
           </>
         )}

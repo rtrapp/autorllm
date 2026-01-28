@@ -1,29 +1,16 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { BookOpen, User, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { BookOpen, User } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
-import { EditProjectDialog } from "@/features/projects/components";
-import { useProject } from "@/features/projects/hooks/useProject";
+import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 export default function ProjectWorkspace() {
-  const { id } = useParams<{ id: string }>();
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const { project, isLoading, error, refetch } = useProject(id);
+  const { selectedChapter } = useWorkspace();
 
-  if (isLoading) {
+  if (!selectedChapter) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Spinner className="h-8 w-8" />
-      </div>
-    );
-  }
-
-  if (error || !project) {
-    return (
-      <div className="container mx-auto p-8">
-        <div className="text-center text-destructive">
-          Erro ao carregar projeto
+        <div className="text-center text-muted-foreground">
+          <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <p>Selecione um capítulo para editar</p>
         </div>
       </div>
     );
@@ -31,35 +18,18 @@ export default function ProjectWorkspace() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header do Projeto */}
-      <div className="mb-8 flex items-start justify-between">
-        <div>
-          <h1 className="text-3xl font-bold font-serif tracking-tight">{project.title}</h1>
-          {project.synopsis && (
-            <p className="text-muted-foreground mt-2">{project.synopsis}</p>
-          )}
-          {project.genre && (
-            <p className="text-sm text-muted-foreground mt-1">Gênero: {project.genre}</p>
-          )}
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setIsEditDialogOpen(true)}
-          className="gap-2"
-        >
-          <Settings className="h-4 w-4" />
-          Editar Projeto
-        </Button>
-      </div>
-
       {/* Conteúdo do Workspace - Editor de Capítulo */}
       <div className="w-full max-w-[850px] mx-auto bg-background shadow-sm border min-h-[1100px] p-16 relative">
         <div className="mb-12 border-b pb-4">
-          <h2 className="text-3xl font-bold font-sans tracking-tight text-foreground">
-            Capítulo 1: A Vila Silenciosa
+          <h2 className="text-2xl font-bold font-sans tracking-tight text-foreground mb-4">
+            Capítulo {selectedChapter.order}: {selectedChapter.title}
           </h2>
-          <div className="flex items-center gap-4 mt-4 text-sm text-muted-foreground font-sans">
+          {selectedChapter.summary && (
+            <p className="text-sm text-muted-foreground mb-4 italic">
+              {selectedChapter.summary}
+            </p>
+          )}
+          <div className="flex items-center gap-4 text-sm text-muted-foreground font-sans">
             <div className="flex items-center gap-1">
               <User className="h-3.5 w-3.5" />
               Personagens: Elara, Kael
@@ -76,25 +46,15 @@ export default function ProjectWorkspace() {
           contentEditable
           suppressContentEditableWarning
         >
-          <p>
-            O vento uivava entre as frestas das janelas de madeira, um lamento constante que Elara
-            aprendera a ignorar. A vila de Oakhaven estava envolta em uma névoa perpétua naquela
-            manhã, o tipo de névoa que se agarra à pele e gela os ossos.
-          </p>
-
-          <p>"Eles não virão hoje," disse Kael, sua voz rouca quebrando o silêncio da pequena cabana.</p>
-
-          <p>Elara se virou, a tensão evidente na linha rígida de seus ombros. "Eles têm que vir."</p>
+          {selectedChapter.content ? (
+            <div dangerouslySetInnerHTML={{ __html: selectedChapter.content }} />
+          ) : (
+            <p className="text-muted-foreground italic">
+              Comece a escrever o conteúdo do capítulo...
+            </p>
+          )}
         </div>
       </div>
-
-      {/* Dialog de Edição */}
-      <EditProjectDialog
-        open={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
-        project={project}
-        onSuccess={() => refetch()}
-      />
     </div>
   );
 }

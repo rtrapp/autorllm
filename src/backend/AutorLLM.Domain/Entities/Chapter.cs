@@ -24,7 +24,8 @@ public class Chapter : EntityBase
     public static Chapter Create(
         Guid projectId,
         string title,
-        int order)
+        int order,
+        string? summary = null)
     {
         if (projectId == Guid.Empty)
             throw new ArgumentException("ProjectId cannot be empty.", nameof(projectId));
@@ -35,12 +36,15 @@ public class Chapter : EntityBase
         if (title.Length > 200)
             throw new ArgumentException("Chapter title cannot exceed 200 characters.", nameof(title));
 
+        if (summary?.Length > 2000)
+            throw new ArgumentException("Chapter summary cannot exceed 2000 characters.", nameof(summary));
+
         var chapter = new Chapter
         {
             ProjectId = projectId,
             Title = title.Trim(),
             Order = ChapterOrder.Create(order),
-            Summary = string.Empty,
+            Summary = summary?.Trim() ?? string.Empty,
             Content = string.Empty,
             WordCount = 0
         };

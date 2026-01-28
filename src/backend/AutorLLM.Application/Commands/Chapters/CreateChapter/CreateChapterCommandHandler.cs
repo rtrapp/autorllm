@@ -46,7 +46,7 @@ public class CreateChapterCommandHandler
         }
 
         // Add chapter through aggregate root (Order is assigned sequentially)
-        var chapter = project.AddChapter(command.Title);
+        var chapter = project.AddChapter(command.Title, command.Summary);
 
         // Persist through repository
         await _projectRepository.UpdateAsync(project, cancellationToken);

@@ -6,9 +6,10 @@ import {
   Settings,
   Moon,
   LogOut,
-  FolderOpen
+  FolderOpen,
+  Pencil
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -20,16 +21,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useProject } from "@/features/projects/hooks/useProject";
+import { useState } from "react";
+import { EditProjectDialog } from "@/features/projects/components";
 
 export function AppHeader() {
+  const { id } = useParams<{ id: string }>();
+  const { project, refetch } = useProject(id);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
   return (
     <header className="h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-4 shrink-0 z-10">
       <div className="flex items-center gap-4">
-        <div className="font-semibold text-lg flex items-center gap-2">
+        <div 
+          className="font-semibold text-lg flex items-center gap-2 group cursor-pointer"
+          onClick={() => setIsEditDialogOpen(true)}
+        >
           <PenTool className="h-5 w-5 text-primary" />
-          <span>Projeto: Crônicas de Aethel</span>
+          <span>Projeto: {project?.title || 'Carregando...'}</span>
+          <Pencil className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
-        <Badge variant="secondary" className="font-medium">Rascunho 1.2</Badge>
+        {project?.genre && (
+          <Badge variant="secondary" className="font-medium">{project.genre}</Badge>
+        )}
       </div>
 
       <div className="flex items-center gap-2">
@@ -76,6 +90,15 @@ export function AppHeader() {
             </DropdownMenuContent>
          </DropdownMenu>
       </div>
+      
+      {project && (
+        <EditProjectDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          project={project}
+          onSuccess={() => refetch()}
+        />
+      )}
     </header>
   )
 }
