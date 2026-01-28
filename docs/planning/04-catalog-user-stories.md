@@ -32,9 +32,9 @@
 | [US017](#us017) | Deletar plot com warning | UC004 | Concluída | 3 critérios |
 | [US018](#us018) | Criar novo capítulo | UC005 | Concluída | 4 critérios |
 | [US019](#us019) | Visualizar lista de capítulos | UC005 | Concluída | 3 critérios |
-| [US020](#us020) | Reordenar capítulos | UC005 | Planejado | 3 critérios |
-| [US021](#us021) | Editar título e resumo de capítulo | UC005 | Planejado | 3 critérios |
-| [US022](#us022) | Deletar capítulo | UC005 | Planejado | 3 critérios |
+| [US020](#us020) | Reordenar capítulos | UC005 | Concluída | 3 critérios |
+| [US021](#us021) | Editar título e resumo de capítulo | UC005 | Concluída | 3 critérios |
+| [US022](#us022) | Deletar capítulo | UC005 | Concluída | 3 critérios |
 | [US023](#us023) | Ver gráfico de arcos narrativos | UC006 | Planejado | 4 critérios |
 | [US024](#us024) | Filtrar timeline por plot | UC006 | Planejado | 2 critérios |
 | [US025](#us025) | Clicar em ponto e ir para capítulo | UC006 | Planejado | 2 critérios |

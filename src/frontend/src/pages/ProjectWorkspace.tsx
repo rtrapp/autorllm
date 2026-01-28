@@ -1,5 +1,4 @@
 import { BookOpen, User } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
 
 export default function ProjectWorkspace() {

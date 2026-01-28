@@ -67,9 +67,9 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 | 48 | US017 | Deletar plot com warning | Sprint 1 | 🟢 Concluída |
 | 49 | US018 | Criar novo capítulo | Sprint 1 | � Concluída |
 | 50 | US019 | Visualizar lista de capítulos | Sprint 1 | 🟢 Concluída |
-| 51 | US020 | Reordenar capítulos | Sprint 1 | 🔴 Pendente |
-| 52 | US021 | Editar título e resumo de capítulo | Sprint 1 | 🔴 Pendente |
-| 53 | US022 | Deletar capítulo | Sprint 1 | 🔴 Pendente |
+| 51 | US020 | Reordenar capítulos | Sprint 1 | � Concluída |
+| 52 | US021 | Editar título e resumo de capítulo | Sprint 1 | � Concluída |
+| 53 | US022 | Deletar capítulo | Sprint 1 | � Concluída |
 | 54 | US001 | Descrever ideia de livro para LLM | Sprint 1 | 🔴 Pendente |
 | 55 | US002 | Receber perguntas da LLM para expandir ideia | Sprint 1 | 🔴 Pendente |
 | 56 | US003 | Receber outline estruturado gerado pela LLM | Sprint 1 | 🔴 Pendente |
@@ -117,7 +117,7 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 - 🟡 Em Progresso - Sendo desenvolvida
 - 🟢 Concluída - Implementada e testada
 
-**Próxima Story:** US018 - Criar novo capítulo
+**Próxima Story:** US001 - Descrever ideia de livro para LLM
 
 ---
 

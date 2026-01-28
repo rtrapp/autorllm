@@ -7,7 +7,8 @@ import {
   Map,
   BookOpen,
   Pencil,
-  Trash2
+  Trash2,
+  GripVertical
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -29,6 +30,23 @@ import { useChapters } from "@/features/chapters/hooks";
 import { ChapterFormDialog, DeleteChapterDialog } from "@/features/chapters/components";
 import type { Chapter } from "@/features/chapters/types/chapter";
 import { useWorkspace } from "@/contexts/WorkspaceContext";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export function AppSidebar() {
   const [activeTab, setActiveTab] = useState<'manuscript' | 'world'>('manuscript');
@@ -52,7 +70,7 @@ export function AppSidebar() {
   const [deletingPlot, setDeletingPlot] = useState<Plot | null>(null);
   const [isSavingPlot, setIsSavingPlot] = useState(false);
   
-  const { chapters, isLoading: isLoadingChapters, createChapter, updateChapter, deleteChapter } = useChapters(projectId);
+  const { chapters, isLoading: isLoadingChapters, createChapter, updateChapter, deleteChapter, reorderChapters } = useChapters(projectId);
   const [isCreateChapterDialogOpen, setIsCreateChapterDialogOpen] = useState(false);
   const [editingChapter, setEditingChapter] = useState<Chapter | null>(null);
   const [deletingChapter, setDeletingChapter] = useState<Chapter | null>(null);
@@ -178,6 +196,41 @@ export function AppSidebar() {
     }
   };
 
+  // Drag-and-drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Handler para reordenação de capítulos
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) {
+      return;
+    }
+
+    const oldIndex = chapters.findIndex((c) => c.id === active.id);
+    const newIndex = chapters.findIndex((c) => c.id === over.id);
+
+    if (oldIndex === -1 || newIndex === -1) {
+      return;
+    }
+
+    // Reordenar localmente (otimista)
+    const newChapters = arrayMove(chapters, oldIndex, newIndex);
+    
+    // Enviar nova ordem ao backend
+    try {
+      await reorderChapters(newChapters.map((c) => c.id));
+    } catch (error) {
+      console.error("Error reordering chapters:", error);
+      // Aqui poderíamos reverter a mudança otimista se necessário
+    }
+  };
+
   // Agrupar e ordenar personagens
   const groupedCharacters = () => {
     const roleOrder = ['Protagonist', 'Antagonist', 'Supporting', 'Minor'];
@@ -207,6 +260,79 @@ export function AppSidebar() {
       color: getRoleBorderColor(role),
     })).filter(group => group.characters.length > 0);
   };
+
+  // Componente SortableChapter para drag-and-drop
+  function SortableChapter({ chapter }: { chapter: Chapter }) {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id: chapter.id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`group flex items-center justify-between py-1.5 pl-2 pr-2 hover:bg-secondary rounded text-sm ${
+          selectedChapter?.id === chapter.id ? 'bg-secondary border-l-2 border-primary' : ''
+        }`}
+      >
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <button
+            {...attributes}
+            {...listeners}
+            className="cursor-grab active:cursor-grabbing p-1 hover:bg-primary/10 rounded shrink-0"
+            title="Arrastar para reordenar"
+          >
+            <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
+          </button>
+          <div 
+            className="flex items-center gap-2 flex-1 min-w-0 cursor-pointer"
+            onClick={() => setSelectedChapter(chapter)}
+          >
+            <FileText className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+            <span className="truncate">
+              Cap {chapter.order}: {chapter.title}
+            </span>
+            {chapter.wordCount > 0 && (
+              <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" title={`${chapter.wordCount} palavras`}></span>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditingChapter(chapter);
+            }}
+            className="p-1 hover:bg-primary/10 rounded"
+            title="Editar capítulo"
+          >
+            <Pencil className="h-3 w-3 text-muted-foreground" />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setDeletingChapter(chapter);
+            }}
+            className="p-1 hover:bg-destructive/10 rounded"
+            title="Deletar capítulo"
+          >
+            <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <aside className="w-72 bg-background border-r flex flex-col shrink-0 transition-all duration-300">
@@ -243,49 +369,22 @@ export function AppSidebar() {
                    Nenhum capítulo criado ainda
                  </div>
                ) : (
-                 <div className="space-y-0.5">
-                   {chapters.map((chapter) => (
-                     <div
-                       key={chapter.id}
-                       className={`group flex items-center justify-between py-1.5 pl-3 pr-2 hover:bg-secondary rounded text-sm cursor-pointer ${
-                         selectedChapter?.id === chapter.id ? 'bg-secondary border-l-2 border-primary' : ''
-                       }`}
-                       onClick={() => setSelectedChapter(chapter)}
-                     >
-                       <div className="flex items-center gap-2 flex-1 min-w-0">
-                         <FileText className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                         <span className="truncate">
-                           Cap {chapter.order}: {chapter.title}
-                         </span>
-                         {chapter.wordCount > 0 && (
-                           <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" title={`${chapter.wordCount} palavras`}></span>
-                         )}
-                       </div>
-                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100">
-                         <button
-                           onClick={(e) => {
-                             e.stopPropagation();
-                             setEditingChapter(chapter);
-                           }}
-                           className="p-1 hover:bg-primary/10 rounded"
-                           title="Editar capítulo"
-                         >
-                           <Pencil className="h-3 w-3 text-muted-foreground" />
-                         </button>
-                         <button
-                           onClick={(e) => {
-                             e.stopPropagation();
-                             setDeletingChapter(chapter);
-                           }}
-                           className="p-1 hover:bg-destructive/10 rounded"
-                           title="Deletar capítulo"
-                         >
-                           <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
-                         </button>
-                       </div>
+                 <DndContext
+                   sensors={sensors}
+                   collisionDetection={closestCenter}
+                   onDragEnd={handleDragEnd}
+                 >
+                   <SortableContext
+                     items={chapters.map((c) => c.id)}
+                     strategy={verticalListSortingStrategy}
+                   >
+                     <div className="space-y-0.5">
+                       {chapters.map((chapter) => (
+                         <SortableChapter key={chapter.id} chapter={chapter} />
+                       ))}
                      </div>
-                   ))}
-                 </div>
+                   </SortableContext>
+                 </DndContext>
                )}
              </>
            ) : (
