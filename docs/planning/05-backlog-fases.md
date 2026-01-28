@@ -52,7 +52,7 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 | 33 | US091 | Criar novo projeto manualmente | Sprint 1 | � Concluída |
 | 34 | US092 | Visualizar lista de projetos | Sprint 1 | 🟢 Concluída |
 | 35 | US093 | Editar informações do projeto | Sprint 1 | � Concluída |
-| 36 | US094 | Deletar projeto com confirmação | Sprint 1 | 🔴 Pendente |
+| 36 | US094 | Deletar projeto com confirmação | Sprint 1 | � Concluída |
 | 37 | US006 | Criar novo personagem | Sprint 1 | 🔴 Pendente |
 | 38 | US007 | Visualizar lista de personagens | Sprint 1 | 🔴 Pendente |
 | 39 | US008 | Editar personagem existente | Sprint 1 | 🔴 Pendente |
@@ -117,7 +117,7 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 - 🟡 Em Progresso - Sendo desenvolvida
 - 🟢 Concluída - Implementada e testada
 
-**Próxima Story:** US094 - Deletar projeto com confirmação
+**Próxima Story:** US006 - Criar novo personagem
 
 ---
 

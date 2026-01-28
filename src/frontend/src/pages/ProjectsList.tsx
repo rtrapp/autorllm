@@ -4,6 +4,7 @@ import { Plus, Sparkles, MoreVertical, Settings, Trash2, Eye } from "lucide-reac
 import { useState } from "react";
 import { NewProjectDialog } from "@/features/projects/components/NewProjectDialog";
 import { EditProjectDialog } from "@/features/projects/components/EditProjectDialog";
+import { DeleteProjectDialog } from "@/features/projects/components/DeleteProjectDialog";
 import { useProjects, type Project } from "@/features/projects/hooks/useProjects";
 import { Spinner } from "@/components/ui/spinner";
 import { formatDistanceToNow } from "date-fns";
@@ -15,11 +16,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 export default function ProjectsList() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
-  const { projects, isLoading, error, refetch } = useProjects();
+  const [deletingProject, setDeletingProject] = useState<Project | null>(null);
+  const { projects, isLoading, error, refetch, deleteProject } = useProjects();
+
+  const handleDeleteProject = async () => {
+    if (!deletingProject) return;
+
+    try {
+      await deleteProject(deletingProject.id);
+      toast.success("Projeto deletado com sucesso");
+    } catch (error) {
+      toast.error("Erro ao deletar projeto");
+      console.error("Erro ao deletar projeto:", error);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -138,8 +153,7 @@ export default function ProjectsList() {
                           className="text-destructive focus:text-destructive"
                           onClick={(e) => {
                             e.stopPropagation();
-                            // TODO: Implementar delete (US094)
-                            console.log('Delete project:', project.id);
+                            setDeletingProject(project);
                           }}
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
@@ -209,6 +223,13 @@ export default function ProjectsList() {
           }}
         />
       )}
+
+      <DeleteProjectDialog
+        open={!!deletingProject}
+        onOpenChange={(open) => !open && setDeletingProject(null)}
+        project={deletingProject}
+        onConfirm={handleDeleteProject}
+      />
     </main>
   );
 }

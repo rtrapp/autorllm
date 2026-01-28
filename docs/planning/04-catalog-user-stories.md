@@ -14,7 +14,7 @@
 | [US091](#us091) | Criar novo projeto manualmente | UC025 | Concluída | 5 critérios |
 | [US092](#us092) | Visualizar lista de projetos | UC025 | Concluída | 5 critérios |
 | [US093](#us093) | Editar informações do projeto | UC025 | Concluída | 5 critérios |
-| [US094](#us094) | Deletar projeto com confirmação | UC025 | Planejado | 4 critérios |
+| [US094](#us094) | Deletar projeto com confirmação | UC025 | Concluída | 4 critérios |
 | [US003](#us003) | Receber outline estruturado gerado pela LLM | UC001 | Planejado | 5 critérios |
 | [US004](#us004) | Revisar e editar outline gerado | UC001 | Planejado | 3 critérios |
 | [US005](#us005) | Salvar projeto com estrutura inicial | UC001 | Planejado | 4 critérios |

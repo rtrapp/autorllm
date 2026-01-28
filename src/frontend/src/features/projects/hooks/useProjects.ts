@@ -35,10 +35,21 @@ export function useProjects() {
     }
   };
 
+  const deleteProject = async (projectId: string) => {
+    try {
+      await api.delete(`/projects/${projectId}`);
+      // Atualiza a lista local removendo o projeto deletado
+      setProjects((prev) => prev.filter((p) => p.id !== projectId));
+    } catch (err) {
+      throw err instanceof Error ? err : new Error("Erro ao deletar projeto");
+    }
+  };
+
   return {
     projects,
     isLoading,
     error,
     refetch: loadProjects,
+    deleteProject,
   };
 }

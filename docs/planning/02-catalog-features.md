@@ -11,7 +11,7 @@
 |---|---|---|---|---|---|
 | [F001](#f001-brainstorming-inicial-com-llm) | Brainstorming Inicial com LLM | E001 | MVP | Planejado | 1 |
 | [F002](#f002-gestão-de-entidades-narrativas) | Gestão de Entidades Narrativas | E001 | MVP | Planejado | 4 |
-| [F013](#f013-gestão-de-projetos) | Gestão de Projetos | E001 | MVP | Parcial | 1 |
+| [F013](#f013-gestão-de-projetos) | Gestão de Projetos | E001 | MVP | Completo | 1 |
 | [F003](#f003-visualização-de-arcos-narrativos) | Visualização de Arcos Narrativos | E001 | MVP | Planejado | 2 |
 | [F004](#f004-editor-de-capítulos) | Editor de Capítulos | E002 | MVP | Planejado | 3 |
 | [F005](#f005-comandos-llm-contextuais) | Comandos LLM Contextuais | E002 | MVP | Planejado | 3 |
@@ -30,7 +30,7 @@
 ### F013: Gestão de Projetos
 **Epic:** E001  
 **Fase:** MVP (Fase 1)  
-**Status:** Planejado
+**Status:** Completo
 
 **Descrição:**  
 CRUD básico para projetos de livros. Permite criar projeto manualmente (informando título, descrição, gênero), listar todos os projetos, editar informações e deletar projetos.
