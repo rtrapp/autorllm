@@ -30,6 +30,11 @@
     --chart-4: 0 84.2% 60.2%;
     --chart-5: 258.3 89.5% 66.3%;
 
+    /* AI Colors */
+    --ai-thinking: 234 89% 74%;
+    --ai-suggestion: 227 100% 94%;
+    --ai-highlight: 229 93% 89%;
+
     /* Sidebar - Light */
     --sidebar: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -66,6 +71,11 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    /* AI Colors */
+    --ai-thinking: 239 84% 67%;
+    --ai-suggestion: 242 47% 34%;
+    --ai-highlight: 244 55% 41%;
 
     /* Sidebar - Dark */
     --sidebar: 240 5.9% 10%;

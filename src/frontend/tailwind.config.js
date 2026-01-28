@@ -57,6 +57,11 @@ export default {
           4: 'hsl(var(--chart-4))',
           5: 'hsl(var(--chart-5))',
         },
+        ai: {
+          thinking: 'hsl(var(--ai-thinking))',
+          suggestion: 'hsl(var(--ai-suggestion))',
+          highlight: 'hsl(var(--ai-highlight))',
+        },
       },
     },
   },

@@ -87,7 +87,7 @@
 | [US076](#us076) | Criar aplicação React com TypeScript | UC022 | Concluída | 4 critérios |
 | [US077](#us077) | Configurar roteamento | UC022 | Concluída | 3 critérios |
 | [US078](#us078) | Criar client HTTP para API | UC022 | Concluída | 3 critérios |
-| [US079](#us079) | Implementar layout base | UC022 | Planejado | 4 critérios |
+| [US079](#us079) | Implementar layout base | UC022 | Concluída | 4 critérios |
 | [US080](#us080) | Configurar SignalR client | UC022 | Planejado | 3 critérios |
 | [US081](#us081) | Implementar estrutura de Commands | UC023 | Concluída | 4 critérios |
 | [US082](#us082) | Implementar estrutura de Queries | UC023 | Concluída | 4 critérios |
