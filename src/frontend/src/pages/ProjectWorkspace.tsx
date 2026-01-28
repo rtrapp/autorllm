@@ -53,7 +53,7 @@ export default function ProjectWorkspace() {
         </Button>
       </div>
 
-      {/* Conteúdo do Workspace (placeholder) */}
+      {/* Conteúdo do Workspace - Editor de Capítulo */}
       <div className="w-full max-w-[850px] mx-auto bg-background shadow-sm border min-h-[1100px] p-16 relative">
         <div className="mb-12 border-b pb-4">
           <h2 className="text-3xl font-bold font-sans tracking-tight text-foreground">

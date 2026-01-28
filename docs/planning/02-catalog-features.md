@@ -10,7 +10,7 @@
 | ID | Nome | Epic | Fase | Status | Use Cases |
 |---|---|---|---|---|---|
 | [F001](#f001-brainstorming-inicial-com-llm) | Brainstorming Inicial com LLM | E001 | MVP | Planejado | 1 |
-| [F002](#f002-gestão-de-entidades-narrativas) | Gestão de Entidades Narrativas | E001 | MVP | Planejado | 4 |
+| [F002](#f002-gestão-de-entidades-narrativas) | Gestão de Entidades Narrativas | E001 | MVP | Parcial | 4 |
 | [F013](#f013-gestão-de-projetos) | Gestão de Projetos | E001 | MVP | Completo | 1 |
 | [F003](#f003-visualização-de-arcos-narrativos) | Visualização de Arcos Narrativos | E001 | MVP | Planejado | 2 |
 | [F004](#f004-editor-de-capítulos) | Editor de Capítulos | E002 | MVP | Planejado | 3 |
@@ -75,7 +75,7 @@ Transformar ideia bruta em outline estruturado rapidamente. Forma alternativa/av
 ### F002: Gestão de Entidades Narrativas
 **Epic:** E001  
 **Fase:** MVP (Fase 1)  
-**Status:** Planejado
+**Status:** Parcial
 
 **Descrição:**  
 CRUD completo para personagens, locais, plots e capítulos. Interface simples com formulários.
@@ -84,7 +84,7 @@ CRUD completo para personagens, locais, plots e capítulos. Interface simples co
 Permitir que autor crie, edite, visualize e delete elementos narrativos essenciais.
 
 **Use Cases:**
-- UC002: Gerenciar Personagens
+- UC002: Gerenciar Personagens ✅
 - UC003: Gerenciar Locais
 - UC004: Gerenciar Plots
 - UC005: Gerenciar Capítulos

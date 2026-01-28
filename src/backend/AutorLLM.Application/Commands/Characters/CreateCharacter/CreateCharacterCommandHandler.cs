@@ -51,8 +51,11 @@ public class CreateCharacterCommandHandler
         // Add character through aggregate root (encapsulated business logic)
         var character = project.AddCharacter(
             command.Name,
-            command.Biography,
-            role);
+            command.Description,
+            role,
+            command.Backstory,
+            command.Appearance,
+            command.Personality);
 
         // Persist through repository
         await _projectRepository.UpdateAsync(project, cancellationToken);

@@ -37,7 +37,8 @@ public class CreateCharacterCommandHandlerTests
             ProjectId = projectId,
             Name = "Frodo Baggins",
             Role = "Protagonist",
-            Biography = "A hobbit from the Shire"
+            Description = "A brave hobbit",
+            Backstory = "A hobbit from the Shire"
         };
 
         _projectRepositoryMock
@@ -70,7 +71,8 @@ public class CreateCharacterCommandHandlerTests
             ProjectId = Guid.NewGuid(),
             Name = "Frodo Baggins",
             Role = "Protagonist",
-            Biography = "A hobbit from the Shire"
+            Description = "A brave hobbit",
+            Backstory = "A hobbit from the Shire"
         };
 
         _projectRepositoryMock
@@ -97,7 +99,8 @@ public class CreateCharacterCommandHandlerTests
             ProjectId = projectId,
             Name = "Gandalf",
             Role = "Supporting",
-            Biography = "A wizard"
+            Description = "An old wizard",
+            Backstory = "A wizard"
         };
 
         _projectRepositoryMock

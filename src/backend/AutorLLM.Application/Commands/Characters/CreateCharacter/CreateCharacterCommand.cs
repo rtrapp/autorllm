@@ -10,5 +10,8 @@ public record CreateCharacterCommand : IRequest<CreateCharacterResult>
     public Guid ProjectId { get; init; }
     public string Name { get; init; } = string.Empty;
     public string Role { get; init; } = string.Empty;
-    public string Biography { get; init; } = string.Empty;
+    public string Description { get; init; } = string.Empty;
+    public string? Backstory { get; init; }
+    public string? Appearance { get; init; }
+    public string? Personality { get; init; }
 }

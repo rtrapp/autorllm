@@ -164,3 +164,163 @@ docker exec -i autor_llm_postgres psql -U postgres -d postgres -c "\d <nome_tabe
 ```
 **Motivo:** Sem executar os scripts, o banco fica desatualizado e operações de persistência falham em runtime, mesmo com todos os testes unitários passando.
 
+---
+
+### 8. Organização de Layout: Manuscrito vs Mundo
+**Data:** 2026-01-28  
+**Contexto:** US006-009 - Implementação de Character Management Frontend  
+**Lição:** A interface tem DOIS contextos distintos que NÃO devem ser misturados:
+- **Tab "Manuscrito"** → Estrutura narrativa (Atos, Capítulos, Cenas)
+- **Tab "Mundo"** → Entidades de worldbuilding (Personagens, Locais, Plots)
+
+**Regras de Posicionamento:**
+- ❌ **NUNCA** colocar Personagens, Locais ou Plots na tab "Manuscrito"
+- ✅ **SEMPRE** colocar entidades de worldbuilding na tab "Mundo"
+- ✅ Personagens aparecem no Manuscrito apenas como **referências** dentro de capítulos (ex: "Personagens: Elara, Kael")
+
+**Exemplo Incorreto:**
+```tsx
+// ❌ Colocar personagens na tab Manuscrito
+{activeTab === 'manuscript' && (
+  <div>
+    <CharacterList /> {/* ERRADO! */}
+  </div>
+)}
+```
+
+**Exemplo Correto:**
+```tsx
+// ✅ Personagens na tab Mundo
+{activeTab === 'world' && (
+  <div>
+    <CharacterSection />
+    <LocationSection />
+    <PlotSection />
+  </div>
+)}
+```
+
+**Motivo:** Separação clara de preocupações - o Manuscrito é o produto final (estrutura narrativa), o Mundo são os building blocks (elementos que compõem a história).
+
+---
+
+### 9. SEMPRE testar funcionalidades com Chrome DevTools antes de marcar como concluída
+**Data:** 2026-01-28  
+**Contexto:** US006-009 - Character CRUD Implementation  
+**Lição:** Testes unitários passando NÃO garantem que a funcionalidade está completa. **OBRIGATORIAMENTE** usar Chrome DevTools para validar integração end-to-end antes de considerar uma story concluída.
+
+**Checklist de Validação com DevTools:**
+
+**1. Network Tab (Requisições HTTP):**
+```javascript
+// ✅ Verificar payload do request
+{
+  "name": "Maria",
+  "description": "Protagonista da história",
+  "backstory": "...",
+  "appearance": "...",
+  "personality": "...",
+  "role": "Protagonist"
+}
+
+// ✅ Verificar response (status 200/201)
+// ✅ Confirmar que TODOS os campos foram salvos separadamente
+```
+
+**2. Console Tab (Erros de Runtime):**
+- ✅ Verificar se há erros de JavaScript
+- ✅ Validar warnings de React (keys, hooks, etc)
+- ✅ Confirmar que não há erros de CORS
+
+**3. Application Tab (State Management):**
+- ✅ Verificar localStorage/sessionStorage se aplicável
+- ✅ Validar tokens de autenticação
+
+**4. Validações Obrigatórias:**
+- ✅ **CREATE:** Request body contém todos os campos; response retorna entidade criada
+- ✅ **READ:** GET retorna TODOS os campos populados (não null/undefined inesperados)
+- ✅ **UPDATE:** PUT/PATCH contém IDs corretos (route params + body); todos os campos são atualizados
+- ✅ **DELETE:** Retorna 204 No Content; entidade removida da lista
+
+**Exemplo de Bug Descoberto com DevTools:**
+```javascript
+// Bug: Campo "role" causando erro 500
+// Network → Request Payload:
+{
+  "role": "Supporting"  // ❌ Backend esperava tipo ENUM, recebia string
+}
+
+// Solução: Cast explícito no SQL
+@Role::character_role  // ✅ Conversão para tipo ENUM do PostgreSQL
+```
+
+**Workflow Obrigatório:**
+1. Implementar funcionalidade
+2. Testes unitários passam
+3. Build compila sem erros
+4. **Abrir Chrome DevTools** (F12)
+5. Testar CADA operação CRUD manualmente
+6. Validar request/response no Network tab
+7. Confirmar zero erros no Console
+8. **SÓ ENTÃO** marcar story como concluída
+
+**Motivo:** Validação de camada de apresentação (frontend), camada de API (backend) e persistência (database) juntas. Testes unitários isolados não capturam problemas de integração como:
+- Serialização/deserialização JSON incorreta
+- Conversões de tipo (string → enum, date formats)
+- IDs faltantes em requests
+- CORS issues
+- Campos sendo concatenados em vez de salvos separadamente
+
+---
+
+### 10. UI/UX: Agrupamento e Hierarquia Visual
+**Data:** 2026-01-28  
+**Contexto:** Enhancement - Character Role Color Coding & Grouping  
+**Lição:** Listas longas devem ser organizadas hierarquicamente com grupos colapsáveis e indicadores visuais para melhorar usabilidade.
+
+**Padrões de Organização:**
+
+**1. Grupos Colapsáveis:**
+```tsx
+// ✅ Seções principais com chevron indicator
+<div onClick={() => toggleSection('characters')}>
+  {expanded ? <ChevronDown /> : <ChevronRight />}
+  Personagens
+</div>
+
+// ✅ Subgrupos por categoria
+<div onClick={() => toggleGroup('Protagonist')}>
+  {expanded ? <ChevronDown /> : <ChevronRight />}
+  Protagonista (3)
+</div>
+```
+
+**2. Indicadores Visuais:**
+- ✅ **Borda lateral colorida** (`border-l-4`) melhor que ícones circulares
+- ✅ Cores consistentes com sistema de design (ex: genre colors em projects)
+- ❌ **EVITAR** círculos pequenos (dificulta visualização)
+
+**Exemplo:**
+```tsx
+// ❌ Difícil de ver
+<div className="h-2 w-2 rounded-full bg-blue-500" />
+
+// ✅ Destaque visual claro
+<div className="border-l-4 border-blue-500 pl-3">
+  {character.name}
+</div>
+```
+
+**3. Ordenação:**
+- ✅ Alfabética dentro de cada grupo: `items.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'))`
+- ✅ Ordem fixa de grupos: `['Protagonist', 'Antagonist', 'Supporting', 'Minor']`
+
+**4. Contadores:**
+- ✅ Mostrar quantidade de itens: "Protagonista (3)"
+- ✅ Ajuda o usuário a entender distribuição
+
+**Benefícios:**
+- Reduz scroll para listas longas
+- Localização rápida de itens
+- Visão geral da distribuição (quantos de cada tipo)
+- Interface limpa e organizada

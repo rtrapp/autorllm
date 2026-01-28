@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
-import { Plus, Edit2, Trash2 } from "lucide-react";
-import { useCharacters } from "@/features/characters/hooks/useCharacters";
-import { CharacterFormDialog } from "@/features/characters/components/CharacterFormDialog";
-import { DeleteCharacterDialog } from "@/features/characters/components/DeleteCharacterDialog";
-import { CHARACTER_ROLES, type Character } from "@/features/characters/types";
+import { Users, Plus, Edit2, Trash2 } from "lucide-react";
+import { CharacterFormDialog } from "./CharacterFormDialog";
+import { DeleteCharacterDialog } from "./DeleteCharacterDialog";
+import { useCharacters } from "../hooks/useCharacters";
+import type { Character } from "../types";
+import { CHARACTER_ROLES } from "../types";
 
 interface CharactersListProps {
   projectId: string;
@@ -31,16 +32,16 @@ export function CharactersList({ projectId }: CharactersListProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold">Personagens</h2>
-          <p className="text-sm text-muted-foreground">
-            Gerencie os protagonistas e coadjuvantes da sua história.
-          </p>
+        <div className="flex items-center gap-2">
+          <Users className="h-5 w-5 text-muted-foreground" />
+          <h2 className="text-xl font-semibold">Personagens</h2>
+          <span className="text-sm text-muted-foreground">({characters.length})</span>
         </div>
-        <Button onClick={() => setIsCreateDialogOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
+        <Button onClick={() => setIsCreateDialogOpen(true)} size="sm" className="gap-2">
+          <Plus className="h-4 w-4" />
           Novo Personagem
         </Button>
       </div>
@@ -48,6 +49,7 @@ export function CharactersList({ projectId }: CharactersListProps) {
       {/* Lista de personagens */}
       {characters.length === 0 ? (
         <Card className="p-8 text-center">
+          <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="text-lg font-semibold mb-2">Nenhum personagem criado</h3>
           <p className="text-sm text-muted-foreground mb-4">
             Comece criando os personagens da sua história
@@ -58,21 +60,24 @@ export function CharactersList({ projectId }: CharactersListProps) {
           </Button>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {characters.map((character) => (
             <Card key={character.id} className="p-4 hover:shadow-md transition-shadow">
               <div className="space-y-3">
+                {/* Nome e Papel */}
                 <div>
                   <h3 className="font-semibold text-lg">{character.name}</h3>
                   <p className="text-sm text-muted-foreground">{getRoleLabel(character.role)}</p>
                 </div>
 
+                {/* Descrição */}
                 {character.description && (
                   <p className="text-sm text-muted-foreground line-clamp-3">
                     {character.description}
                   </p>
                 )}
 
+                {/* Traits resumidos */}
                 <div className="text-xs text-muted-foreground space-y-1">
                   {character.backstory && (
                     <p className="line-clamp-2">
@@ -91,6 +96,7 @@ export function CharactersList({ projectId }: CharactersListProps) {
                   )}
                 </div>
 
+                {/* Ações */}
                 <div className="flex gap-2 pt-2 border-t">
                   <Button
                     variant="outline"

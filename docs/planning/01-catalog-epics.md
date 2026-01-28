@@ -20,7 +20,7 @@
 
 ### E001: Estruturação Narrativa Base
 **Fase:** MVP (Fase 1)  
-**Status:** Planejado
+**Status:** Parcial
 
 **Objetivo:**  
 Permitir ao autor estruturar seu livro definindo elementos narrativos fundamentais (personagens, locais, plots, capítulos) e visualizar a progressão dos arcos narrativos.
@@ -30,7 +30,7 @@ Esta é a fundação da experiência do produto. Sem estruturação, o livro é 
 
 **Features Relacionadas:**
 - F001: Brainstorming Inicial com LLM
-- F002: Gestão de Entidades Narrativas
+- F002: Gestão de Entidades Narrativas (Parcial - Personagens ✅)
 - F003: Visualização de Arcos Narrativos
 
 **Critérios de Sucesso:**

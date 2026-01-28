@@ -21,7 +21,8 @@ public class CreateCharacterCommandValidatorTests
             ProjectId = Guid.NewGuid(),
             Name = "Frodo Baggins",
             Role = "Protagonist",
-            Biography = "A hobbit from the Shire"
+            Description = "A brave hobbit",
+            Backstory = "A hobbit from the Shire"
         };
 
         // Act
@@ -41,7 +42,8 @@ public class CreateCharacterCommandValidatorTests
             ProjectId = Guid.Empty,
             Name = "Frodo Baggins",
             Role = "Protagonist",
-            Biography = "A hobbit from the Shire"
+            Description = "A brave hobbit",
+            Backstory = "A hobbit from the Shire"
         };
 
         // Act
@@ -61,7 +63,8 @@ public class CreateCharacterCommandValidatorTests
             ProjectId = Guid.NewGuid(),
             Name = "",
             Role = "Protagonist",
-            Biography = "A hobbit from the Shire"
+            Description = "A brave hobbit",
+            Backstory = "A hobbit from the Shire"
         };
 
         // Act
@@ -81,7 +84,8 @@ public class CreateCharacterCommandValidatorTests
             ProjectId = Guid.NewGuid(),
             Name = new string('a', 101),
             Role = "Protagonist",
-            Biography = "A hobbit from the Shire"
+            Description = "A brave hobbit",
+            Backstory = "A hobbit from the Shire"
         };
 
         // Act
@@ -101,7 +105,8 @@ public class CreateCharacterCommandValidatorTests
             ProjectId = Guid.NewGuid(),
             Name = "Frodo Baggins",
             Role = "",
-            Biography = "A hobbit from the Shire"
+            Description = "A brave hobbit",
+            Backstory = "A hobbit from the Shire"
         };
 
         // Act
@@ -121,7 +126,8 @@ public class CreateCharacterCommandValidatorTests
             ProjectId = Guid.NewGuid(),
             Name = "Frodo Baggins",
             Role = new string('a', 51),
-            Biography = "A hobbit from the Shire"
+            Description = "A brave hobbit",
+            Backstory = "A hobbit from the Shire"
         };
 
         // Act
@@ -133,7 +139,7 @@ public class CreateCharacterCommandValidatorTests
     }
 
     [Fact]
-    public void Should_Fail_When_Biography_Exceeds_Maximum_Length()
+    public void Should_Fail_When_Backstory_Exceeds_Maximum_Length()
     {
         // Arrange
         var command = new CreateCharacterCommand
@@ -141,7 +147,8 @@ public class CreateCharacterCommandValidatorTests
             ProjectId = Guid.NewGuid(),
             Name = "Frodo Baggins",
             Role = "Protagonist",
-            Biography = new string('a', 5001)
+            Description = "A brave hobbit",
+            Backstory = new string('a', 5001)
         };
 
         // Act
@@ -149,11 +156,11 @@ public class CreateCharacterCommandValidatorTests
 
         // Assert
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.PropertyName == "Biography" && e.ErrorMessage == "Biography must be under 5000 characters");
+        result.Errors.Should().Contain(e => e.PropertyName == "Backstory" && e.ErrorMessage == "Backstory must be under 5000 characters");
     }
 
     [Fact]
-    public void Should_Pass_When_Biography_Is_Empty()
+    public void Should_Pass_When_Backstory_Is_Empty()
     {
         // Arrange
         var command = new CreateCharacterCommand
@@ -161,7 +168,8 @@ public class CreateCharacterCommandValidatorTests
             ProjectId = Guid.NewGuid(),
             Name = "Frodo Baggins",
             Role = "Protagonist",
-            Biography = ""
+            Description = "A brave hobbit",
+            Backstory = ""
         };
 
         // Act

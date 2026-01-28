@@ -164,13 +164,23 @@ public class Project : EntityBase
     public Entities.Character AddCharacter(
         string name,
         string description,
-        CharacterRole role)
+        CharacterRole role,
+        string? backstory = null,
+        string? appearance = null,
+        string? personality = null)
     {
         // Validate uniqueness
         if (_characters.Any(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
             throw new DuplicateCharacterNameException(name);
 
-        var character = Entities.Character.Create(Id, name, description, role);
+        var character = Entities.Character.Create(
+            Id,
+            name,
+            description,
+            role,
+            backstory,
+            appearance,
+            personality);
         _characters.Add(character);
         Touch();
 

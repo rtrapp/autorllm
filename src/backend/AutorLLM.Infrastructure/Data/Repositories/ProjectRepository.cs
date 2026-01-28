@@ -253,7 +253,7 @@ public class ProjectRepository : IProjectRepository
     {
         const string sql = @"
             INSERT INTO characters (id, project_id, name, description, role, backstory, appearance, personality, created_at, updated_at)
-            VALUES (@Id, @ProjectId, @Name, @Description, @Role, @Backstory, @Appearance, @Personality, @CreatedAt, @UpdatedAt)";
+            VALUES (@Id, @ProjectId, @Name, @Description, @Role::character_role, @Backstory, @Appearance, @Personality, @CreatedAt, @UpdatedAt)";
 
         foreach (var character in project.Characters)
         {

@@ -18,10 +18,10 @@
 | [US003](#us003) | Receber outline estruturado gerado pela LLM | UC001 | Planejado | 5 critérios |
 | [US004](#us004) | Revisar e editar outline gerado | UC001 | Planejado | 3 critérios |
 | [US005](#us005) | Salvar projeto com estrutura inicial | UC001 | Planejado | 4 critérios |
-| [US006](#us006) | Criar novo personagem | UC002 | Planejado | 4 critérios |
-| [US007](#us007) | Visualizar lista de personagens | UC002 | Planejado | 3 critérios |
-| [US008](#us008) | Editar personagem existente | UC002 | Planejado | 3 critérios |
-| [US009](#us009) | Deletar personagem com confirmação | UC002 | Planejado | 3 critérios |
+| [US006](#us006) | Criar novo personagem | UC002 | Concluída | 4 critérios |
+| [US007](#us007) | Visualizar lista de personagens | UC002 | Concluída | 3 critérios |
+| [US008](#us008) | Editar personagem existente | UC002 | Concluída | 3 critérios |
+| [US009](#us009) | Deletar personagem com confirmação | UC002 | Concluída | 3 critérios |
 | [US010](#us010) | Criar novo local | UC003 | Planejado | 3 critérios |
 | [US011](#us011) | Visualizar lista de locais | UC003 | Planejado | 2 critérios |
 | [US012](#us012) | Editar local existente | UC003 | Planejado | 3 critérios |

@@ -4,7 +4,11 @@ import { CharactersList } from "./components/CharactersList"
 import { LocationsList } from "./components/LocationsList"
 import { PlotsList } from "./components/PlotsList"
 
-export default function WorldBuilding() {
+interface WorldBuildingProps {
+  projectId: string;
+}
+
+export default function WorldBuilding({ projectId }: WorldBuildingProps) {
   return (
     <div className="flex-1 h-full overflow-hidden p-6 bg-secondary/10">
       <div className="max-w-5xl mx-auto h-full flex flex-col">
@@ -37,7 +41,7 @@ export default function WorldBuilding() {
           
           <div className="flex-1 overflow-y-auto mt-6">
             <TabsContent value="characters" className="m-0 h-full">
-              <CharactersList />
+              <CharactersList projectId={projectId} />
             </TabsContent>
             <TabsContent value="locations" className="m-0 h-full">
                <LocationsList />

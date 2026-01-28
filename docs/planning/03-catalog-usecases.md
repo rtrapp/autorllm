@@ -10,7 +10,7 @@
 | ID | Nome | Feature | Status | Stories |
 |---|---|---|---|---|
 | [UC001](#uc001-gerar-outline-inicial-com-assistência-llm) | Gerar Outline Inicial com Assistência LLM | F001 | Planejado | 5 |
-| [UC002](#uc002-gerenciar-personagens) | Gerenciar Personagens | F002 | Planejado | 4 |
+| [UC002](#uc002-gerenciar-personagens) | Gerenciar Personagens | F002 | Concluída | 4 |
 | [UC025](#uc025-gerenciar-projetos) | Gerenciar Projetos | F013 | Concluída | 4 |
 | [UC003](#uc003-gerenciar-locais) | Gerenciar Locais | F002 | Planejado | 4 |
 | [UC004](#uc004-gerenciar-plots) | Gerenciar Plots | F002 | Planejado | 4 |

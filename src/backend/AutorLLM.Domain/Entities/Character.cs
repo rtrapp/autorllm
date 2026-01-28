@@ -57,7 +57,10 @@ public class Character : EntityBase
         Guid projectId,
         string name,
         string description,
-        CharacterRole role)
+        CharacterRole role,
+        string? backstory = null,
+        string? appearance = null,
+        string? personality = null)
     {
         if (projectId == Guid.Empty)
             throw new ArgumentException("ProjectId cannot be empty.", nameof(projectId));
@@ -71,12 +74,24 @@ public class Character : EntityBase
         if (description.Length > 1000)
             throw new ArgumentException("Character description cannot exceed 1000 characters.", nameof(description));
 
+        if (backstory?.Length > 5000)
+            throw new ArgumentException("Character backstory cannot exceed 5000 characters.", nameof(backstory));
+
+        if (appearance?.Length > 2000)
+            throw new ArgumentException("Character appearance cannot exceed 2000 characters.", nameof(appearance));
+
+        if (personality?.Length > 2000)
+            throw new ArgumentException("Character personality cannot exceed 2000 characters.", nameof(personality));
+
         var character = new Character
         {
             ProjectId = projectId,
             Name = name.Trim(),
             Description = description.Trim(),
-            Role = role
+            Role = role,
+            Backstory = backstory?.Trim(),
+            Appearance = appearance?.Trim(),
+            Personality = personality?.Trim()
         };
 
         character.AddDomainEvent(new CharacterCreatedEvent(character.Id, projectId, name));
@@ -85,7 +100,13 @@ public class Character : EntityBase
     }
 
     // Behavior methods (not public setters!)
-    public void UpdateDetails(string name, string description, CharacterRole role)
+    public void UpdateDetails(
+        string name,
+        string description,
+        CharacterRole role,
+        string? backstory = null,
+        string? appearance = null,
+        string? personality = null)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Character name cannot be empty.", nameof(name));
@@ -96,8 +117,20 @@ public class Character : EntityBase
         if (description.Length > 1000)
             throw new ArgumentException("Character description cannot exceed 1000 characters.", nameof(description));
 
+        if (backstory?.Length > 5000)
+            throw new ArgumentException("Character backstory cannot exceed 5000 characters.", nameof(backstory));
+
+        if (appearance?.Length > 2000)
+            throw new ArgumentException("Character appearance cannot exceed 2000 characters.", nameof(appearance));
+
+        if (personality?.Length > 2000)
+            throw new ArgumentException("Character personality cannot exceed 2000 characters.", nameof(personality));
+
         Name = name.Trim();
         Description = description.Trim();
+        Backstory = backstory?.Trim();
+        Appearance = appearance?.Trim();
+        Personality = personality?.Trim();
         Role = role;
         Touch();
     }

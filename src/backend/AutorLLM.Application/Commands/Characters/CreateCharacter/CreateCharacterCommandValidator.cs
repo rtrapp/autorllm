@@ -20,7 +20,16 @@ public class CreateCharacterCommandValidator : AbstractValidator<CreateCharacter
             .NotEmpty().WithMessage("Role is required")
             .MaximumLength(50).WithMessage("Role must be under 50 characters");
 
-        RuleFor(x => x.Biography)
-            .MaximumLength(5000).WithMessage("Biography must be under 5000 characters");
+        RuleFor(x => x.Description)
+            .MaximumLength(1000).WithMessage("Description must be under 1000 characters");
+
+        RuleFor(x => x.Backstory)
+            .MaximumLength(5000).WithMessage("Backstory must be under 5000 characters");
+
+        RuleFor(x => x.Appearance)
+            .MaximumLength(2000).WithMessage("Appearance must be under 2000 characters");
+
+        RuleFor(x => x.Personality)
+            .MaximumLength(2000).WithMessage("Personality must be under 2000 characters");
     }
 }
