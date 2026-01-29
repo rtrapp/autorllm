@@ -18,6 +18,101 @@ public class LLMHub : Hub
     }
 
     /// <summary>
+    /// Inicia sessão de brainstorm com streaming de resposta da LLM.
+    /// </summary>
+    /// <param name="bookIdea">Descrição inicial da ideia do livro</param>
+    public async Task StartBrainstorm(string bookIdea)
+    {
+        _logger.LogInformation("Received brainstorm request with book idea: {BookIdea}", bookIdea.Substring(0, Math.Min(50, bookIdea.Length)));
+
+        try
+        {
+            var prompt = BuildBrainstormPrompt(bookIdea);
+
+            await foreach (var token in _agentService.StreamCompletionAsync(prompt, Context.ConnectionAborted))
+            {
+                await Clients.Caller.SendAsync("OnBrainstormToken", token, Context.ConnectionAborted);
+            }
+
+            await Clients.Caller.SendAsync("OnBrainstormComplete", Context.ConnectionAborted);
+            
+            _logger.LogInformation("Brainstorm session completed");
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.LogWarning("Brainstorm request cancelled by client");
+            await Clients.Caller.SendAsync("OnCancelled", "Request was cancelled");
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("LLM service is unavailable"))
+        {
+            _logger.LogError(ex, "LLM service unavailable for brainstorm");
+            await Clients.Caller.SendAsync("OnError", "LLM não disponível. Verifique se o Ollama está rodando.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing brainstorm request");
+            await Clients.Caller.SendAsync("OnError", ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Envia resposta do autor e continua conversa de brainstorm.
+    /// </summary>
+    /// <param name="sessionId">ID da sessão de brainstorm</param>
+    /// <param name="userResponse">Resposta do autor às perguntas da LLM</param>
+    public async Task ContinueBrainstorm(string sessionId, string userResponse)
+    {
+        _logger.LogInformation("Continuing brainstorm session {SessionId}", sessionId);
+
+        try
+        {
+            var prompt = BuildContinuePrompt(userResponse);
+
+            await foreach (var token in _agentService.StreamCompletionAsync(prompt, Context.ConnectionAborted))
+            {
+                await Clients.Caller.SendAsync("OnBrainstormToken", token, Context.ConnectionAborted);
+            }
+
+            await Clients.Caller.SendAsync("OnBrainstormComplete", Context.ConnectionAborted);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error continuing brainstorm session {SessionId}", sessionId);
+            await Clients.Caller.SendAsync("OnError", ex.Message);
+        }
+    }
+
+    private static string BuildBrainstormPrompt(string bookIdea)
+    {
+        return $"""
+            Você é um assistente especializado em ajudar autores a desenvolverem suas ideias de livros.
+
+            O autor descreveu a seguinte ideia:
+            {bookIdea}
+
+            Analise a ideia e responda de forma amigável e encorajadora. Confirme que você entendeu a essência da história e faça 3-5 perguntas focadas para ajudar a expandir e clarificar os seguintes aspectos:
+
+            1. **Gênero e Tom**: Qual é o gênero da história? Que tom/atmosfera você imagina?
+            2. **Protagonista**: Quem é o personagem principal? Quais são suas motivações e conflitos internos?
+            3. **Conflito Central**: Qual é o principal obstáculo ou desafio que a história aborda?
+            4. **Ambientação**: Onde e quando a história se passa?
+            5. **Tema**: Que mensagem ou reflexão você quer transmitir aos leitores?
+
+            Seja específico mas não excessivamente técnico. O objetivo é ajudar o autor a clarificar sua visão antes de criar o outline estruturado.
+            """;
+    }
+
+    private static string BuildContinuePrompt(string userResponse)
+    {
+        return $"""
+            O autor respondeu:
+            {userResponse}
+
+            Baseado nessa resposta, faça perguntas adicionais se necessário, ou confirme que você tem informações suficientes para gerar um outline estruturado do livro.
+            """;
+    }
+
+    /// <summary>
     /// Recebe requisição para reescrita de texto usando LLM.
     /// </summary>
     /// <param name="chapterId">ID do capítulo sendo editado</param>

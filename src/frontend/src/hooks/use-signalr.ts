@@ -70,25 +70,42 @@ export function useSignalR(options: UseSignalROptions = {}): UseSignalRReturn {
 
   // Setup event handlers
   useEffect(() => {
-    if (onTokenReceived) {
-      signalRService.onTokenReceived(onTokenReceived);
-    }
+    const setupHandlers = async () => {
+      // Ensure connection is established before registering handlers
+      if (signalRService.getState() !== signalR.HubConnectionState.Connected) {
+        try {
+          await signalRService.start();
+          updateConnectionState();
+        } catch (error) {
+          console.error('Failed to establish SignalR connection:', error);
+          return;
+        }
+      }
 
-    if (onComplete) {
-      signalRService.onComplete(onComplete);
-    }
+      if (onTokenReceived) {
+        signalRService.onTokenReceived(onTokenReceived);
+      }
 
-    if (onError) {
-      signalRService.onError(onError);
-    }
+      if (onComplete) {
+        signalRService.onComplete(onComplete);
+      }
+
+      if (onError) {
+        signalRService.onError(onError);
+      }
+    };
+
+    setupHandlers();
 
     // Cleanup handlers on unmount
     return () => {
       signalRService.off('OnTokenReceived');
+      signalRService.off('OnBrainstormToken');
       signalRService.off('OnComplete');
+      signalRService.off('OnBrainstormComplete');
       signalRService.off('OnError');
     };
-  }, [onTokenReceived, onComplete, onError]);
+  }, [onTokenReceived, onComplete, onError, updateConnectionState]);
 
   const isConnected = connectionState === signalR.HubConnectionState.Connected;
   const isConnecting = connectionState === signalR.HubConnectionState.Connecting || 

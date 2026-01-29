@@ -52,6 +52,7 @@ class SignalRService {
     }
 
     this.connection.on('OnTokenReceived', callback);
+    this.connection.on('OnBrainstormToken', callback); // Support brainstorm events
   }
 
   /**
@@ -64,6 +65,7 @@ class SignalRService {
     }
 
     this.connection.on('OnComplete', callback);
+    this.connection.on('OnBrainstormComplete', callback); // Support brainstorm events
   }
 
   /**

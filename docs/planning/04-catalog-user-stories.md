@@ -9,7 +9,7 @@
 
 | ID | História | Use Case | Status | Critérios de Aceitação |
 |---|---|---|---|---|
-| [US001](#us001) | Descrever ideia de livro para LLM | UC001 | Planejado | 3 critérios |
+| [US001](#us001) | Descrever ideia de livro para LLM | UC001 | Concluída | 3 critérios |
 | [US002](#us002) | Receber perguntas da LLM para expandir ideia | UC001 | Planejado | 3 critérios |
 | [US091](#us091) | Criar novo projeto manualmente | UC025 | Concluída | 5 critérios |
 | [US092](#us092) | Visualizar lista de projetos | UC025 | Concluída | 5 critérios |
@@ -183,10 +183,17 @@
 **Quero** descrever minha ideia de livro em texto livre para a LLM entender  
 **Para** iniciar o processo de estruturação com assistência
 
+**Status:** 🟢 Concluída (2026-01-28)
+
 **Critérios de Aceitação:**
-1. Interface tem campo de texto multi-linha para entrada da ideia
-2. Botão "Começar" inicia conversa com LLM
-3. Ideia é enviada para LLM e resposta é exibida
+1. ✅ Interface tem campo de texto multi-linha para entrada da ideia (BrainstormChat.tsx)
+2. ✅ Botão "Começar" inicia conversa com LLM (SignalR StartBrainstorm)
+3. ✅ Ideia é enviada para LLM e resposta é exibida (streaming com tokens em tempo real)
+
+**Implementação:**
+- Backend: StartBrainstormCommand, StartBrainstormCommandHandler, LLMHub.StartBrainstorm
+- Frontend: BrainstormChat component, useBrainstorm hook, BrainstormPage
+- Rota: /brainstorm com link na página de projetos
 
 ---
 

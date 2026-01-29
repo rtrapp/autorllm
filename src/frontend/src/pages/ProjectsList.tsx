@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Plus, Sparkles, MoreVertical, Settings, Trash2, Eye } from "lucide-react";
+import { Plus, Sparkles, MoreVertical, Settings, Trash2, Eye, Wand2 } from "lucide-react";
 import { useState } from "react";
 import { NewProjectDialog } from "@/features/projects/components/NewProjectDialog";
 import { EditProjectDialog } from "@/features/projects/components/EditProjectDialog";
@@ -81,10 +81,25 @@ export default function ProjectsList() {
             <div className="text-center">
               <h3 className="text-lg font-semibold">Criar Novo Livro</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Comece do zero ou use a IA para estruturar uma ideia.
+                Comece do zero definindo título e estrutura manualmente.
               </p>
             </div>
           </button>
+
+          <Link
+            to="/brainstorm"
+            className="group relative flex flex-col items-center justify-center gap-4 p-8 rounded-xl border-2 border-dashed border-primary/25 hover:border-primary/50 bg-primary/5 hover:bg-primary/10 transition-all cursor-pointer h-[280px]"
+          >
+            <div className="h-14 w-14 rounded-full bg-primary/10 border border-primary/20 shadow-sm group-hover:shadow-md flex items-center justify-center text-primary transition-all group-hover:scale-110">
+              <Wand2 className="h-7 w-7" />
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold">Criar com IA</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Descreva sua ideia e deixe a IA estruturar seu livro.
+              </p>
+            </div>
+          </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -99,10 +114,26 @@ export default function ProjectsList() {
             <div className="text-center">
               <h3 className="text-lg font-semibold">Criar Novo Livro</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Comece do zero ou use a IA para estruturar uma ideia.
+                Comece do zero definindo título e estrutura manualmente.
               </p>
             </div>
           </button>
+
+          {/* Criar com IA Card */}
+          <Link
+            to="/brainstorm"
+            className="group relative flex flex-col items-center justify-center gap-4 p-8 rounded-xl border-2 border-dashed border-primary/25 hover:border-primary/50 bg-primary/5 hover:bg-primary/10 transition-all cursor-pointer h-[280px]"
+          >
+            <div className="h-14 w-14 rounded-full bg-primary/10 border border-primary/20 shadow-sm group-hover:shadow-md flex items-center justify-center text-primary transition-all group-hover:scale-110">
+              <Wand2 className="h-7 w-7" />
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold">Criar com IA</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Descreva sua ideia e deixe a IA estruturar seu livro.
+              </p>
+            </div>
+          </Link>
 
           {/* Project Cards */}
           {projects.map((project) => {

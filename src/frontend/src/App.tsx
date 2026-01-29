@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import ProjectsList from "./pages/ProjectsList";
 import ProjectWorkspace from "./pages/ProjectWorkspace";
+import BrainstormPage from "./pages/BrainstormPage";
 import { PublicLayout } from "./components/layout/PublicLayout";
 import { WorkspaceLayout } from "./components/layout/WorkspaceLayout";
 
@@ -12,6 +13,7 @@ export default function App() {
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/projects" element={<ProjectsList />} />
+          <Route path="/brainstorm" element={<BrainstormPage />} />
         </Route>
 
         <Route path="/projects/:id" element={<WorkspaceLayout />}>

@@ -1,11 +1,13 @@
+using AutorLLM.Application.Commands.LLM.StartBrainstorm;
 using AutorLLM.Application.Services;
 using AutorLLM.Infrastructure.Exceptions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutorLLM.Api.Controllers;
 
 /// <summary>
-/// LLM API Controller - for testing Agent Framework integration
+/// LLM API Controller - for testing Agent Framework integration and brainstorming
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
@@ -13,12 +15,60 @@ namespace AutorLLM.Api.Controllers;
 public class LLMController : ControllerBase
 {
     private readonly IAgentService _agentService;
+    private readonly IMediator _mediator;
     private readonly ILogger<LLMController> _logger;
 
-    public LLMController(IAgentService agentService, ILogger<LLMController> logger)
+    public LLMController(
+        IAgentService agentService,
+        IMediator mediator,
+        ILogger<LLMController> logger)
     {
         _agentService = agentService;
+        _mediator = mediator;
         _logger = logger;
+    }
+
+    /// <summary>
+    /// Start brainstorm session - initiates conversation with LLM about book idea
+    /// </summary>
+    [HttpPost("brainstorm/start")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
+    public async Task<IActionResult> StartBrainstorm(
+        [FromBody] StartBrainstormRequest request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var command = new StartBrainstormCommand
+            {
+                BookIdea = request.BookIdea
+            };
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return Ok(result);
+        }
+        catch (OllamaConnectionException ex)
+        {
+            _logger.LogError(ex, "Ollama connection failed during brainstorm start");
+            return StatusCode(503, new
+            {
+                error = "LLM não disponível. Verifique se o Ollama está rodando.",
+                details = new
+                {
+                    endpoint = ex.Endpoint,
+                    model = ex.Model,
+                    retryAttempts = ex.RetryAttempts
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to start brainstorm session");
+            return StatusCode(500, new { error = "Erro interno ao iniciar brainstorm" });
+        }
     }
 
     /// <summary>
@@ -140,3 +190,5 @@ public class LLMController : ControllerBase
 }
 
 public record CompleteRequest(string Prompt);
+
+public record StartBrainstormRequest(string BookIdea);

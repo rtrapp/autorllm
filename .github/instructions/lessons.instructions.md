@@ -464,6 +464,132 @@ export type PlotType = 'Main' | 'Subplot' | 'Character Arc' | 'Romance' | 'Myste
 
 ---
 
+### 17. SignalR Hub methods devem usar nomes de eventos consistentes
+**Data:** 2026-01-28  
+**Contexto:** US001 - Implementação de chat de brainstorm com streaming LLM  
+**Lição:** Quando criar novos métodos SignalR para diferentes funcionalidades, usar nomes de eventos descritivos e consistentes. Para cada método hub (ex: `StartBrainstorm`), emitir eventos específicos (ex: `OnBrainstormToken`, `OnBrainstormComplete`) em vez de reutilizar eventos genéricos.
+
+**Padrão Estabelecido:**
+```csharp
+// Hub method
+public async Task StartBrainstorm(string bookIdea)
+{
+    // Emite eventos específicos
+    await Clients.Caller.SendAsync("OnBrainstormToken", token);
+    await Clients.Caller.SendAsync("OnBrainstormComplete");
+}
+
+// SignalR service suporta múltiplos eventos
+onTokenReceived(callback: (token: string) => void) {
+    this.connection.on('OnTokenReceived', callback);      // Rewrite
+    this.connection.on('OnBrainstormToken', callback);    // Brainstorm
+}
+```
+
+**Benefícios:**
+- Separa concerns entre diferentes features (rewrite vs brainstorm)
+- Facilita debugging e logging específico por feature
+- Permite tratamento diferenciado no frontend se necessário
+- Mantém código escalável para futuras features de streaming
+
+---
+
+### 18. Hooks customizados devem encapsular toda a lógica de estado da feature
+**Data:** 2026-01-28  
+**Contexto:** US001 - Hook useBrainstorm para gerenciar chat  
+**Lição:** Ao criar hooks para features complexas com streaming/SignalR, encapsular TODA a lógica de estado (mensagens, streaming, callbacks) dentro do hook. O componente UI deve apenas consumir o estado e chamar métodos, sem gerenciar detalhes de implementação.
+
+**Estrutura Ideal:**
+```typescript
+// ✅ Hook encapsula tudo
+export function useBrainstorm() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingContent, setStreamingContent] = useState('');
+
+  // Callbacks internos para SignalR
+  const handleTokenReceived = useCallback(/*...*/, []);
+  const handleComplete = useCallback(/*...*/, []);
+
+  // Métodos públicos simples
+  const startBrainstorm = async (idea: string) => {/*...*/};
+  const sendMessage = async (msg: string) => {/*...*/};
+
+  return { messages, isStreaming, startBrainstorm, sendMessage };
+}
+
+// ✅ Componente só consome
+function BrainstormChat() {
+  const { messages, isStreaming, startBrainstorm } = useBrainstorm();
+  // Resto é apenas UI
+}
+```
+
+**Evitar:**
+```typescript
+// ❌ Componente gerencia estado de streaming manualmente
+function BrainstormChat() {
+  const [streamingContent, setStreamingContent] = useState('');
+  const signalR = useSignalR({
+    onTokenReceived: (token) => setStreamingContent(prev => prev + token)
+  });
+  // Lógica de negócio vazando para UI
+}
+```
+
+**Regra:** Componentes UI devem ser "burros" - apenas renderizam e disparam ações. Hooks devem ser "inteligentes" - gerenciam estado e lógica de negócio.
+
+---
+
+### 19. SignalR connection deve ser inicializada ANTES de registrar event handlers
+**Data:** 2026-01-28  
+**Contexto:** US001 - Erro "SignalR connection not initialized. Call start() first."  
+**Lição:** Event handlers não podem ser registrados antes da conexão SignalR estar estabelecida. O hook useSignalR deve garantir que a conexão seja iniciada ANTES de tentar registrar qualquer evento.
+
+**Problema Encontrado:**
+```typescript
+// ❌ ERRADO - Registra handlers sem garantir conexão
+useEffect(() => {
+  signalRService.onTokenReceived(callback);  // Erro: connection not initialized
+}, [callback]);
+```
+
+**Solução:**
+```typescript
+// ✅ CORRETO - Garante conexão antes de registrar handlers
+useEffect(() => {
+  const setupHandlers = async () => {
+    // Ensure connection is established first
+    if (signalRService.getState() !== signalR.HubConnectionState.Connected) {
+      await signalRService.start();
+      updateConnectionState();
+    }
+
+    // Now safe to register handlers
+    if (onTokenReceived) {
+      signalRService.onTokenReceived(onTokenReceived);
+    }
+  };
+
+  setupHandlers();
+}, [onTokenReceived, updateConnectionState]);
+```
+
+**Checklist para SignalR:**
+1. ✅ Verificar estado da conexão antes de qualquer operação
+2. ✅ Inicializar conexão automaticamente no useEffect
+3. ✅ Limpar TODOS os event handlers no cleanup (incluir variações como OnBrainstormToken)
+4. ✅ Tratar erros de conexão gracefully
+5. ✅ Não assumir que conexão está pronta - sempre verificar
+
+**Benefícios:**
+- Elimina erro "connection not initialized"
+- Garante que eventos são recebidos corretamente
+- UX consistente mesmo com conexão lenta
+
+---
+---
+
 ### 14. Indicadores visuais devem ser consistentes por tipo de entidade
 **Data:** 2026-01-28  
 **Contexto:** US014-US017 - Adição de cores para tipos de plot  

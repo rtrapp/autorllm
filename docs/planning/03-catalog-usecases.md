@@ -9,7 +9,7 @@
 
 | ID | Nome | Feature | Status | Stories |
 |---|---|---|---|---|
-| [UC001](#uc001-gerar-outline-inicial-com-assistência-llm) | Gerar Outline Inicial com Assistência LLM | F001 | Planejado | 5 |
+| [UC001](#uc001-gerar-outline-inicial-com-assistência-llm) | Gerar Outline Inicial com Assistência LLM | F001 | Em Implementacao | 5 |
 | [UC002](#uc002-gerenciar-personagens) | Gerenciar Personagens | F002 | Concluída | 4 |
 | [UC025](#uc025-gerenciar-projetos) | Gerenciar Projetos | F013 | Concluída | 4 |
 | [UC003](#uc003-gerenciar-locais) | Gerenciar Locais | F002 | Concluída | 4 |
@@ -77,14 +77,15 @@
 ### UC001: Gerar Outline Inicial com Assistência LLM
 
 **Feature:** F001  
+**Status:** 🟡 Em Implementacao (1/5 stories concluídas)  
 **Objetivo:** Transformar ideia bruta do autor em estrutura de livro (outline) através de conversação com LLM.
 
 **Atores:** Autor
 
 **Fluxo Resumido:**
-1. Autor acessa interface de novo projeto
-2. Descreve ideia inicial em texto livre
-3. LLM faz perguntas para expandir (gênero, conflito central, protagonista)
+1. Autor acessa interface de novo projeto (/brainstorm)
+2. Descreve ideia inicial em texto livre ✅ **Concluído**
+3. LLM faz perguntas para expandir (gênero, conflito central, protagonista) ⏳ **Próximo**
 4. Autor responde às perguntas
 5. LLM gera outline: título sugerido, sinopse, lista de capítulos com resumos, personagens principais, plot principal
 6. Autor revisa e ajusta outline
@@ -96,11 +97,18 @@
 - Plot principal é obrigatório
 
 **User Stories:**
-- US001: Como autor, quero descrever minha ideia de livro para a LLM entender
-- US002: Como autor, quero que a LLM faça perguntas para expandir minha ideia
-- US003: Como autor, quero que a LLM gere outline estruturado baseado na conversa
-- US004: Como autor, quero revisar e editar o outline gerado
-- US005: Como autor, quero salvar o projeto com a estrutura inicial criada
+- ✅ US001: Como autor, quero descrever minha ideia de livro para a LLM entender
+- 🔴 US002: Como autor, quero que a LLM faça perguntas para expandir minha ideia
+- 🔴 US003: Como autor, quero que a LLM gere outline estruturado baseado na conversa
+- 🔴 US004: Como autor, quero revisar e editar o outline gerado
+- 🔴 US005: Como autor, quero salvar o projeto com a estrutura inicial criada
+
+**Implementação Atual (US001):**
+- ✅ Backend: StartBrainstormCommand + Handler + Validator
+- ✅ SignalR Hub: StartBrainstorm e ContinueBrainstorm methods
+- ✅ Frontend: BrainstormChat component com streaming em tempo real
+- ✅ Hook: useBrainstorm para gerenciar estado do chat
+- ✅ Rota: /brainstorm acessível pela página de projetos
 
 ---
 
