@@ -1,6 +1,8 @@
 using AutorLLM.Application;
 using AutorLLM.Infrastructure;
 using AutorLLM.Api.Hubs;
+using Microsoft.Agents.AI;
+using Microsoft.Agents.AI.Hosting.AGUI.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +54,16 @@ app.UseCors();
 
 app.MapControllers();
 
-// Map SignalR Hub
+// Map SignalR Hub (mantido para compatibilidade com implementação atual)
 app.MapHub<LLMHub>("/llmhub");
+
+// Map AG-UI endpoint (padrão oficial do Microsoft Agent Framework)
+// Cria um AIAgent específico para brainstorm com instruções dedicadas
+var brainstormAgent = app.Services.GetRequiredService<IServiceScopeFactory>()
+    .CreateScope()
+    .ServiceProvider
+    .GetRequiredService<AIAgent>();
+
+app.MapAGUI("/ag-ui/brainstorm", brainstormAgent);
 
 app.Run();

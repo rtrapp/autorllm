@@ -588,6 +588,90 @@ useEffect(() => {
 - UX consistente mesmo com conexão lenta
 
 ---
+
+### 20. Usar protocolos padronizados para comunicação LLM-UI melhora manutenibilidade
+**Data:** 2026-01-29  
+**Contexto:** US001 - Refatoração para implementar AG-UI Protocol  
+**Lição:** Em vez de strings de texto livre, usar um protocolo estruturado (AG-UI) para comunicação entre LLM e interface traz benefícios significativos de type safety, extensibilidade e testabilidade.
+
+**Antes (texto livre):**
+```typescript
+// ❌ Difícil de extender e sem estrutura
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;  // Plain text only
+}
+```
+
+**Depois (AG-UI Protocol):**
+```typescript
+// ✅ Estruturado, extensível e type-safe
+interface AgMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: Content[];  // Text | Component | Action | Error
+  metadata?: {
+    timestamp: Date;
+    sessionId?: string;
+  };
+}
+
+// Suporta componentes interativos
+type Content = 
+  | { type: 'text', text: string }
+  | { type: 'component', component: Button | Card | OutlinePreview }
+  | { type: 'action', action: Action }
+  | { type: 'error', error: string };
+```
+
+**Benefícios Implementados:**
+1. **Type Safety** - TypeScript garante contratos entre frontend/backend
+2. **Componentes Reutilizáveis** - LLM pode solicitar renderização de UI components
+3. **Ações Declarativas** - LLM controla fluxo com ações tipadas (save_project, navigate)
+4. **Extensibilidade** - Fácil adicionar novos component types sem quebrar código existente
+5. **Testabilidade** - Mensagens estruturadas facilitam unit/integration tests
+6. **Documentação Automática** - TypeScript types servem como documentação viva
+
+**Estrutura de Arquivos Criada:**
+```
+src/types/ag-ui.ts                           # Tipos do protocolo
+src/hooks/use-ag-brainstorm.ts               # Hook com AG-UI
+src/components/brainstorm/AgMessageRenderer.tsx  # Renderizador de componentes
+docs/discovery/09-ag-ui-protocol.md          # Documentação completa
+```
+
+**Exemplo de Uso:**
+```typescript
+// LLM pode enviar componentes estruturados
+const outlineMessage: AgMessage = {
+  id: uuid(),
+  role: 'assistant',
+  content: [{
+    type: 'component',
+    component: {
+      type: 'outline-preview',
+      title: 'Seu Livro',
+      chapters: [...],
+      characters: [...],
+      actions: [
+        { type: 'button', label: 'Salvar', action: { type: 'save_project' } }
+      ]
+    }
+  }]
+};
+```
+
+**Checklist para Implementar Protocolo:**
+1. ✅ Definir tipos base (Message, Content, Component, Action)
+2. ✅ Criar helper functions (createTextMessage, parseAgContent)
+3. ✅ Implementar hook customizado com protocolo
+4. ✅ Criar renderer genérico para componentes
+5. ✅ Documentar protocolo e exemplos de uso
+6. ✅ Adaptar backend para emitir formato AG-UI (futuro)
+
+**Referência:** https://github.com/ag-ui-protocol/ag-ui
+
+---
 ---
 
 ### 14. Indicadores visuais devem ser consistentes por tipo de entidade

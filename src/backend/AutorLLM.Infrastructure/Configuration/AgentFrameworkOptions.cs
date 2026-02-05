@@ -1,13 +1,19 @@
 namespace AutorLLM.Infrastructure.Configuration;
 
 /// <summary>
-/// Configurações do Microsoft Agent Framework e integração com Ollama.
+/// Configurações do Microsoft Agent Framework e integração com provedores LLM.
 /// </summary>
 public class AgentFrameworkOptions
 {
     public const string SectionName = "AgentFramework";
 
+    /// <summary>
+    /// Provedor LLM ativo: "Ollama" ou "LMStudio".
+    /// </summary>
+    public string ActiveProvider { get; set; } = "LMStudio";
+
     public OllamaOptions Ollama { get; set; } = new();
+    public LMStudioOptions LMStudio { get; set; } = new();
     public ResilienceOptions Resilience { get; set; } = new();
 }
 
@@ -28,6 +34,27 @@ public class OllamaOptions
 
     /// <summary>
     /// Timeout em segundos para requisições ao Ollama.
+    /// </summary>
+    public int TimeoutSeconds { get; set; } = 60;
+}
+
+/// <summary>
+/// Configurações específicas do provedor LM Studio.
+/// </summary>
+public class LMStudioOptions
+{
+    /// <summary>
+    /// Endpoint HTTP do LM Studio (ex: http://172.23.16.1:1234).
+    /// </summary>
+    public string Endpoint { get; set; } = "http://172.23.16.1:1234";
+
+    /// <summary>
+    /// Nome do modelo a ser utilizado (ex: openai/gpt-oss-20b).
+    /// </summary>
+    public string Model { get; set; } = "openai/gpt-oss-20b";
+
+    /// <summary>
+    /// Timeout em segundos para requisições ao LM Studio.
     /// </summary>
     public int TimeoutSeconds { get; set; } = 60;
 }

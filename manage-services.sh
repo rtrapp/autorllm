@@ -16,8 +16,6 @@ BOLD='\033[1m'
 # Configurações de portas
 BACKEND_PORT=5011
 FRONTEND_PORT=5173
-POSTGRES_PORT=54322
-STUDIO_PORT=54323
 
 # Diretórios dos serviços
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -118,11 +116,8 @@ is_service_running() {
         fi
     fi
     
-    # Fallback: verificar pela porta ou container
+    # Fallback: verificar pela porta
     case $SERVICE in
-        postgres)
-            docker ps | grep -q "autor_llm_postgres" && return 0
-            ;;
         backend)
             lsof -Pi :$BACKEND_PORT -t >/dev/null 2>&1 && return 0
             ;;
@@ -171,13 +166,6 @@ show_status() {
     echo -e "${BOLD}SERVIÇO              STATUS          PID        URL${NC}"
     echo "────────────────────────────────────────────────────────────────────────────────────"
     
-    # PostgreSQL
-    if is_service_running "postgres"; then
-        echo -e "PostgreSQL           ${GREEN}● RODANDO${NC}       -          localhost:$POSTGRES_PORT"
-    else
-        echo -e "PostgreSQL           ${RED}● PARADO${NC}        -          -"
-    fi
-    
     # Backend API
     if is_service_running "backend"; then
         local backend_pid=$(get_pid "backend")
@@ -203,14 +191,6 @@ stop_service() {
     local SERVICE_NAME=""
     
     case $SERVICE in
-        postgres)
-            SERVICE_NAME="PostgreSQL"
-            log_step "Parando PostgreSQL (Docker)..."
-            cd "$SCRIPT_DIR"
-            docker-compose stop db 2>/dev/null || true
-            log_success "PostgreSQL parado"
-            return 0
-            ;;
         backend)
             SERVICE_NAME="Backend API"
             log_step "Parando Backend API..."
@@ -267,7 +247,6 @@ stop_all_services() {
     
     stop_service "frontend"
     stop_service "backend"
-    stop_service "postgres"
     
     echo ""
     log_success "Todos os serviços foram parados"
@@ -278,10 +257,6 @@ build_service() {
     local SERVICE=$1
     
     case $SERVICE in
-        postgres)
-            log_info "PostgreSQL roda via Docker - nenhum build necessário"
-            return 0
-            ;;
         backend)
             log_step "Compilando Backend API..."
             cd "$BACKEND_DIR"
@@ -321,26 +296,6 @@ start_service() {
     local PID=0
     
     case $SERVICE in
-        postgres)
-            SERVICE_NAME="PostgreSQL"
-            log_step "Iniciando PostgreSQL (Docker)..."
-            cd "$SCRIPT_DIR"
-            docker-compose up -d db
-            if [ $? -eq 0 ]; then
-                log_success "PostgreSQL iniciado"
-                log_info "Aguardando PostgreSQL inicializar..."
-                sleep 5
-                if docker ps | grep -q "autor_llm_postgres"; then
-                    log_success "PostgreSQL está rodando na porta $POSTGRES_PORT"
-                else
-                    log_error "PostgreSQL não iniciou corretamente"
-                    return 1
-                fi
-            else
-                log_error "Falha ao iniciar PostgreSQL"
-                return 1
-            fi
-            ;;
         backend)
             SERVICE_NAME="Backend API"
             log_step "Iniciando Backend API na porta $BACKEND_PORT..."
@@ -391,11 +346,6 @@ start_all_services() {
     echo ""
     
     local FAILED_SERVICES=()
-    
-    if ! start_service "postgres"; then
-        FAILED_SERVICES+=("PostgreSQL")
-    fi
-    echo ""
     
     if ! start_service "backend"; then
         FAILED_SERVICES+=("Backend")
@@ -503,9 +453,8 @@ show_service_menu() {
     echo -e "${CYAN}${BOLD}╚═══════════════════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${BOLD}[0] Todos${NC}"
-    echo -e "${BOLD}[1] PostgreSQL${NC} [porta: $POSTGRES_PORT]"
-    echo -e "${BOLD}[2] Backend API${NC} [porta: $BACKEND_PORT]"
-    echo -e "${BOLD}[3] Frontend${NC} [porta: $FRONTEND_PORT]"
+    echo -e "${BOLD}[1] Backend API${NC} [porta: $BACKEND_PORT]"
+    echo -e "${BOLD}[2] Frontend${NC} [porta: $FRONTEND_PORT]"
     echo ""
     echo -e "${BOLD}[9] Voltar${NC}"
     echo ""
@@ -518,12 +467,9 @@ show_service_menu() {
             SERVICE="all"
             ;;
         1)
-            SERVICE="postgres"
-            ;;
-        2)
             SERVICE="backend"
             ;;
-        3)
+        2)
             SERVICE="frontend"
             ;;
         9)
@@ -593,15 +539,6 @@ show_service_logs() {
     local LOG_FILES=()
     
     case $SERVICE in
-        postgres)
-            echo ""
-            log_info "Exibindo logs do PostgreSQL (Docker)"
-            log_info "Pressione Ctrl+C para voltar ao menu"
-            echo ""
-            sleep 2
-            docker logs -f autor_llm_postgres 2>&1 || true
-            return
-            ;;
         backend)
             LOG_OPTIONS=("Runtime" "Build")
             LOG_FILES=("$LOGS_DIR/backend-runtime.log" "$LOGS_DIR/backend-build.log")
