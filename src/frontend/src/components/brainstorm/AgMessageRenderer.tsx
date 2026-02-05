@@ -4,6 +4,8 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
+import { QuestionList } from './QuestionList';
+import { ChoiceList } from './ChoiceList';
 import type {
   AgMessage,
   Content,
@@ -12,6 +14,8 @@ import type {
   ErrorContent,
   ButtonComponent,
   CardComponent,
+  QuestionListComponent,
+  ChoiceListComponent,
   OutlinePreviewComponent,
 } from '@/types/ag-ui';
 
@@ -251,6 +255,10 @@ function ComponentRenderer({
       return <ButtonRenderer component={component} onAction={onAction} />;
     case 'card':
       return <CardRenderer component={component} onAction={onAction} />;
+    case 'question-list':
+      return <QuestionListRenderer component={component} onAction={onAction} />;
+    case 'choice-list':
+      return <ChoiceListRenderer component={component} onAction={onAction} />;
     case 'outline-preview':
       return <OutlinePreviewRenderer component={component} onAction={onAction} />;
     default:
@@ -311,6 +319,58 @@ function CardRenderer({
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function QuestionListRenderer({
+  component,
+  onAction,
+}: {
+  component: QuestionListComponent;
+  onAction?: (action: string, payload?: Record<string, unknown>) => void;
+}) {
+  const handleAnswer = (questionId: string, answer: string) => {
+    console.log('Question answered:', questionId, answer);
+  };
+
+  const handleComplete = (answers: Record<string, string>) => {
+    console.log('All questions answered:', answers);
+    // Trigger action to send answers back to LLM
+    onAction?.('submit_answers', { answers });
+  };
+
+  return (
+    <div className="mt-3">
+      <QuestionList
+        component={component}
+        onAnswer={handleAnswer}
+        onComplete={handleComplete}
+      />
+    </div>
+  );
+}
+
+function ChoiceListRenderer({
+  component,
+  onAction,
+}: {
+  component: ChoiceListComponent;
+  onAction?: (action: string, payload?: Record<string, unknown>) => void;
+}) {
+  const handleSelect = (selectedChoices: string[]) => {
+    console.log('Choices selected:', selectedChoices);
+    // Format as readable text and send back to LLM
+    const choicesText = selectedChoices.join('\n\n');
+    onAction?.('submit_choices', { choices: choicesText });
+  };
+
+  return (
+    <div className="mt-3">
+      <ChoiceList
+        component={component}
+        onSelect={handleSelect}
+      />
     </div>
   );
 }

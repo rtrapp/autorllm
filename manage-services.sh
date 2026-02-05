@@ -369,6 +369,7 @@ start_all_services() {
 # Função para rebuildar e reiniciar um serviço
 rebuild_and_restart_service() {
     local SERVICE=$1
+    local INTERACTIVE=${2:-true}
     
     echo ""
     log_step "Rebuilding e reiniciando $SERVICE..."
@@ -381,7 +382,7 @@ rebuild_and_restart_service() {
     # Compilar serviço
     if ! build_service "$SERVICE"; then
         log_error "Falha ao compilar $SERVICE"
-        read -p "Pressione ENTER para continuar..."
+        [ "$INTERACTIVE" = "true" ] && read -p "Pressione ENTER para continuar..."
         return 0
     fi
     echo ""
@@ -389,18 +390,20 @@ rebuild_and_restart_service() {
     # Iniciar serviço
     if ! start_service "$SERVICE"; then
         log_error "Falha ao iniciar $SERVICE"
-        read -p "Pressione ENTER para continuar..."
+        [ "$INTERACTIVE" = "true" ] && read -p "Pressione ENTER para continuar..."
         return 0
     fi
     
     echo ""
     log_success "$SERVICE rebuilded e reiniciado com sucesso!"
-    read -p "Pressione ENTER para continuar..."
+    [ "$INTERACTIVE" = "true" ] && read -p "Pressione ENTER para continuar..."
     return 0
 }
 
 # Função para rebuildar e reiniciar todos os serviços
 rebuild_and_restart_all() {
+    local INTERACTIVE=${1:-true}
+    
     echo ""
     log_step "Rebuilding e reiniciando todos os serviços..."
     echo ""
@@ -437,7 +440,7 @@ rebuild_and_restart_all() {
         log_warning "Alguns serviços falharam ao compilar: ${FAILED_BUILD[*]}"
         log_info "Serviços com build bem-sucedido foram iniciados"
     fi
-    read -p "Pressione ENTER para continuar..."
+    [ "$INTERACTIVE" = "true" ] && read -p "Pressione ENTER para continuar..."
     return 0
 }
 
@@ -619,7 +622,139 @@ show_menu() {
     esac
 }
 
-# Trap Ctrl+C
+# Função para mostrar ajuda de uso
+show_usage() {
+    echo ""
+    echo -e "${CYAN}${BOLD}Uso:${NC}"
+    echo "  $0                              - Modo interativo (menu)"
+    echo "  $0 status                       - Mostrar status dos serviços"
+    echo "  $0 start [service]              - Iniciar serviço(s)"
+    echo "  $0 stop [service]               - Parar serviço(s)"
+    echo "  $0 restart [service]            - Reiniciar serviço(s)"
+    echo "  $0 rebuild [service]            - Recompilar e reiniciar serviço(s)"
+    echo "  $0 logs <service> [type]        - Ver logs de um serviço"
+    echo ""
+    echo -e "${CYAN}${BOLD}Serviços disponíveis:${NC}"
+    echo "  all, backend, frontend"
+    echo ""
+    echo -e "${CYAN}${BOLD}Tipos de log (logs):${NC}"
+    echo "  runtime, build (backend) | runtime, install (frontend)"
+    echo ""
+    echo -e "${CYAN}${BOLD}Exemplos:${NC}"
+    echo "  $0 start all"
+    echo "  $0 restart backend"
+    echo "  $0 rebuild frontend"
+    echo "  $0 logs backend runtime"
+    echo ""
+}
+
+# Processar argumentos de linha de comando
+if [ $# -gt 0 ]; then
+    COMMAND=$1
+    SERVICE=${2:-all}
+    LOG_TYPE=${3:-runtime}
+    
+    case $COMMAND in
+        status)
+            show_status
+            exit 0
+            ;;
+        start)
+            if [ "$SERVICE" = "all" ]; then
+                start_all_services
+            else
+                echo ""
+                start_service "$SERVICE"
+                echo ""
+            fi
+            exit 0
+            ;;
+        stop)
+            if [ "$SERVICE" = "all" ]; then
+                stop_all_services
+            else
+                echo ""
+                stop_service "$SERVICE"
+                echo ""
+            fi
+            exit 0
+            ;;
+        restart)
+            if [ "$SERVICE" = "all" ]; then
+                echo ""
+                log_step "Reiniciando todos os serviços..."
+                echo ""
+                stop_all_services
+                echo ""
+                start_all_services
+            else
+                echo ""
+                log_step "Reiniciando $SERVICE..."
+                echo ""
+                stop_service "$SERVICE"
+                echo ""
+                start_service "$SERVICE"
+                echo ""
+            fi
+            exit 0
+            ;;
+        rebuild)
+            if [ "$SERVICE" = "all" ]; then
+                rebuild_and_restart_all false
+            else
+                rebuild_and_restart_service "$SERVICE" false
+            fi
+            exit 0
+            ;;
+        logs)
+            if [ "$SERVICE" = "all" ]; then
+                log_error "Especifique um serviço: backend ou frontend"
+                exit 1
+            fi
+            
+            local LOG_FILE=""
+            case $SERVICE in
+                backend)
+                    if [ "$LOG_TYPE" = "build" ]; then
+                        LOG_FILE="$LOGS_DIR/backend-build.log"
+                    else
+                        LOG_FILE="$LOGS_DIR/backend-runtime.log"
+                    fi
+                    ;;
+                frontend)
+                    if [ "$LOG_TYPE" = "install" ]; then
+                        LOG_FILE="$LOGS_DIR/frontend-install.log"
+                    else
+                        LOG_FILE="$LOGS_DIR/frontend-runtime.log"
+                    fi
+                    ;;
+                *)
+                    log_error "Serviço desconhecido: $SERVICE"
+                    exit 1
+                    ;;
+            esac
+            
+            if [ -f "$LOG_FILE" ]; then
+                tail -100 "$LOG_FILE"
+            else
+                log_error "Arquivo de log não encontrado: $LOG_FILE"
+                exit 1
+            fi
+            exit 0
+            ;;
+        help|--help|-h)
+            show_usage
+            exit 0
+            ;;
+        *)
+            log_error "Comando desconhecido: $COMMAND"
+            show_usage
+            exit 1
+            ;;
+    esac
+fi
+
+# Modo interativo - Trap Ctrl+C
 trap '' SIGINT
 
 # Banner inicial

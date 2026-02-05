@@ -1,6 +1,6 @@
 # Catálogo de User Stories
 
-**Última atualização:** 2026-01-28  
+**Última atualização:** 2026-02-05  
 **Status:** 🟢 Definido
 
 ---
@@ -10,7 +10,7 @@
 | ID | História | Use Case | Status | Critérios de Aceitação |
 |---|---|---|---|---|
 | [US001](#us001) | Descrever ideia de livro para LLM | UC001 | Concluída | 3 critérios |
-| [US002](#us002) | Receber perguntas da LLM para expandir ideia | UC001 | Planejado | 3 critérios |
+| [US002](#us002) | Receber perguntas da LLM para expandir ideia | UC001 | Concluída | 3 critérios |
 | [US091](#us091) | Criar novo projeto manualmente | UC025 | Concluída | 5 critérios |
 | [US092](#us092) | Visualizar lista de projetos | UC025 | Concluída | 5 critérios |
 | [US093](#us093) | Editar informações do projeto | UC025 | Concluída | 5 critérios |
@@ -203,9 +203,20 @@
 **Para** expandir e clarificar conceitos antes de gerar estrutura
 
 **Critérios de Aceitação:**
-1. LLM faz entre 3-5 perguntas focadas (gênero, protagonista, conflito, tom)
-2. Interface exibe perguntas uma por vez ou em grupo
-3. Autor pode responder e avançar
+1. ✅ LLM faz entre 3-5 perguntas focadas (gênero, protagonista, conflito, tom)
+2. ✅ Interface exibe perguntas uma por vez ou em grupo
+3. ✅ Autor pode responder e avançar
+
+**Status:** Concluída (2026-02-05)
+
+**Implementação Técnica:**
+- Backend: Prompt atualizado em `BuildBrainstormPrompt()` para gerar EXATAMENTE 5 perguntas no formato `(Categoria) Pergunta`
+- Tipos AG-UI: Novo tipo `QuestionListComponent` e interface `Question` em `ag-ui.ts`
+- Parser: Função `parseQuestionsFromText()` detecta perguntas estruturadas automaticamente
+- Componente: `QuestionList.tsx` renderiza perguntas com navegação interativa
+- Renderer: `AgMessageRenderer` suporta renderização do novo componente `question-list`
+- UX: Navegação entre perguntas, progress bar, atalho Ctrl+Enter, botões Anterior/Próxima/Concluir
+- Fluxo: Ao concluir todas as perguntas, dispara action `submit_answers` que envia respostas via `ContinueBrainstorm`
 
 ---
 

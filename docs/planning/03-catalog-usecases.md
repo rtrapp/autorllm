@@ -1,6 +1,6 @@
 # Catálogo de Use Cases
 
-**Última atualização:** 2026-01-27  
+**Última atualização:** 2026-02-05  
 **Status:** 🟢 Definido
 
 ---
@@ -77,7 +77,7 @@
 ### UC001: Gerar Outline Inicial com Assistência LLM
 
 **Feature:** F001  
-**Status:** 🟡 Em Implementacao (1/5 stories concluídas)  
+**Status:** 🟡 Em Implementacao (2/5 stories concluídas)  
 **Objetivo:** Transformar ideia bruta do autor em estrutura de livro (outline) através de conversação com LLM.
 
 **Atores:** Autor
@@ -98,17 +98,21 @@
 
 **User Stories:**
 - ✅ US001: Como autor, quero descrever minha ideia de livro para a LLM entender
-- 🔴 US002: Como autor, quero que a LLM faça perguntas para expandir minha ideia
+- ✅ US002: Como autor, quero que a LLM faça perguntas para expandir minha ideia
 - 🔴 US003: Como autor, quero que a LLM gere outline estruturado baseado na conversa
 - 🔴 US004: Como autor, quero revisar e editar o outline gerado
 - 🔴 US005: Como autor, quero salvar o projeto com a estrutura inicial criada
 
-**Implementação Atual (US001):**
+**Implementação Atual (US001 + US002):**
 - ✅ Backend: StartBrainstormCommand + Handler + Validator
 - ✅ SignalR Hub: StartBrainstorm e ContinueBrainstorm methods
 - ✅ Frontend: BrainstormChat component com streaming em tempo real
-- ✅ Hook: useBrainstorm para gerenciar estado do chat
+- ✅ Hook: useAgUIChat para gerenciar estado do chat
 - ✅ Rota: /brainstorm acessível pela página de projetos
+- ✅ **NOVO**: Componente QuestionList para exibir perguntas estruturadas
+- ✅ **NOVO**: Parser automático de perguntas no formato `(Categoria) Pergunta`
+- ✅ **NOVO**: Navegação interativa entre perguntas (uma por vez)
+- ✅ **NOVO**: Submit de respostas via action `submit_answers`
 
 ---
 

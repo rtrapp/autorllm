@@ -1,6 +1,6 @@
 # Backlog por Fases - MVP First
 
-**Última atualização:** 2026-01-28  
+**Última atualização:** 2026-02-05  
 **Status:** 🟢 Definido
 
 ---
@@ -71,7 +71,7 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 | 52 | US021 | Editar título e resumo de capítulo | Sprint 1 | � Concluída |
 | 53 | US022 | Deletar capítulo | Sprint 1 | � Concluída |
 | 54 | US001 | Descrever ideia de livro para LLM | Sprint 1 | � Concluída |
-| 55 | US002 | Receber perguntas da LLM para expandir ideia | Sprint 1 | 🔴 Pendente |
+| 55 | US002 | Receber perguntas da LLM para expandir ideia | Sprint 1 | 🟢 Concluída |
 | 56 | US003 | Receber outline estruturado gerado pela LLM | Sprint 1 | 🔴 Pendente |
 | 57 | US004 | Revisar e editar outline gerado | Sprint 1 | 🔴 Pendente |
 | 58 | US005 | Salvar projeto com estrutura inicial | Sprint 1 | 🔴 Pendente |
@@ -117,7 +117,7 @@ Este documento organiza todo o backlog em fases incrementais, priorizando o MVP.
 - 🟡 Em Progresso - Sendo desenvolvida
 - 🟢 Concluída - Implementada e testada
 
-**Próxima Story:** US002 - Receber perguntas da LLM para expandir ideia
+**Próxima Story:** US003 - Receber outline estruturado gerado pela LLM
 
 ---
 

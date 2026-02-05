@@ -71,6 +71,27 @@ export function BrainstormChat({ onClose }: BrainstormChatProps) {
     console.log('Action triggered:', actionType, payload);
     
     switch (actionType) {
+      case 'submit_answers':
+        // User completed all questions, send answers back to LLM
+        if (payload?.answers) {
+          const answersText = Object.entries(payload.answers as Record<string, string>)
+            .map(([, answer], index) => `Resposta ${index + 1}: ${answer}`)
+            .join('\n\n');
+          
+          sendMessage(answersText);
+        }
+        break;
+      case 'submit_choices':
+        // User selected choice(s), send selection back to LLM
+        if (payload?.choices) {
+          const choicesText = typeof payload.choices === 'string' 
+            ? payload.choices 
+            : JSON.stringify(payload.choices);
+          
+          // Clear format to indicate user made a DECISION, not requesting more choices
+          sendMessage(`✅ ESCOLHA CONFIRMADA: ${choicesText}`);
+        }
+        break;
       case 'save_project':
         // TODO: Implement save project logic
         console.log('Saving project with data:', payload);

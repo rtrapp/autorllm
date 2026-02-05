@@ -28,6 +28,11 @@ public class LLMHub : Hub
         try
         {
             var prompt = BuildBrainstormPrompt(bookIdea);
+            
+            // LOG: Mostrar o prompt completo sendo enviado
+            _logger.LogInformation("=== PROMPT BEING SENT TO LLM ===");
+            _logger.LogInformation(prompt);
+            _logger.LogInformation("=== END OF PROMPT ===");
 
             await foreach (var token in _agentService.StreamCompletionAsync(prompt, Context.ConnectionAborted))
             {
@@ -85,20 +90,38 @@ public class LLMHub : Hub
     private static string BuildBrainstormPrompt(string bookIdea)
     {
         return $"""
-            Você é um assistente especializado em ajudar autores a desenvolverem suas ideias de livros.
+            SYSTEM: Você DEVE responder APENAS no formato especificado abaixo. Qualquer desvio será considerado erro.
 
-            O autor descreveu a seguinte ideia:
-            {bookIdea}
+            TAREFA: O autor descreveu esta ideia de livro:
+            "{bookIdea}"
 
-            Analise a ideia e responda de forma amigável e encorajadora. Confirme que você entendeu a essência da história e faça 3-5 perguntas focadas para ajudar a expandir e clarificar os seguintes aspectos:
+            FORMATO OBRIGATÓRIO DA RESPOSTA:
 
-            1. **Gênero e Tom**: Qual é o gênero da história? Que tom/atmosfera você imagina?
-            2. **Protagonista**: Quem é o personagem principal? Quais são suas motivações e conflitos internos?
-            3. **Conflito Central**: Qual é o principal obstáculo ou desafio que a história aborda?
-            4. **Ambientação**: Onde e quando a história se passa?
-            5. **Tema**: Que mensagem ou reflexão você quer transmitir aos leitores?
+            [1-2 frases de encorajamento]
 
-            Seja específico mas não excessivamente técnico. O objetivo é ajudar o autor a clarificar sua visão antes de criar o outline estruturado.
+            (Gênero e Tom) [pergunta sobre gênero]
+            (Protagonista) [pergunta sobre personagem principal]
+            (Conflito Central) [pergunta sobre obstáculo]
+            (Ambientação) [pergunta sobre mundo/época]
+            (Tema) [pergunta sobre mensagem]
+
+            EXEMPLO CORRETO:
+            Que premissa intrigante! Mistério e vampiros sempre rendem ótimas histórias.
+
+            (Gênero e Tom) Sua história terá um tom noir sombrio ou será mais uma aventura ágil?
+            (Protagonista) Por que uma vampira se tornou detective e o que ela busca?
+            (Conflito Central) Quem está por trás dessas máquinas assassinas?
+            (Ambientação) Como é essa cidade steampunk e quando ela existe?
+            (Tema) Que reflexão sobre tecnologia e humanidade você quer explorar?
+
+            IMPORTANTE:
+            - Use EXATAMENTE os 5 nomes de categoria mostrados
+            - Cada categoria entre parênteses no início da linha
+            - Uma pergunta por linha
+            - NENHUM texto adicional após as 5 perguntas
+            - NÃO use marcadores como *, -, números, bullets
+
+            RESPONDA AGORA:
             """;
     }
 
