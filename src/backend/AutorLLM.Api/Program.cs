@@ -3,6 +3,7 @@ using AutorLLM.Infrastructure;
 using AutorLLM.Api.Hubs;
 using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Hosting.AGUI.AspNetCore;
+using Microsoft.Extensions.AI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,10 +60,10 @@ app.MapHub<LLMHub>("/llmhub");
 
 // Map AG-UI endpoint (padrão oficial do Microsoft Agent Framework)
 // Cria um AIAgent específico para brainstorm com instruções dedicadas
-var brainstormAgent = app.Services.GetRequiredService<IServiceScopeFactory>()
-    .CreateScope()
-    .ServiceProvider
-    .GetRequiredService<AIAgent>();
+var scope = app.Services.CreateScope();
+var chatClient = scope.ServiceProvider.GetRequiredService<Microsoft.Extensions.AI.IChatClient>();
+var brainstormAgentDef = scope.ServiceProvider.GetRequiredService<AutorLLM.Application.AgentDefinitions.BrainstormAgentDefinition>();
+var brainstormAgent = chatClient.AsAIAgent(brainstormAgentDef.Name, brainstormAgentDef.Instructions);
 
 app.MapAGUI("/ag-ui/brainstorm", brainstormAgent);
 

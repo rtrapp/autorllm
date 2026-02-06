@@ -6,6 +6,7 @@ import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import { QuestionList } from './QuestionList';
 import { ChoiceList } from './ChoiceList';
+import { OutlinePreview } from './OutlinePreview';
 import type {
   AgMessage,
   Content,
@@ -330,14 +331,16 @@ function QuestionListRenderer({
   component: QuestionListComponent;
   onAction?: (action: string, payload?: Record<string, unknown>) => void;
 }) {
-  const handleAnswer = (questionId: string, answer: string) => {
-    console.log('Question answered:', questionId, answer);
+  const handleAnswer = (questionId: string, answer: string, category: string) => {
+    console.log(`Question answered [${category}]:`, answer.substring(0, 50));
+    // Send answer immediately with category metadata
+    onAction?.('answer_question', { questionId, answer, category });
   };
 
-  const handleComplete = (answers: Record<string, string>) => {
+  const handleComplete = (answers: Record<string, string>, categories: Record<string, string>) => {
     console.log('All questions answered:', answers);
-    // Trigger action to send answers back to LLM
-    onAction?.('submit_answers', { answers });
+    // Trigger action to send answers back to LLM with categories
+    onAction?.('submit_answers', { answers, categories });
   };
 
   return (
@@ -382,74 +385,21 @@ function OutlinePreviewRenderer({
   component: OutlinePreviewComponent;
   onAction?: (action: string, payload?: Record<string, unknown>) => void;
 }) {
+  const handleAccept = () => {
+    onAction?.('save_outline', { outline: component.outline });
+  };
+
+  const handleRegenerate = () => {
+    onAction?.('regenerate_outline', {});
+  };
+
   return (
-    <div className="bg-secondary/10 border rounded-lg p-4 mt-3 space-y-4">
-      <div>
-        <h3 className="font-bold text-base">{component.title}</h3>
-        <p className="text-xs text-muted-foreground mt-1">
-          {component.plotType} • {component.chapters.length} capítulos • {component.characters.length} personagens
-        </p>
-      </div>
-
-      <div>
-        <h4 className="font-semibold text-sm mb-1">Sinopse</h4>
-        <p className="text-xs">{component.synopsis}</p>
-      </div>
-
-      <div>
-        <h4 className="font-semibold text-sm mb-2">Capítulos</h4>
-        <div className="space-y-2">
-          {component.chapters.slice(0, 3).map((chapter) => (
-            <div key={chapter.number} className="text-xs">
-              <span className="font-medium">
-                {chapter.number}. {chapter.title}
-              </span>
-              <p className="text-muted-foreground ml-4">{chapter.summary}</p>
-            </div>
-          ))}
-          {component.chapters.length > 3 && (
-            <p className="text-xs text-muted-foreground ml-4">
-              ... e mais {component.chapters.length - 3} capítulos
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <h4 className="font-semibold text-sm mb-2">Personagens</h4>
-        <div className="space-y-1">
-          {component.characters.map((character) => (
-            <div key={character.name} className="text-xs">
-              <span className="font-medium">{character.name}</span>
-              <span className="text-muted-foreground"> ({character.role})</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex gap-2 pt-2">
-        <Button
-          size="sm"
-          onClick={() =>
-            onAction?.('save_project', {
-              outline: component,
-            })
-          }
-        >
-          Salvar Projeto
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() =>
-            onAction?.('update_outline', {
-              outline: component,
-            })
-          }
-        >
-          Editar Outline
-        </Button>
-      </div>
+    <div className="my-4">
+      <OutlinePreview
+        outline={component.outline}
+        onAccept={handleAccept}
+        onRegenerate={handleRegenerate}
+      />
     </div>
   );
 }

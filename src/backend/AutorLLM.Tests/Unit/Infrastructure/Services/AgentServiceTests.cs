@@ -48,10 +48,10 @@ public class AgentServiceTests
     public void Constructor_WithNullOptions_ShouldThrowArgumentNullException()
     {
         // Arrange
-        var mockAgent = new Mock<Microsoft.Agents.AI.AIAgent>();
+        var mockChatClient = new Mock<Microsoft.Extensions.AI.IChatClient>();
 
         // Act
-        var act = () => new AgentService(mockAgent.Object, null!, _loggerMock.Object);
+        var act = () => new AgentService(mockChatClient.Object, null!, _loggerMock.Object);
 
         // Assert
         act.Should().Throw<ArgumentNullException>("options é obrigatório");
@@ -61,10 +61,10 @@ public class AgentServiceTests
     public void Constructor_WithNullLogger_ShouldThrowArgumentNullException()
     {
         // Arrange
-        var mockAgent = new Mock<Microsoft.Agents.AI.AIAgent>();
+        var mockChatClient = new Mock<Microsoft.Extensions.AI.IChatClient>();
 
         // Act
-        var act = () => new AgentService(mockAgent.Object, _options, null!);
+        var act = () => new AgentService(mockChatClient.Object, _options, null!);
 
         // Assert
         act.Should().Throw<ArgumentNullException>("logger é obrigatório");
@@ -74,14 +74,15 @@ public class AgentServiceTests
     public async Task StreamCompletionAsync_WithNullPrompt_ShouldThrowArgumentException()
     {
         // Arrange
-        var mockAgent = new Mock<Microsoft.Agents.AI.AIAgent>();
-        var sut = new AgentService(mockAgent.Object, _options, _loggerMock.Object);
+        var mockChatClient = new Mock<Microsoft.Extensions.AI.IChatClient>();
+        var sut = new AgentService(mockChatClient.Object, _options, _loggerMock.Object);
+        var agent = new AutorLLM.Application.AgentDefinitions.SimpleAgentDefinition();
         string? prompt = null;
 
         // Act
         var act = async () =>
         {
-            await foreach (var token in sut.StreamCompletionAsync(prompt!))
+            await foreach (var token in sut.StreamCompletionAsync(agent, prompt!))
             {
                 // Should not reach here
             }
@@ -95,14 +96,15 @@ public class AgentServiceTests
     public async Task StreamCompletionAsync_WithEmptyPrompt_ShouldThrowArgumentException()
     {
         // Arrange
-        var mockAgent = new Mock<Microsoft.Agents.AI.AIAgent>();
-        var sut = new AgentService(mockAgent.Object, _options, _loggerMock.Object);
+        var mockChatClient = new Mock<Microsoft.Extensions.AI.IChatClient>();
+        var sut = new AgentService(mockChatClient.Object, _options, _loggerMock.Object);
+        var agent = new AutorLLM.Application.AgentDefinitions.SimpleAgentDefinition();
         var prompt = "";
 
         // Act
         var act = async () =>
         {
-            await foreach (var token in sut.StreamCompletionAsync(prompt))
+            await foreach (var token in sut.StreamCompletionAsync(agent, prompt))
             {
                 // Should not reach here
             }
@@ -116,14 +118,15 @@ public class AgentServiceTests
     public async Task StreamCompletionAsync_WithWhitespacePrompt_ShouldThrowArgumentException()
     {
         // Arrange
-        var mockAgent = new Mock<Microsoft.Agents.AI.AIAgent>();
-        var sut = new AgentService(mockAgent.Object, _options, _loggerMock.Object);
+        var mockChatClient = new Mock<Microsoft.Extensions.AI.IChatClient>();
+        var sut = new AgentService(mockChatClient.Object, _options, _loggerMock.Object);
+        var agent = new AutorLLM.Application.AgentDefinitions.SimpleAgentDefinition();
         var prompt = "   ";
 
         // Act
         var act = async () =>
         {
-            await foreach (var token in sut.StreamCompletionAsync(prompt))
+            await foreach (var token in sut.StreamCompletionAsync(agent, prompt))
             {
                 // Should not reach here
             }
@@ -137,12 +140,13 @@ public class AgentServiceTests
     public async Task CompleteAsync_WithNullPrompt_ShouldThrowArgumentException()
     {
         // Arrange
-        var mockAgent = new Mock<Microsoft.Agents.AI.AIAgent>();
-        var sut = new AgentService(mockAgent.Object, _options, _loggerMock.Object);
+        var mockChatClient = new Mock<Microsoft.Extensions.AI.IChatClient>();
+        var sut = new AgentService(mockChatClient.Object, _options, _loggerMock.Object);
+        var agent = new AutorLLM.Application.AgentDefinitions.SimpleAgentDefinition();
         string? prompt = null;
 
         // Act
-        var act = () => sut.CompleteAsync(prompt!);
+        var act = () => sut.CompleteAsync(agent, prompt!);
 
         // Assert
         await act.Should().ThrowAsync<ArgumentException>("null prompt é inválido");
@@ -152,12 +156,13 @@ public class AgentServiceTests
     public async Task CompleteAsync_WithEmptyPrompt_ShouldThrowArgumentException()
     {
         // Arrange
-        var mockAgent = new Mock<Microsoft.Agents.AI.AIAgent>();
-        var sut = new AgentService(mockAgent.Object, _options, _loggerMock.Object);
+        var mockChatClient = new Mock<Microsoft.Extensions.AI.IChatClient>();
+        var sut = new AgentService(mockChatClient.Object, _options, _loggerMock.Object);
+        var agent = new AutorLLM.Application.AgentDefinitions.SimpleAgentDefinition();
         var prompt = "";
 
         // Act
-        var act = () => sut.CompleteAsync(prompt);
+        var act = () => sut.CompleteAsync(agent, prompt);
 
         // Assert
         await act.Should().ThrowAsync<ArgumentException>("empty prompt é inválido");

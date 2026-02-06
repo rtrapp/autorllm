@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Bot, Send, Sparkles, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { useAgUIChat } from '@/hooks/use-ag-ui-chat';
+import { useAgBrainstorm } from '@/hooks/use-ag-brainstorm';
 import { AgMessageRenderer, StreamingMessageRenderer } from './AgMessageRenderer';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,10 +18,12 @@ export function BrainstormChat({ onClose }: BrainstormChatProps) {
 
   const {
     conversation,
+    context,
     isStreaming,
     error,
     sendMessage,
-  } = useAgUIChat();
+    generateOutline,
+  } = useAgBrainstorm();
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -67,15 +69,28 @@ export function BrainstormChat({ onClose }: BrainstormChatProps) {
     }
   };
 
-  const handleAction = (actionType: string, payload?: Record<string, unknown>) => {
+  const handleAction = async (actionType: string, payload?: Record<string, unknown>) => {
     console.log('Action triggered:', actionType, payload);
     
     switch (actionType) {
+      case 'answer_question':
+        // Single answer submitted, send with category
+        if (payload?.answer && payload?.category) {
+          sendMessage(payload.answer as string, payload.category as string);
+        }
+        break;
       case 'submit_answers':
-        // User completed all questions, send answers back to LLM
-        if (payload?.answers) {
-          const answersText = Object.entries(payload.answers as Record<string, string>)
-            .map(([, answer], index) => `Resposta ${index + 1}: ${answer}`)
+        // User completed all questions, send answers back to LLM with categories
+        if (payload?.answers && payload?.categories) {
+          const answers = payload.answers as Record<string, string>;
+          const categories = payload.categories as Record<string, string>;
+          
+          // Format with categories for better context
+          const answersText = Object.entries(answers)
+            .map(([questionId, answer]) => {
+              const category = categories[questionId] || 'Geral';
+              return `[${category}] ${answer}`;
+            })
             .join('\n\n');
           
           sendMessage(answersText);
@@ -92,9 +107,20 @@ export function BrainstormChat({ onClose }: BrainstormChatProps) {
           sendMessage(`✅ ESCOLHA CONFIRMADA: ${choicesText}`);
         }
         break;
+      case 'generate_outline':
+        // Generate outline from accumulated context
+        console.log('Generating outline with context:', context);
+        await generateOutline();
+        break;
+      case 'regenerate_outline':
+        // Regenerate outline
+        console.log('Regenerating outline with context:', context);
+        await generateOutline();
+        break;
       case 'save_project':
         // TODO: Implement save project logic
         console.log('Saving project with data:', payload);
+        console.log('Current context:', context);
         break;
       case 'update_outline':
         // TODO: Implement update outline logic

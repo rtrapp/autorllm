@@ -7,8 +7,8 @@ import type { QuestionListComponent } from '@/types/ag-ui';
 
 interface QuestionListProps {
   component: QuestionListComponent;
-  onAnswer?: (questionId: string, answer: string) => void;
-  onComplete?: (answers: Record<string, string>) => void;
+  onAnswer?: (questionId: string, answer: string, category: string) => void;
+  onComplete?: (answers: Record<string, string>, categories: Record<string, string>) => void;
 }
 
 export function QuestionList({ component, onAnswer, onComplete }: QuestionListProps) {
@@ -36,14 +36,18 @@ export function QuestionList({ component, onAnswer, onComplete }: QuestionListPr
     };
     setAnswers(updatedAnswers);
 
-    if (onAnswer) {
-      onAnswer(activeQuestion.id, currentAnswer.trim());
-    }
+    // NÃO enviar resposta individual - apenas salvar localmente
+    // onAnswer só será chamado quando TODAS as perguntas forem respondidas
 
     if (isLastQuestion) {
-      // All questions answered, notify completion
+      // All questions answered, notify completion with categories
+      const categories: Record<string, string> = {};
+      questions.forEach(q => {
+        categories[q.id] = q.category;
+      });
+      
       if (onComplete) {
-        onComplete(updatedAnswers);
+        onComplete(updatedAnswers, categories);
       }
     } else {
       // Move to next question
@@ -202,12 +206,13 @@ export function QuestionList({ component, onAnswer, onComplete }: QuestionListPr
               <Textarea
                 value={answers[question.id] || ''}
                 onChange={(e) => {
-                  setAnswers({
+                  const newAnswers = {
                     ...answers,
                     [question.id]: e.target.value,
-                  });
+                  };
+                  setAnswers(newAnswers);
                   if (onAnswer) {
-                    onAnswer(question.id, e.target.value);
+                    onAnswer(question.id, e.target.value, question.category);
                   }
                 }}
                 placeholder="Sua resposta..."
@@ -218,7 +223,13 @@ export function QuestionList({ component, onAnswer, onComplete }: QuestionListPr
         })}
         
         <Button
-          onClick={() => onComplete?.(answers)}
+          onClick={() => {
+            const categories: Record<string, string> = {};
+            questions.forEach(q => {
+              categories[q.id] = q.category;
+            });
+            onComplete?.(answers, categories);
+          }}
           disabled={Object.keys(answers).length < questions.length}
           className="w-full"
         >

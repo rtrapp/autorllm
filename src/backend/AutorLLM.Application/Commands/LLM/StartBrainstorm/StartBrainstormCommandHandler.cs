@@ -8,13 +8,16 @@ public class StartBrainstormCommandHandler
     : IRequestHandler<StartBrainstormCommand, StartBrainstormResult>
 {
     private readonly IAgentService _agentService;
+    private readonly AutorLLM.Application.AgentDefinitions.BrainstormAgentDefinition _brainstormAgent;
     private readonly ILogger<StartBrainstormCommandHandler> _logger;
 
     public StartBrainstormCommandHandler(
         IAgentService agentService,
+        AutorLLM.Application.AgentDefinitions.BrainstormAgentDefinition brainstormAgent,
         ILogger<StartBrainstormCommandHandler> logger)
     {
         _agentService = agentService;
+        _brainstormAgent = brainstormAgent;
         _logger = logger;
     }
 
@@ -26,9 +29,12 @@ public class StartBrainstormCommandHandler
 
         try
         {
-            var prompt = BuildBrainstormPrompt(command.BookIdea);
-            
-            var response = await _agentService.CompleteAsync(prompt, cancellationToken);
+            // No need for custom prompt - agent has instructions in BrainstormAgentDefinition
+            var (response, sessionJson) = await _agentService.CompleteAsync(
+                _brainstormAgent, 
+                command.BookIdea, 
+                sessionJson: null, // First message, no history yet
+                cancellationToken);
 
             var sessionId = Guid.NewGuid().ToString();
 
@@ -46,25 +52,5 @@ public class StartBrainstormCommandHandler
             _logger.LogError(ex, "Failed to start brainstorm session");
             throw;
         }
-    }
-
-    private static string BuildBrainstormPrompt(string bookIdea)
-    {
-        return $"""
-            Você é um assistente especializado em ajudar autores a desenvolverem suas ideias de livros.
-
-            O autor descreveu a seguinte ideia:
-            {bookIdea}
-
-            Analise a ideia e responda de forma amigável e encorajadora. Confirme que você entendeu a essência da história e faça 3-5 perguntas focadas para ajudar a expandir e clarificar os seguintes aspectos:
-
-            1. **Gênero e Tom**: Qual é o gênero da história? Que tom/atmosfera você imagina?
-            2. **Protagonista**: Quem é o personagem principal? Quais são suas motivações e conflitos internos?
-            3. **Conflito Central**: Qual é o principal obstáculo ou desafio que a história aborda?
-            4. **Ambientação**: Onde e quando a história se passa?
-            5. **Tema**: Que mensagem ou reflexão você quer transmitir aos leitores?
-
-            Seja específico mas não excessivamente técnico. O objetivo é ajudar o autor a clarificar sua visão antes de criar o outline estruturado.
-            """;
     }
 }

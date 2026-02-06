@@ -1,3 +1,4 @@
+using AutorLLM.Application.AgentDefinitions;
 using AutorLLM.Application.Services;
 using AutorLLM.Infrastructure.Configuration;
 using AutorLLM.Infrastructure.Exceptions;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenAI.Chat;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 
 namespace AutorLLM.Infrastructure.Services;
 
@@ -34,12 +36,12 @@ public class AgentService : IAgentService
         _options = options.Value;
     }
 
-    private ChatClientAgent GetChatClientAgent(BaseAgent agent)
+    private AIAgent GetChatClientAgent(BaseAgentDefinition agent)
     {
         return _chatClient.AsAIAgent(agent.Name, agent.Instructions);
     }
 
-    private ChatClientAgent GetChatClientAgent<T>(BaseAgent agent)
+    private AIAgent GetChatClientAgent<T>(BaseAgentDefinition agent)
     {
         return _chatClient.AsAIAgent(new ChatClientAgentOptions()
         {
@@ -52,63 +54,116 @@ public class AgentService : IAgentService
         });
     }
 
-    public async IAsyncEnumerable<string> StreamCompletionAsync(
-        BaseAgent agent,
+    public async IAsyncEnumerable<(string token, string? sessionJson)> StreamCompletionAsync(
+        BaseAgentDefinition agent,
         string prompt,
-        AgentThread? thread,
+        string? sessionJson = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(prompt, nameof(prompt));
 
-        _logger.LogInformation("Streaming completion for prompt length: {Length}", prompt.Length);
+        _logger.LogInformation("Streaming completion for prompt length: {Length}, Has session: {HasSession}", 
+            prompt.Length, sessionJson != null);
 
-        await foreach (var token in StreamInternalAsync(agent, prompt, thread, cancellationToken))
+        await foreach (var result in StreamInternalAsync(agent, prompt, sessionJson, cancellationToken))
         {
-            yield return token;
+            yield return result;
         }
     }
 
-    private async IAsyncEnumerable<string> StreamInternalAsync(
-        BaseAgent agent,
+    private async IAsyncEnumerable<(string token, string? sessionJson)> StreamInternalAsync(
+        BaseAgentDefinition agent,
         string prompt,
-        AgentThread? thread,
+        string? sessionJson,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var tokenCount = 0;
-
+        
+        // DEBUG: Log instructions being used
+        _logger.LogInformation("Agent: {AgentName}, Instructions (first 300 chars): {Instructions}", 
+            agent.Name, 
+            agent.Instructions.Length > 300 ? agent.Instructions.Substring(0, 300) + "..." : agent.Instructions);
+        
         var aiAgent = GetChatClientAgent(agent);
 
-        await foreach (var update in aiAgent.RunStreamingAsync(prompt, thread, cancellationToken: cancellationToken))
+        // Deserialize session if provided, otherwise create new
+        AgentSession session;
+        if (!string.IsNullOrEmpty(sessionJson))
+        {
+            var jsonElement = JsonSerializer.Deserialize<JsonElement>(sessionJson);
+            session = await aiAgent.DeserializeSessionAsync(jsonElement);
+            _logger.LogInformation("Resumed session with history");
+        }
+        else
+        {
+            session = await aiAgent.GetNewSessionAsync(cancellationToken);
+            prompt = $@"
+                {agent.Instructions}
+
+                {prompt}
+            ";
+            _logger.LogInformation("Created new session");
+        }
+
+        await foreach (var update in aiAgent.RunStreamingAsync(prompt, session, cancellationToken: cancellationToken))
         {
             if (!string.IsNullOrEmpty(update.Text))
             {
                 tokenCount++;
-                yield return update.Text;
+                yield return (update.Text, null);
             }
         }
 
+        // Serialize session after completion
+        var serializedSession = session.Serialize();
+        var updatedSessionJson = System.Text.Json.JsonSerializer.Serialize(serializedSession);
+        
         _logger.LogInformation("Streaming completion finished. Tokens streamed: {TokenCount}", tokenCount);
+        
+        // Yield final result with updated session
+        yield return (string.Empty, updatedSessionJson);
     }
 
-    public async Task<string> CompleteAsync(
-        BaseAgent agent,
+    public async Task<(string response, string sessionJson)> CompleteAsync(
+        BaseAgentDefinition agent,
         string prompt,
-        AgentThread? thread,
+        string? sessionJson = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(prompt, nameof(prompt));
 
-        _logger.LogInformation("Running completion for prompt length: {Length}", prompt.Length);
+        _logger.LogInformation("Running completion for prompt length: {Length}, Has session: {HasSession}", 
+            prompt.Length, sessionJson != null);
 
         try
         {
             var aiAgent = GetChatClientAgent(agent);
-            var response = await aiAgent.RunAsync(prompt, thread, cancellationToken: cancellationToken);
+            
+            // Deserialize session if provided, otherwise create new
+            AgentSession session;
+            if (!string.IsNullOrEmpty(sessionJson))
+            {
+
+                var jsonElement = JsonSerializer.Deserialize<JsonElement>(sessionJson);
+                session = await aiAgent.DeserializeSessionAsync(jsonElement);
+                _logger.LogInformation("Resumed session with history");
+            }
+            else
+            {
+                session = await aiAgent.GetNewSessionAsync(cancellationToken);
+                _logger.LogInformation("Created new session");
+            }
+            
+            var response = await aiAgent.RunAsync(prompt, session, cancellationToken: cancellationToken);
             var result = response.Text ?? string.Empty;
+
+            // Serialize session after completion
+            var serializedSession = session.Serialize();
+            var updatedSessionJson = System.Text.Json.JsonSerializer.Serialize(serializedSession);
 
             _logger.LogInformation("Completion finished. Result length: {Length}", result.Length);
 
-            return result;
+            return (result, updatedSessionJson);
         }
         catch (OperationCanceledException)
         {
@@ -137,9 +192,8 @@ public class AgentService : IAgentService
     }
 
     public async Task<T> CompleteStructuredAsync<T>(
-        BaseAgent agent,
+        BaseAgentDefinition agent,
         string prompt,
-        AgentThread? thread,
         CancellationToken cancellationToken = default) where T : class
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(prompt, nameof(prompt));
@@ -150,9 +204,20 @@ public class AgentService : IAgentService
         try
         {
             var aiAgent = GetChatClientAgent<T>(agent);
-            var response = await aiAgent.RunAsync<T>(message: prompt, thread: thread, cancellationToken: cancellationToken);
-
-            return response.Result;
+            
+            // Get new session for structured response
+            var session = await aiAgent.GetNewSessionAsync(cancellationToken);
+            
+            var response = await aiAgent.RunAsync(prompt, session, cancellationToken: cancellationToken);
+            
+            // Try to deserialize from response.Text if it's JSON
+            if (!string.IsNullOrEmpty(response.Text))
+            {
+                return JsonSerializer.Deserialize<T>(response.Text) 
+                    ?? throw new InvalidOperationException($"Failed to deserialize response to {typeof(T).Name}");
+            }
+            
+            throw new InvalidOperationException("LLM returned empty response");
         }
         catch (OperationCanceledException)
         {

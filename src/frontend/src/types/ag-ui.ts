@@ -87,21 +87,103 @@ export interface ChoiceListComponent {
   contextText?: string;
 }
 
+/**
+ * BrainstormContext - Armazena respostas acumuladas do brainstorm
+ * Campos baseados nas entidades de domínio reais do backend
+ */
+export interface BrainstormContext {
+  // Dados do projeto
+  bookIdea: string;                    // Ideia inicial do usuário
+  title?: string;                       // Project.Title (max 200)
+  author?: string;                      // Project.Author (max 100)
+  synopsis?: string;                    // Project.Synopsis (max 5000)
+  genre?: string;                       // Project.Genre (max 50)
+  targetWordCount?: number;             // Project.TargetWordCount
+
+  // Listas de entidades (dados brutos das respostas)
+  characters?: Array<{
+    name: string;                       // Character.Name (max 100)
+    description?: string;               // Character.Description (max 1000)
+    role?: 'Protagonist' | 'Antagonist' | 'Supporting' | 'Minor';  // CharacterRole
+    backstory?: string;                 // Character.Backstory (max 5000)
+    appearance?: string;                // Character.Appearance (max 2000)
+    personality?: string;               // Character.Personality (max 2000)
+  }>;
+
+  locations?: Array<{
+    name: string;                       // Location.Name (max 100)
+    description?: string;               // Location.Description (max 1000)
+    geography?: string;                 // Location.Geography (max 2000)
+    culture?: string;                   // Location.Culture (max 2000)
+    significance?: string;              // Location.Significance (max 1000)
+  }>;
+
+  plots?: Array<{
+    title: string;                      // Plot.Title (max 200)
+    description?: string;               // Plot.Description (max 2000)
+    type?: 'Main' | 'Subplot' | 'Character Arc' | 'Romance' | 'Mystery';  // PlotType
+    resolution?: string;                // Plot.Resolution (max 2000)
+  }>;
+
+  chapters?: Array<{
+    title: string;                      // Chapter.Title (max 200)
+    summary?: string;                   // Chapter.Summary (max 2000)
+    order: number;                      // Chapter.Order
+  }>;
+
+  // Metadados
+  tone?: string;
+  themes?: string[];
+  targetAudience?: string;
+}
+
+/**
+ * OutlineData - Estrutura final do outline gerado pela LLM
+ * Mapeia EXATAMENTE para as entidades de domínio
+ */
+export interface OutlineData {
+  // Project fields
+  title: string;                        // Project.Title
+  author: string;                       // Project.Author
+  synopsis: string;                     // Project.Synopsis (200-500 palavras recomendado)
+  genre?: string;                       // Project.Genre
+  targetWordCount?: number;             // Project.TargetWordCount (default: 50000)
+
+  // Child entities
+  characters: Array<{
+    name: string;                       // Character.Name (obrigatório)
+    description: string;                // Character.Description (obrigatório)
+    role: 'Protagonist' | 'Antagonist' | 'Supporting' | 'Minor';  // CharacterRole (obrigatório)
+    backstory?: string;                 // Character.Backstory (opcional)
+    appearance?: string;                // Character.Appearance (opcional)
+    personality?: string;               // Character.Personality (opcional)
+  }>;
+
+  locations?: Array<{
+    name: string;                       // Location.Name (obrigatório)
+    description: string;                // Location.Description (obrigatório)
+    geography?: string;                 // Location.Geography (opcional)
+    culture?: string;                   // Location.Culture (opcional)
+    significance?: string;              // Location.Significance (opcional)
+  }>;
+
+  plots: Array<{
+    title: string;                      // Plot.Title (obrigatório)
+    description: string;                // Plot.Description (obrigatório)
+    type: 'Main' | 'Subplot' | 'Character Arc' | 'Romance' | 'Mystery';  // PlotType (obrigatório)
+    resolution?: string;                // Plot.Resolution (opcional)
+  }>;
+
+  chapters: Array<{
+    title: string;                      // Chapter.Title (obrigatório)
+    summary: string;                    // Chapter.Summary (obrigatório)
+    order: number;                      // Chapter.Order (1, 2, 3...)
+  }>;
+}
+
 export interface OutlinePreviewComponent {
   type: 'outline-preview';
-  title: string;
-  synopsis: string;
-  chapters: Array<{
-    number: number;
-    title: string;
-    summary: string;
-  }>;
-  characters: Array<{
-    name: string;
-    role: string;
-    description: string;
-  }>;
-  plotType: string;
+  outline: OutlineData;
 }
 
 export interface ComponentContent extends BaseContent {
@@ -236,6 +318,19 @@ export function parseAgContent(text: string): Content[] {
     // Try to parse as JSON first (for structured content)
     const parsed = JSON.parse(sanitizedText);
     console.log('Successfully parsed as JSON');
+    
+    // Check if it's an outline JSON (has required outline fields)
+    if (isOutlineData(parsed)) {
+      console.log('✅ DETECTED OUTLINE JSON!');
+      return [{
+        type: 'component',
+        component: {
+          type: 'outline-preview',
+          outline: parsed as OutlineData
+        } as OutlinePreviewComponent
+      }];
+    }
+    
     if (Array.isArray(parsed)) {
       return parsed as Content[];
     }
@@ -251,6 +346,10 @@ export function parseAgContent(text: string): Content[] {
     // Check if text contains choices (use sanitized text)
     const choices = parseChoicesFromText(sanitizedText);
     console.log('Choices found:', choices.length);
+    
+    // Check if text contains actions (use sanitized text)
+    const actions = parseActionsFromText(sanitizedText);
+    console.log('Actions found:', actions.length);
     
     if (questions.length > 0) {
       console.log('✅ DETECTED STRUCTURED QUESTIONS!');
@@ -270,10 +369,36 @@ export function parseAgContent(text: string): Content[] {
       return buildChoiceContent(sanitizedText, choices);
     }
     
+    if (actions.length > 0) {
+      console.log('✅ DETECTED ACTIONS!');
+      actions.forEach((a, i) => {
+        console.log(`  Action ${i + 1}: ${a.type} - ${a.label?.substring(0, 50)}...`);
+      });
+      
+      return buildActionContent(sanitizedText, actions);
+    }
+    
     console.log('No structured content found, treating as plain text');
     // If not JSON and no structured content, treat as plain text (sanitized)
     return [{ type: 'text', text: sanitizedText }];
   }
+}
+
+/**
+ * Type guard to check if parsed JSON is an OutlineData
+ */
+function isOutlineData(obj: any): obj is OutlineData {
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    typeof obj.title === 'string' &&
+    typeof obj.author === 'string' &&
+    typeof obj.synopsis === 'string' &&
+    Array.isArray(obj.characters) &&
+    Array.isArray(obj.locations) &&
+    Array.isArray(obj.plots) &&
+    Array.isArray(obj.chapters)
+  );
 }
 
 /**
@@ -414,4 +539,190 @@ export function parseChoicesFromText(text: string): Choice[] {
   
   console.log('Total choices parsed:', choices.length);
   return choices;
+}
+
+/**
+ * Parse actions from text in format: [ACTION] (action_type) Description
+ * Example: [ACTION] (generate_outline) Você tem informação suficiente! Posso gerar o outline.
+ */
+export function parseActionsFromText(text: string): Array<{ type: string; label: string }> {
+  console.log('=== parseActionsFromText called ===');
+  const lines = text.split('\n').filter(line => line.trim());
+  console.log('Total lines to check:', lines.length);
+  
+  const actions: Array<{ type: string; label: string }> = [];
+  
+  // Regex to match: [ACTION] (action_type) Description
+  const actionRegex = /^\[ACTION\]\s*\(([^)]+)\)\s+(.+)$/;
+  
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+    const match = trimmedLine.match(actionRegex);
+    
+    if (match) {
+      const [, actionType, description] = match;
+      console.log(`✅ MATCHED ACTION: (${actionType}) ${description.substring(0, 50)}`);
+      actions.push({
+        type: actionType.trim(),
+        label: description.trim(),
+      });
+    } else {
+      // Log lines that contain [ACTION] but don't match
+      if (trimmedLine.includes('[ACTION]')) {
+        console.log(`❌ NO MATCH (contains [ACTION]): ${trimmedLine.substring(0, 80)}`);
+      }
+    }
+  }
+  
+  console.log('Total actions parsed:', actions.length);
+  return actions;
+}
+
+/**
+ * Build content array with context text + action buttons
+ */
+function buildActionContent(text: string, actions: Array<{ type: string; label: string }>): Content[] {
+  const lines = text.split('\n').filter(line => line.trim());
+  const firstActionIndex = lines.findIndex(line => /^\[ACTION\]/.test(line.trim()));
+  
+  const content: Content[] = [];
+  
+  // Add context text if exists
+  if (firstActionIndex > 0) {
+    const contextText = lines.slice(0, firstActionIndex).join('\n\n');
+    console.log('Adding context text before actions:', contextText.substring(0, 100));
+    content.push({ type: 'text', text: contextText });
+  }
+  
+  // Add button components for each action
+  console.log('Creating button components for', actions.length, 'actions');
+  actions.forEach(action => {
+    content.push({
+      type: 'component',
+      component: {
+        type: 'button',
+        label: action.label,
+        action: { type: action.type },
+        variant: action.type === 'generate_outline' ? 'primary' : 'secondary',
+      } as ButtonComponent,
+    });
+  });
+  
+  return content;
+}
+
+/**
+ * Create initial brainstorm context from book idea
+ */
+export function createBrainstormContext(bookIdea: string): BrainstormContext {
+  return {
+    bookIdea,
+    characters: [],
+    locations: [],
+    plots: [],
+    chapters: [],
+  };
+}
+
+/**
+ * Validate outline data against domain constraints
+ */
+export function validateOutline(outline: OutlineData): string[] {
+  const errors: string[] = [];
+
+  // Project validations
+  if (!outline.title || outline.title.trim().length === 0) {
+    errors.push('Title is required');
+  }
+  if (outline.title && outline.title.length > 200) {
+    errors.push('Title cannot exceed 200 characters');
+  }
+
+  if (!outline.author || outline.author.trim().length === 0) {
+    errors.push('Author is required');
+  }
+  if (outline.author && outline.author.length > 100) {
+    errors.push('Author cannot exceed 100 characters');
+  }
+
+  if (!outline.synopsis || outline.synopsis.trim().length === 0) {
+    errors.push('Synopsis is required');
+  }
+  if (outline.synopsis && outline.synopsis.length > 5000) {
+    errors.push('Synopsis cannot exceed 5000 characters');
+  }
+
+  if (outline.genre && outline.genre.length > 50) {
+    errors.push('Genre cannot exceed 50 characters');
+  }
+
+  // Characters validations (minimum 1 required)
+  if (!outline.characters || outline.characters.length === 0) {
+    errors.push('At least 1 character is required');
+  }
+
+  outline.characters?.forEach((char, index) => {
+    if (!char.name || char.name.trim().length === 0) {
+      errors.push(`Character ${index + 1}: Name is required`);
+    }
+    if (char.name && char.name.length > 100) {
+      errors.push(`Character ${index + 1}: Name cannot exceed 100 characters`);
+    }
+    if (!char.description || char.description.trim().length === 0) {
+      errors.push(`Character ${index + 1}: Description is required`);
+    }
+    if (char.description && char.description.length > 1000) {
+      errors.push(`Character ${index + 1}: Description cannot exceed 1000 characters`);
+    }
+  });
+
+  // Plots validations (minimum 1 Main plot required)
+  if (!outline.plots || outline.plots.length === 0) {
+    errors.push('At least 1 plot is required');
+  }
+
+  const hasMainPlot = outline.plots?.some(p => p.type === 'Main');
+  if (!hasMainPlot) {
+    errors.push('At least 1 Main plot is required');
+  }
+
+  outline.plots?.forEach((plot, index) => {
+    if (!plot.title || plot.title.trim().length === 0) {
+      errors.push(`Plot ${index + 1}: Title is required`);
+    }
+    if (plot.title && plot.title.length > 200) {
+      errors.push(`Plot ${index + 1}: Title cannot exceed 200 characters`);
+    }
+    if (!plot.description || plot.description.trim().length === 0) {
+      errors.push(`Plot ${index + 1}: Description is required`);
+    }
+    if (plot.description && plot.description.length > 2000) {
+      errors.push(`Plot ${index + 1}: Description cannot exceed 2000 characters`);
+    }
+  });
+
+  // Chapters validations (minimum 3 required)
+  if (!outline.chapters || outline.chapters.length < 3) {
+    errors.push('At least 3 chapters are required');
+  }
+  if (outline.chapters && outline.chapters.length > 12) {
+    errors.push('Maximum 12 chapters allowed for initial outline');
+  }
+
+  outline.chapters?.forEach((chapter, index) => {
+    if (!chapter.title || chapter.title.trim().length === 0) {
+      errors.push(`Chapter ${index + 1}: Title is required`);
+    }
+    if (chapter.title && chapter.title.length > 200) {
+      errors.push(`Chapter ${index + 1}: Title cannot exceed 200 characters`);
+    }
+    if (!chapter.summary || chapter.summary.trim().length === 0) {
+      errors.push(`Chapter ${index + 1}: Summary is required`);
+    }
+    if (chapter.summary && chapter.summary.length > 2000) {
+      errors.push(`Chapter ${index + 1}: Summary cannot exceed 2000 characters`);
+    }
+  });
+
+  return errors;
 }

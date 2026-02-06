@@ -45,11 +45,12 @@ public class AgentServiceErrorHandlingTests
     public void CompleteAsync_WithNullPrompt_ShouldThrowArgumentException()
     {
         // Arrange
-        var mockAgent = new Mock<AIAgent>();
-        var service = new AgentService(mockAgent.Object, _options, _mockLogger.Object);
+        var mockChatClient = new Mock<Microsoft.Extensions.AI.IChatClient>();
+        var service = new AgentService(mockChatClient.Object, _options, _mockLogger.Object);
+        var agent = new AutorLLM.Application.AgentDefinitions.SimpleAgentDefinition();
 
         // Act
-        var act = () => service.CompleteAsync(null!);
+        var act = () => service.CompleteAsync(agent, null!);
 
         // Assert
         act.Should().ThrowAsync<ArgumentException>()
@@ -60,11 +61,12 @@ public class AgentServiceErrorHandlingTests
     public void CompleteAsync_WithEmptyPrompt_ShouldThrowArgumentException()
     {
         // Arrange
-        var mockAgent = new Mock<AIAgent>();
-        var service = new AgentService(mockAgent.Object, _options, _mockLogger.Object);
+        var mockChatClient = new Mock<Microsoft.Extensions.AI.IChatClient>();
+        var service = new AgentService(mockChatClient.Object, _options, _mockLogger.Object);
+        var agent = new AutorLLM.Application.AgentDefinitions.SimpleAgentDefinition();
 
         // Act
-        var act = () => service.CompleteAsync("");
+        var act = () => service.CompleteAsync(agent, "");
 
         // Assert
         act.Should().ThrowAsync<ArgumentException>()
@@ -75,13 +77,14 @@ public class AgentServiceErrorHandlingTests
     public async Task StreamCompletionAsync_WithNullPrompt_ShouldThrowArgumentException()
     {
         // Arrange
-        var mockAgent = new Mock<AIAgent>();
-        var service = new AgentService(mockAgent.Object, _options, _mockLogger.Object);
+        var mockChatClient = new Mock<Microsoft.Extensions.AI.IChatClient>();
+        var service = new AgentService(mockChatClient.Object, _options, _mockLogger.Object);
+        var agent = new AutorLLM.Application.AgentDefinitions.SimpleAgentDefinition();
 
         // Act & Assert - ArgumentNullException is a subtype of ArgumentException
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
-            await foreach (var _ in service.StreamCompletionAsync(null!))
+            await foreach (var _ in service.StreamCompletionAsync(agent, null!))
             {
                 // Should not reach here
             }
@@ -92,13 +95,14 @@ public class AgentServiceErrorHandlingTests
     public async Task StreamCompletionAsync_WithEmptyPrompt_ShouldThrowArgumentException()
     {
         // Arrange
-        var mockAgent = new Mock<AIAgent>();
-        var service = new AgentService(mockAgent.Object, _options, _mockLogger.Object);
+        var mockChatClient = new Mock<Microsoft.Extensions.AI.IChatClient>();
+        var service = new AgentService(mockChatClient.Object, _options, _mockLogger.Object);
+        var agent = new AutorLLM.Application.AgentDefinitions.SimpleAgentDefinition();
 
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
-            await foreach (var _ in service.StreamCompletionAsync(""))
+            await foreach (var _ in service.StreamCompletionAsync(agent, ""))
             {
                 // Should not reach here
             }

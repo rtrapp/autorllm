@@ -1,6 +1,7 @@
 using AutorLLM.Api.Hubs;
 using AutorLLM.Application.Services;
 using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -10,6 +11,7 @@ namespace AutorLLM.Tests.Unit.Api;
 public class LLMHubTests
 {
     private readonly Mock<IAgentService> _agentServiceMock;
+    private readonly Mock<IMediator> _mediatorMock;
     private readonly Mock<ILogger<LLMHub>> _loggerMock;
     private readonly Mock<IHubCallerClients> _clientsMock;
     private readonly Mock<ISingleClientProxy> _callerMock;
@@ -19,6 +21,7 @@ public class LLMHubTests
     public LLMHubTests()
     {
         _agentServiceMock = new Mock<IAgentService>();
+        _mediatorMock = new Mock<IMediator>();
         _loggerMock = new Mock<ILogger<LLMHub>>();
         _clientsMock = new Mock<IHubCallerClients>();
         _callerMock = new Mock<ISingleClientProxy>();
@@ -26,7 +29,8 @@ public class LLMHubTests
 
         _clientsMock.Setup(c => c.Caller).Returns(_callerMock.Object);
 
-        _hub = new LLMHub(_agentServiceMock.Object, _loggerMock.Object)
+        var brainstormAgent = new AutorLLM.Application.AgentDefinitions.BrainstormAgentDefinition();
+        _hub = new LLMHub(_agentServiceMock.Object, brainstormAgent, _mediatorMock.Object, _loggerMock.Object)
         {
             Clients = _clientsMock.Object,
             Context = _contextMock.Object
@@ -46,10 +50,12 @@ public class LLMHubTests
 
         _agentServiceMock
             .Setup(s => s.StreamCompletionAsync(
+                It.IsAny<AutorLLM.Application.AgentDefinitions.BaseAgentDefinition>(),
                 It.IsAny<string>(),
+                It.IsAny<string?>(),
                 It.IsAny<CancellationToken>()
             ))
-            .Returns(AsyncEnumerable.Empty<string>());
+            .Returns(AsyncEnumerable.Empty<(string, string?)>());
 
         // Act
         await _hub.RequestRewrite(chapterId, selectedText, command);
@@ -57,10 +63,12 @@ public class LLMHubTests
         // Assert
         _agentServiceMock.Verify(
             s => s.StreamCompletionAsync(
+                It.IsAny<AutorLLM.Application.AgentDefinitions.BaseAgentDefinition>(),
                 It.Is<string>(prompt => 
                     prompt.Contains(selectedText) && 
                     prompt.Contains(command)
                 ),
+                It.IsAny<string?>(),
                 It.IsAny<CancellationToken>()
             ),
             Times.Once
@@ -79,10 +87,12 @@ public class LLMHubTests
 
         _agentServiceMock
             .Setup(s => s.StreamCompletionAsync(
+                It.IsAny<AutorLLM.Application.AgentDefinitions.BaseAgentDefinition>(),
                 It.IsAny<string>(),
+                It.IsAny<string?>(),
                 It.IsAny<CancellationToken>()
             ))
-            .Returns(tokens.ToAsyncEnumerable());
+            .Returns(tokens.Select(t => (t, (string?)null)).ToAsyncEnumerable());
 
         _callerMock
             .Setup(c => c.SendCoreAsync(
@@ -114,10 +124,12 @@ public class LLMHubTests
 
         _agentServiceMock
             .Setup(s => s.StreamCompletionAsync(
+                It.IsAny<AutorLLM.Application.AgentDefinitions.BaseAgentDefinition>(),
                 It.IsAny<string>(),
+                It.IsAny<string?>(),
                 It.IsAny<CancellationToken>()
             ))
-            .Returns(AsyncEnumerable.Empty<string>());
+            .Returns(AsyncEnumerable.Empty<(string, string?)>());
 
         // Act
         await _hub.RequestRewrite(chapterId, selectedText, command);
@@ -144,7 +156,9 @@ public class LLMHubTests
 
         _agentServiceMock
             .Setup(s => s.StreamCompletionAsync(
+                It.IsAny<AutorLLM.Application.AgentDefinitions.BaseAgentDefinition>(),
                 It.IsAny<string>(),
+                It.IsAny<string?>(),
                 It.IsAny<CancellationToken>()
             ))
             .Throws(new InvalidOperationException(errorMessage));
@@ -173,10 +187,12 @@ public class LLMHubTests
 
         _agentServiceMock
             .Setup(s => s.StreamCompletionAsync(
+                It.IsAny<AutorLLM.Application.AgentDefinitions.BaseAgentDefinition>(),
                 It.IsAny<string>(),
+                It.IsAny<string?>(),
                 It.IsAny<CancellationToken>()
             ))
-            .Returns(AsyncEnumerable.Empty<string>());
+            .Returns(AsyncEnumerable.Empty<(string, string?)>());
 
         // Act
         await _hub.RequestRewrite(chapterId, selectedText, command);
